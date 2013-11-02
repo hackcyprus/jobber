@@ -7,6 +7,7 @@ Model declarations.
 """
 from pprint import pformat
 from jobber.extensions import db
+from jobber.utils import slugify
 
 
 class BaseModel(db.Model):
@@ -80,3 +81,23 @@ class Job(BaseModel):
         if job_type not in self.JOB_TYPES:
             raise ValueError("'{}'' is not a valid job type.".format(job_type))
         return job_type
+
+
+class Category(BaseModel):
+    __tablename__ = 'categories'
+
+    #: Category id.
+    id = db.Column(db.Integer, primary_key=True)
+
+    #: Name of this category.
+    name = db.Column(db.Unicode(50), nullable=False)
+
+    #: Slugified version of the name.
+    slug = db.Column(db.Unicode(75), nullable=False, unique=True, index=True)
+
+    def __init__(self, **kwargs):
+        super(Category, self).__init__(**kwargs)
+        if 'slug' not in kwargs:
+            # TODO: have a fallback for failed slugs
+            self.slug = slugify(self.name)
+
