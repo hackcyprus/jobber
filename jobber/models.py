@@ -70,6 +70,9 @@ class Job(BaseModel):
     #: Job type, one of part-time, full-time, internship, contract.
     job_type = db.Column(db.Integer, nullable=False)
 
+    #: Does the company consider remote workers?
+    remote_work = db.Column(db.Boolean, nullable=False, default=False)
+
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     company = db.relationship('Company', backref=db.backref('jobs', lazy='dynamic'))
