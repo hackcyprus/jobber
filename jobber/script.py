@@ -18,9 +18,10 @@ def context():
         yield ctx
 
 
-def die(code):
-    """Kills the script with `code` as exit code."""
-    sys.exit(code)
+def die(reason):
+    """Prints `reason` and kills script with exit code 1."""
+    print red(reason)
+    sys.exit(1)
 
 
 def termcolor(code):

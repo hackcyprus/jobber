@@ -19,10 +19,10 @@ from jobber.models import Company
 
 
 def main(name):
-    company = Company(name)
+    company = Company(name=name)
     db.session.add(company)
     db.session.commit()
-    print green("'{}' created okay.".format(name))
+    print green("'{}' created okay with id {}.".format(name, company.id))
 
 
 if __name__ == '__main__':
