@@ -13,20 +13,18 @@ from docopt import docopt
 from env import path_setup
 path_setup()
 
-from jobber.script import context, green
-from jobber.extensions import db
+from jobber.script import run, green
 from jobber.models import Company
 
 
-def main(name):
+def main(name, session):
     company = Company(name=name)
-    db.session.add(company)
-    db.session.commit()
+    session.add(company)
+    session.flush()
     print green("'{}' created okay with id {}.".format(name, company.id))
 
 
 if __name__ == '__main__':
-    with context():
-        arguments = docopt(__doc__)
-        name = arguments['<name>']
-        main(name)
+    arguments = docopt(__doc__)
+    name = arguments['<name>']
+    run(main, name)

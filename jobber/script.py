@@ -6,20 +6,37 @@ Script utilities.
 
 """
 import sys
-from contextlib import contextmanager
 from jobber.factory import create_app
+from jobber.extensions import db
 
 
-@contextmanager
-def context():
-    """Sets up a context for the script to run."""
-    app = create_app('script')
-    with app.app_context() as ctx:
-        yield ctx
+def run(main, *args):
+    """Runs the script in an application context and manages the session cycle.
+
+    :param main: A function to run.
+    :param *args: Positional arguments to the `main` function.
+
+    """
+    app = create_app(__name__)
+    with app.app_context():
+        session = db.session
+        try:
+            args += (session,)
+            main(*args)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
 
 def die(reason):
-    """Prints `reason` and kills script with exit code 1."""
+    """Prints `reason` and kills script with exit code 1.
+
+    :param reason: Reason phrase.
+
+    """
     print red(reason)
     sys.exit(1)
 
