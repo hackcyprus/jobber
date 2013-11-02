@@ -12,25 +12,12 @@ from jobber.extensions import db
 class BaseModel(db.Model):
     __abstract__ = True
 
-    SKIP_ON_SET = frozenset(['id'])
-
-    def __init__(self, *args, **kwargs):
-        self.set_all(**kwargs)
-
     def __repr__(self):
         name = self.__class__.__name__.capitalize()
         attrs = dict()
         for column in self.__table__.columns:
             attrs[column.name] = getattr(self, column.name)
         return "<{} {}>".format(name, pformat(attrs))
-
-    def set_all(self, **kwargs):
-        """Sets all property values of this instance from `kwargs`."""
-        for key, value in kwargs.iteritems():
-            if key in self.SKIP_ON_SET:
-                continue
-            if hasattr(self, key):
-                setattr(self, key, value)
 
 
 class Company(BaseModel):
