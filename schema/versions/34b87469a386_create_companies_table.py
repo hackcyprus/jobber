@@ -1,4 +1,4 @@
-"""create company table
+"""create companies table
 
 Revision ID: 34b87469a386
 Revises: None
@@ -18,8 +18,9 @@ def upgrade():
     op.create_table(
         'companies',
         sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('about', sa.UnicodeText, nullable=True),
         sa.Column('name',
-                  sa.String(50),
+                  sa.Unicode(50),
                   nullable=False,
                   index=True,
                   unique=True),

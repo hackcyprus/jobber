@@ -27,7 +27,10 @@ class Company(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
 
     #: Company name.
-    name = db.Column(db.String(75), nullable=False)
+    name = db.Column(db.Unicode(75), nullable=False)
+
+    #: Few words describing the company.
+    about = db.Column(db.UnicodeText, nullable=True)
 
 
 class Job(BaseModel):
@@ -46,13 +49,13 @@ class Job(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
 
     #: Job title.
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.Unicode(100), nullable=False)
 
     #: Job description.
-    description = db.Column(db.Text, nullable=False)
+    description = db.Column(db.UnicodeText, nullable=False)
 
     #: Instructions on how to apply.
-    how_to_apply = db.Column(db.Text, nullable=False)
+    how_to_apply = db.Column(db.UnicodeText, nullable=False)
 
     #: Job type, one of part-time, full-time, internship, contract.
     job_type = db.Column(db.Integer, nullable=False)
