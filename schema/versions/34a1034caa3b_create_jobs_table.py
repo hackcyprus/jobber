@@ -29,6 +29,10 @@ def upgrade():
                   sa.Integer,
                   sa.ForeignKey('companies.id'),
                   nullable=False),
+        sa.Column('location_id',
+                  sa.Integer,
+                  sa.ForeignKey('locations.id'),
+                  nullable=False),
     )
 
 

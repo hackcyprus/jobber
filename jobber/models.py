@@ -80,9 +80,6 @@ class Job(BaseModel, SlugModelMixin):
     #: Job title.
     title = db.Column(db.Unicode(100), nullable=False)
 
-    #: Job title slug.
-    slug = db.Column(db.Unicode(120), nullable=False)
-
     #: Job description.
     description = db.Column(db.UnicodeText, nullable=False)
 

@@ -18,8 +18,6 @@ from jobber.models import Category
 
 
 def main(name, session):
-    if not isinstance(name, unicode):
-        name = unicode(name, 'utf-8')
     category = Category(name=name)
     session.add(category)
     session.flush()
