@@ -36,6 +36,8 @@ def slugify(text, delim='-', limit=75):
     :param text: A unicode string to slugify.
 
     """
+    if isinstance(text, str):
+        text = unicode(text, 'utf-8')
     words = []
     for word in PUNCTUATION_REGEX.split(text.lower()):
         clean = normalize('NFKD', word)
