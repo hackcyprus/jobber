@@ -21,6 +21,23 @@ class BaseModel(db.Model):
         return "<{} {}>".format(name, pformat(attrs))
 
 
+class SlugModelMixin(object):
+    """Adds a `slug` column to the model from the `SLUG_FIELD` value."""
+
+    SLUG_FIELD = None
+
+    #: Slugified version of `SLUG_FIELD`.
+    slug = db.Column(db.Unicode(125), nullable=False, unique=True, index=True)
+
+    def __init__(self, **kwargs):
+        # We only auto-generate the slug when it's not explicitly passed in the
+        # constructor.
+        if 'slug' not in kwargs:
+            # TODO: have a fallback for failed slugs.
+            value = getattr(self, self.SLUG_FIELD)
+            self.slug = slugify(value)
+
+
 class Company(BaseModel):
     __tablename__ = 'companies'
 
@@ -34,7 +51,7 @@ class Company(BaseModel):
     about = db.Column(db.UnicodeText, nullable=True)
 
 
-class Job(BaseModel):
+class Job(BaseModel, SlugModelMixin):
     __tablename__ = 'jobs'
 
     JOB_TYPES = {
@@ -46,11 +63,16 @@ class Job(BaseModel):
 
     JOB_TYPES_REVERSED = {v: k for k, v in JOB_TYPES.iteritems()}
 
+    SLUG_FIELD = 'title'
+
     #: Job id.
     id = db.Column(db.Integer, primary_key=True)
 
     #: Job title.
     title = db.Column(db.Unicode(100), nullable=False)
+
+    #: Job title slug.
+    slug = db.Column(db.Unicode(120), nullable=False)
 
     #: Job description.
     description = db.Column(db.UnicodeText, nullable=False)
@@ -69,6 +91,10 @@ class Job(BaseModel):
 
     company = db.relationship('Company', backref=db.backref('jobs', lazy='dynamic'))
 
+    def __init__(self, *args, **kwargs):
+        super(Job, self).__init__(*args, **kwargs)
+        SlugModelMixin.__init__(self, **kwargs)
+
     @classmethod
     def machinize_job_type(cls, job_type):
         return cls.JOB_TYPES_REVERSED[job_type]
@@ -77,6 +103,10 @@ class Job(BaseModel):
     def humanize_job_type(cls, job_type):
         return cls.JOB_TYPES[job_type]
 
+    @property
+    def human_job_type(self):
+        return self.humanize_job_type(self.job_type)
+
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):
         if job_type not in self.JOB_TYPES:
@@ -84,8 +114,10 @@ class Job(BaseModel):
         return job_type
 
 
-class Category(BaseModel):
+class Category(BaseModel, SlugModelMixin):
     __tablename__ = 'categories'
+
+    SLUG_FIELD = 'name'
 
     #: Category id.
     id = db.Column(db.Integer, primary_key=True)
@@ -93,12 +125,6 @@ class Category(BaseModel):
     #: Name of this category.
     name = db.Column(db.Unicode(50), nullable=False)
 
-    #: Slugified version of the name.
-    slug = db.Column(db.Unicode(75), nullable=False, unique=True, index=True)
-
-    def __init__(self, **kwargs):
-        super(Category, self).__init__(**kwargs)
-        if 'slug' not in kwargs:
-            # TODO: have a fallback for failed slugs
-            self.slug = slugify(self.name)
-
+    def __init__(self, *args, **kwargs):
+        super(Category, self).__init__(*args, **kwargs)
+        SlugModelMixin.__init__(self, **kwargs)

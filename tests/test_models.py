@@ -8,6 +8,7 @@ Tests the model layer.
 """
 import pytest
 from jobber.models import Job, Company, Category
+from unicodedata import normalize
 
 
 def test_company_model(session):
@@ -41,6 +42,7 @@ def test_job_model(session):
     assert job.title == title
     assert job.description == title
     assert job.how_to_apply == title
+    assert job.slug == normalize('NFKD', title)
 
 
 def test_job_model_job_type_helpers(session):
