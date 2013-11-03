@@ -10,7 +10,6 @@ import pytest
 from jobber.models import Job, Company, Category
 
 
-
 def test_company_model(session):
     name = u'٩(͡๏̯͡๏)۶ ٩(-̮̮̃•̃).'
     company = Company(name=name)

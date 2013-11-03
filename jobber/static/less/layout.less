@@ -1,0 +1,133 @@
+.container {
+    width: 700px;
+    margin: 0 auto;
+}
+
+a.logo {
+    -webkit-font-smoothing: antialiased;
+    font-size: 1.5em;
+    font-family: @logo-font;
+    font-weight: 500;
+    color: @logo-primary;
+    text-shadow: 0px 1px 0px darken(@header, 10%);
+    text-decoration: none;
+
+    b {
+        color: @logo-secondary;
+        font-weight: 700;
+    }
+
+    span {
+        font-weight: 300;
+    }
+}
+
+header {
+    height: 55px;
+    line-height: 55px;
+    background-color: @header;
+
+    .logo {
+        float: left;
+    }
+
+    nav ul {
+        margin: 0;
+        padding: 0;
+        float: right;
+        list-style: none;
+        li {
+            float: left;
+            margin-left: 21px;
+            font-weight: 300;
+            font-size: 0.875em;
+            font-weight: 700;
+            a {
+                color: @offwhite;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px darken(@header, 10%);
+            }
+        }
+    }
+}
+
+#scream {
+    background-color: @logo-secondary;
+    color: darken(@logo-secondary, 10%);
+    font-weight: 700;
+    margin-bottom: 33px;
+
+    div.container {
+        padding: 33px 0 35px 0;
+    }
+
+    h1 {
+        font-size: 2.75em;
+        padding-bottom: 5px;
+        display: block;
+        margin: 0 0 17px 0;
+        padding: 0
+    }
+
+    span {
+        font-family: @glyph;
+        font-size: 4em;
+        font-weight: 900;
+    }
+
+    input {
+        background: none;
+        border: none;
+        border-bottom: 2px dashed darken(@logo-secondary, 10%);
+        width: 610px;
+        margin-left: 3px;
+        font-size: 1.75em;
+        font-family: @logo-font;
+        position: relative;
+        top: -11px;
+
+        &:focus {
+            outline: none;
+        }
+
+        &::-webkit-input-placeholder {
+            color: darken(@logo-secondary, 10%);
+        }
+
+        &:-moz-placeholder { /* Firefox 18- */
+            color: darken(@logo-secondary, 10%);
+        }
+
+        &::-moz-placeholder {  /* Firefox 19+ */
+            color: darken(@logo-secondary, 10%);
+        }
+
+        &:-ms-input-placeholder {
+            color: darken(@logo-secondary, 10%);
+        }
+    }
+}
+
+footer {
+    background-color: lighten(@rule, 8%);
+    border-top: 2px solid @rule;
+    margin-top: 33px;
+    height: 55px;
+    line-height: 55px;
+    color: darken(@rule, 15%);
+
+    .logo {
+        font-size: 1em;
+        color: darken(@rule, 15%);
+        text-shadow: none;
+        float: left;
+        b {
+            color: darken(@rule, 15%);
+        }
+    }
+
+    .copy {
+        float: right;
+        font-size: 0.75em;
+    }
+}

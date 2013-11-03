@@ -10,6 +10,8 @@ import logging
 DEBUG = True
 TESTING = False
 
+PORT = 8000
+
 SECRET_KEY = 'secret'
 
 SESSION_COOKIE_NAME = 'jobber'
