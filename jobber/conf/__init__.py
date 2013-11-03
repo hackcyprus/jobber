@@ -26,6 +26,7 @@ def _make_dict(module):
 _default = _make_dict(default_settings)
 _local = _make_dict(local_settings)
 
+
 class _Settings(object):
     """Placeholder class for settings."""
     def __init__(self, *args):

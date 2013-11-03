@@ -66,6 +66,7 @@ class Job(BaseModel):
 
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
     company = db.relationship('Company', backref=db.backref('jobs', lazy='dynamic'))
 
     @classmethod
@@ -73,7 +74,7 @@ class Job(BaseModel):
         return cls.JOB_TYPES_REVERSED[job_type]
 
     @classmethod
-    def humanize_job_Type(cls, job_type):
+    def humanize_job_type(cls, job_type):
         return cls.JOB_TYPES[job_type]
 
     @db.validates('job_type')
