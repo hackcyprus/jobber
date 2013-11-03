@@ -38,10 +38,10 @@ class Job(BaseModel):
     __tablename__ = 'jobs'
 
     JOB_TYPES = {
-        0: 'full_time',
-        1: 'part_time',
-        2: 'contract',
-        3: 'internship'
+        1: 'full_time',
+        2: 'part_time',
+        3: 'contract',
+        4: 'internship'
     }
 
     JOB_TYPES_REVERSED = {v: k for k, v in JOB_TYPES.iteritems()}
