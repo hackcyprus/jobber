@@ -9,7 +9,7 @@ Tests the model layer.
 import pytest
 from unicodedata import normalize
 
-from jobber.models import Job, Company, Category
+from jobber.models import Job, Company, Category, Location
 from jobber.utils import now
 
 
@@ -28,8 +28,13 @@ def test_job_model(session):
     name = u'Båｃòｎ'
     company = Company(name=name)
     session.add(company)
+
+    city = u'Lïｍáｓѕ߀ɭ'
+    country = u'Cϒｐｒúｓ'
+    location = Location(city=city, country=country)
+    session.add(location)
+
     session.flush()
-    assert company.id > 0
 
     title = u'ｒíｂëｙé'
     job = Job(title=title,
@@ -37,12 +42,15 @@ def test_job_model(session):
               how_to_apply=title,
               remote_work=False,
               company_id=company.id,
+              location_id=location.id,
               job_type=1)
     session.add(job)
     session.flush()
     assert job.id > 0
     assert job.company_id == company.id
     assert job.company.id == company.id
+    assert job.location_id == location.id
+    assert job.location.id == location.id
     assert job.title == title
     assert job.description == title
     assert job.how_to_apply == title
@@ -83,3 +91,14 @@ def test_category_model(session):
     assert category.id > 0
     assert category.name == name
     assert category.created <= now()
+
+
+def test_location_model(session):
+    city = u'Lïｍáｓѕ߀ɭ'
+    country = u'Cϒｐｒúｓ'
+    location = Location(city=city, country=country)
+    session.add(location)
+    session.flush()
+    assert location.id > 0
+    assert location.city == city
+    assert location.country == country

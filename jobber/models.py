@@ -97,8 +97,12 @@ class Job(BaseModel, SlugModelMixin):
 
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
-
     company = db.relationship('Company', backref=db.backref('jobs', lazy='dynamic'))
+
+    #: Location id as a foreign key relationship.
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    location = db.relationship('Location', backref=db.backref('jobs', lazy='dynamic'))
+
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -137,3 +141,17 @@ class Category(BaseModel, SlugModelMixin):
     def __init__(self, *args, **kwargs):
         super(Category, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
+
+
+class Location(BaseModel):
+    __tablename__ = 'locations'
+
+    #: Location id.
+    id = db.Column(db.Integer, primary_key=True)
+
+    #: Location city.
+    city = db.Column(db.Unicode(75), nullable=False)
+
+    #: Location country.
+    country = db.Column(db.Unicode(50), nullable=False)
+
