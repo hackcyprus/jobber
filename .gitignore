@@ -36,5 +36,6 @@ nosetests.xml
 .pydevproject
 
 jobber.db
+test_jobber.db
 local.py
 .vagrant

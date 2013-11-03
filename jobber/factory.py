@@ -33,8 +33,8 @@ def configure_settings(app, override=None):
     :param override: Optional settings overrides.
 
     """
-    for setting in (settings, override):
-        app.config.from_object(setting)
+    settings.apply(override)
+    app.config.from_object(settings)
     return app
 
 

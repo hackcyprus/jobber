@@ -1,6 +1,6 @@
 """
-jobber.config.default
-~~~~~~~~~~~~~~~~~~~~~
+jobber.conf.default
+~~~~~~~~~~~~~~~~~~~
 
 Default configuration.
 
