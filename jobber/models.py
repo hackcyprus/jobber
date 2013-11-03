@@ -7,11 +7,20 @@ Model declarations.
 """
 from pprint import pformat
 from jobber.extensions import db
-from jobber.utils import slugify
+from jobber.utils import slugify, now
 
 
 class BaseModel(db.Model):
+    """Base model class, adds a `created` timestamp on all deriving models."""
     __abstract__ = True
+
+    #: A timestamp populated on model creation.
+    created = db.Column(db.DateTime(timezone=True))
+
+    def __init__(self, *args, **kwargs):
+        if self.created is None:
+            self.created = now()
+        super(BaseModel, self).__init__(*args, **kwargs)
 
     def __repr__(self):
         name = self.__class__.__name__.capitalize()

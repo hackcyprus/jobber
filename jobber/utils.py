@@ -7,7 +7,9 @@ Utility methods.
 """
 import re
 from functools import reduce
+from datetime import datetime
 from unicodedata import normalize
+import pytz
 
 
 PUNCTUATION_REGEX = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
@@ -47,3 +49,8 @@ def slugify(text, delim='-', limit=75):
     if truncated.endswith('-'):
         truncated = truncated[:-1]
     return truncated
+
+
+def now():
+    """Returns `utcnow()` as timezone-aware."""
+    return datetime.utcnow().replace(tzinfo=pytz.utc)

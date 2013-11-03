@@ -7,8 +7,10 @@ Tests the model layer.
 
 """
 import pytest
-from jobber.models import Job, Company, Category
 from unicodedata import normalize
+
+from jobber.models import Job, Company, Category
+from jobber.utils import now
 
 
 def test_company_model(session):
@@ -19,6 +21,7 @@ def test_company_model(session):
     assert company.id > 0
     assert company.name == name
     assert company.about is None
+    assert company.created <= now()
 
 
 def test_job_model(session):
@@ -38,11 +41,13 @@ def test_job_model(session):
     session.add(job)
     session.flush()
     assert job.id > 0
-    assert job.company_id == job.id
+    assert job.company_id == company.id
+    assert job.company.id == company.id
     assert job.title == title
     assert job.description == title
     assert job.how_to_apply == title
     assert job.slug == normalize('NFKD', title)
+    assert job.created <= now()
 
 
 def test_job_model_job_type_helpers(session):
@@ -66,12 +71,15 @@ def test_category_model(session):
     category = Category(name=name)
     assert category.name == name
     assert category.slug == u'foo-bar'
+    assert category.created <= now()
 
     category = Category(name=name, slug='forced')
     assert category.name == name
     assert category.slug == 'forced'
+    assert category.created <= now()
 
     session.add(category)
     session.flush()
     assert category.id > 0
     assert category.name == name
+    assert category.created <= now()

@@ -18,6 +18,7 @@ def upgrade():
     op.create_table(
         'jobs',
         sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('title', sa.Unicode(100), nullable=False),
         sa.Column('slug', sa.Boolean, nullable=False, unique=True, index=True),
         sa.Column('description', sa.UnicodeText, nullable=True),

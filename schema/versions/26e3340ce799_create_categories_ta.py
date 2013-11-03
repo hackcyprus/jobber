@@ -23,6 +23,7 @@ def upgrade():
     """Creates and populates the `categories` table."""
     columns = (
         sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('name', sa.Unicode(50), nullable=False),
         sa.Column('slug',
                   sa.Unicode(75),
