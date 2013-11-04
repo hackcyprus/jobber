@@ -25,11 +25,7 @@ def upgrade():
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('name', sa.Unicode(50), nullable=False),
-        sa.Column('slug',
-                  sa.Unicode(75),
-                  nullable=False,
-                  unique=True,
-                  index=True)
+        sa.Column('slug', sa.Unicode(125), nullable=False, unique=True, index=True)
     )
     op.create_table('categories', *columns)
     op.bulk_insert(sa.sql.table('categories', *columns), categories)
