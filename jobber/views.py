@@ -7,7 +7,9 @@ View declarations.
 """
 from random import choice
 from flask import render_template
+
 from jobber.app import app
+from jobber.models import Job
 
 
 PROMPTS = [
@@ -30,19 +32,23 @@ EXAMPLE_POSITIONS = [
 
 @app.route('/')
 def index():
+    jobs = Job.query.all()
     prompt = choice(PROMPTS)
     position = choice(EXAMPLE_POSITIONS)
-    return render_template('index.html', prompt=prompt, position=position)
-
-
-@app.route('/all')
-def all():
-    return 'all jobs'
+    return render_template('index.html',
+                           prompt=prompt,
+                           position=position,
+                           jobs=jobs)
 
 
 @app.route('/new')
 def new():
     return 'new job'
+
+
+@app.route('/how')
+def how():
+    return 'how it works'
 
 
 @app.route('/j/([0-9]+)/(.+)')
