@@ -30,15 +30,17 @@ EXAMPLE_POSITIONS = [
 ]
 
 
+@app.context_processor
+def inject_swag():
+    prompt = choice(PROMPTS)
+    position = choice(EXAMPLE_POSITIONS)
+    return dict(prompt=prompt, position=position)
+
+
 @app.route('/')
 def index():
     jobs = Job.query.all()
-    prompt = choice(PROMPTS)
-    position = choice(EXAMPLE_POSITIONS)
-    return render_template('index.html',
-                           prompt=prompt,
-                           position=position,
-                           jobs=jobs)
+    return render_template('index.html', jobs=jobs)
 
 
 @app.route('/new')
@@ -51,6 +53,7 @@ def how():
     return 'how it works'
 
 
-@app.route('/j/([0-9]+)/(.+)')
-def view():
-    return 'view job'
+@app.route('/j/<int:job_id>/<job_slug>')
+def view(job_id, job_slug):
+    job = Job.query.get_or_404(job_id)
+    return render_template('job.html', job=job)

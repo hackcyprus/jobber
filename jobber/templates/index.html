@@ -5,9 +5,9 @@
 {% block content %}
   <div id="search-results">
     {% if jobs_count == 1 %}
-      <h2>We found 1 position for you</h2>
+      <h1>We found 1 position for you</h1>
     {% else %}
-      <h2>We found {{ jobs_count }} positions for you</h2>
+      <h1>We found {{ jobs_count }} positions for you</h1>
     {% endif %}
     <table>
       {% for job in jobs %}
