@@ -7,7 +7,7 @@ Model declarations.
 """
 from pprint import pformat
 from jobber.extensions import db
-from jobber.utils import slugify, now
+from jobber.utils import slugify, now, transpose_dict
 
 
 class BaseModel(db.Model):
@@ -63,6 +63,13 @@ class Company(BaseModel):
 class Job(BaseModel, SlugModelMixin):
     __tablename__ = 'jobs'
 
+    CONTACT_METHODS = {
+        1: 'url',
+        2: 'email'
+    }
+
+    CONTACT_METHODS_REVERSED = transpose_dict(CONTACT_METHODS)
+
     JOB_TYPES = {
         1: 'Full Time',
         2: 'Part Time',
@@ -70,7 +77,7 @@ class Job(BaseModel, SlugModelMixin):
         4: 'Internship'
     }
 
-    JOB_TYPES_REVERSED = {v: k for k, v in JOB_TYPES.iteritems()}
+    JOB_TYPES_REVERSED = transpose_dict(JOB_TYPES)
 
     SLUG_FIELD = 'title'
 
@@ -83,8 +90,14 @@ class Job(BaseModel, SlugModelMixin):
     #: Job description.
     description = db.Column(db.UnicodeText, nullable=False)
 
-    #: Instructions on how to apply.
-    how_to_apply = db.Column(db.UnicodeText, nullable=False)
+    #: Contact method, one of url or email.
+    contact_method = db.Column(db.Integer, nullable=False)
+
+    #: Contact email, if candidates should apply over email.
+    contact_email = db.Column(db.Unicode(150), nullable=True)
+
+    #: Contact url, if candidates should apply over url.
+    contact_url = db.Column(db.Unicode(200), nullable=True)
 
     #: Job type, one of part-time, full-time, internship, contract.
     job_type = db.Column(db.Integer, nullable=False)
@@ -113,15 +126,33 @@ class Job(BaseModel, SlugModelMixin):
     def humanize_job_type(cls, job_type):
         return cls.JOB_TYPES[job_type]
 
+    @classmethod
+    def machinize_contact_method(cls, job_type):
+        return cls.CONTACT_METHODS_REVERSED[job_type]
+
+    @classmethod
+    def humanize_contact_method(cls, job_type):
+        return cls.CONTACT_METHODS[job_type]
+
     @property
     def human_job_type(self):
         return self.humanize_job_type(self.job_type)
+
+    @property
+    def human_contact_method(self):
+        return self.humanize_contact_method(self.contact_method)
 
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):
         if job_type not in self.JOB_TYPES:
             raise ValueError("'{}'' is not a valid job type.".format(job_type))
         return job_type
+
+    @db.validates('contact_method')
+    def validate_contact_method(self, key, contact_method):
+        if contact_method not in self.CONTACT_METHODS:
+            raise ValueError("'{}'' is not a valid contact method.".format(contact_method))
+        return contact_method
 
 
 class Category(BaseModel, SlugModelMixin):

@@ -41,6 +41,19 @@ def die(reason):
     sys.exit(1)
 
 
+def prompt(message, yesno=False):
+    """Prompts the user for a value.
+
+    :param message: A string to display at the prompt.
+    :param yesno: A flag indicating whether the user should reply y/n.
+
+    """
+    if yesno:
+        message = "{} [y/N]".format(message)
+    value = raw_input("{}: ".format(message))
+    return value.lower() == 'y' if yesno else value
+
+
 def termcolor(code):
     """Decorator that wraps text with `code` for colored terminal output."""
     def wrapper(text):

@@ -52,3 +52,12 @@ def test_slugify_custom_delim():
 def test_slugify_custom_limit():
     slug = utils.slugify(u'a b c d e f g', limit=4)
     assert slug == u'a-b'
+
+
+def test_transpose_dict():
+    d = {'1': 'a', '2': 'b'}
+    t = utils.transpose_dict(d)
+    assert 'a' in t
+    assert 'b' in t
+    assert '1' not in t
+    assert '2' not in t

@@ -54,3 +54,8 @@ def slugify(text, delim='-', limit=75):
 def now():
     """Returns `utcnow()` as timezone-aware."""
     return datetime.utcnow().replace(tzinfo=pytz.utc)
+
+
+def transpose_dict(d):
+    """Returns a dict where values become keys and keys values."""
+    return {v: k for k, v in d.iteritems()}

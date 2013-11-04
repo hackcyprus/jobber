@@ -39,7 +39,7 @@ def test_job_model(session):
     title = u'ｒíｂëｙé'
     job = Job(title=title,
               description=title,
-              how_to_apply=title,
+              contact_method=1,
               remote_work=False,
               company_id=company.id,
               location_id=location.id,
@@ -53,25 +53,42 @@ def test_job_model(session):
     assert job.location.id == location.id
     assert job.title == title
     assert job.description == title
-    assert job.how_to_apply == title
+    assert job.contact_method == 1
+    assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
     assert job.created <= now()
 
 
 def test_job_model_job_type_helpers(session):
-    assert Job.machinize_job_type('full_time') == 1
+    assert Job.machinize_job_type('Full Time') == 1
     with pytest.raises(KeyError):
         Job.machinize_job_type('wat?')
 
-    assert Job.humanize_job_type(1) == 'full_time'
+    assert Job.humanize_job_type(1) == 'Full Time'
     with pytest.raises(KeyError):
         Job.humanize_job_type(5)
 
 
 def test_job_model_job_type_validator():
     with pytest.raises(ValueError):
-        Job(title='', description='', how_to_apply='',
+        Job(title='', description='', contact_method=1,
             remote_work='', company_id=0, job_type=10)
+
+
+def test_job_model_contact_method_helpers(session):
+    assert Job.machinize_contact_method('url') == 1
+    with pytest.raises(KeyError):
+        Job.machinize_job_type('wat?')
+
+    assert Job.humanize_contact_method(1) == 'url'
+    with pytest.raises(KeyError):
+        Job.humanize_job_type(5)
+
+
+def test_job_model_contact_method_validator():
+    with pytest.raises(ValueError):
+        Job(title='', description='', contact_method=10,
+            remote_work='', company_id=0, job_type=1)
 
 
 def test_category_model(session):

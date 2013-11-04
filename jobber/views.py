@@ -6,7 +6,7 @@ View declarations.
 
 """
 from random import choice
-from flask import render_template
+from flask import render_template, abort
 
 from jobber.app import app
 from jobber.models import Job
@@ -53,7 +53,9 @@ def how():
     return 'how it works'
 
 
-@app.route('/j/<int:job_id>/<job_slug>')
+@app.route('/jobs/<int:job_id>/<job_slug>')
 def view(job_id, job_slug):
     job = Job.query.get_or_404(job_id)
+    if job.slug != job_slug:
+        abort(404)
     return render_template('job.html', job=job)

@@ -21,15 +21,20 @@
         <div class="company-details">
           <p class="company-name">Remedica LTD</p>
           <p class="company-url">
-            <a href="http://remedica.eu">http://remedica.eu</a>
+            <a href="http://remedica.eu" target="_blank">http://remedica.eu</a>
           </p>
           <p class="company-about">
             Accedo is a privately held company founded in 2004 by telecom and media entrepreneurs Michael Lantz and Fredrik Andersson. Accedo is headquartered in Stockholm, Sweden with branch offices in London, Madrid, Palo Alto, New York, Los Angeles, Hong Kong and Sydney.
           <p>
         </div>
         <div class="apply-btn">
-          <a href="#" class="btn">
-            Apply for this job<span>via email</span>
+          {% if job.contact_method == 1 %}
+            <a href="{{ job.contact_url }}" target="_blank" class="btn">
+          {% else %}
+            <a href="mailto:{{ job.contact_email }}" class="btn">
+          {% endif %}
+            Apply for this job
+            <span>via {{ job.human_contact_method }}</span>
           </a>
         </div>
       </div>
