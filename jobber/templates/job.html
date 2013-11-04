@@ -2,14 +2,37 @@
 
 {% block content %}
   <div id="job" class="clearfix">
-    <h1>{{ job.title }}</h1>
-    <div class="description">
-      <p>The Product team in Accedo Stockholm is growing again. This time we’re looking for both junior and senior candidates ready to let go and jump on the Smart TV-ride. People that will build applications for next generations TV services and be game changers.</p>
-      <p>Apps first changed the mobile industry, now it is happening in the TV industry and we are in the middle of it. The working environment in Accedo is international and challenging – giving you the possibility to evolve your skill set while working with new tools and technologies together with exciting customers and partners like HBO, Fox, Viaplay, Spotify, Orange and DTAG. With dev centers in Stockholm, New York and Hong Kong interaction and exchange programs is common and encouraged.</p>
-    </div>
-    <div class="company">
-      <h4>Company Profile</h4>
-      <img src="/static/test.png" width=250 />
+    <h1>{{ job.title }} <a href="/"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
+    <div class="job-body clearfix">
+      <h4>{{ job.location.city }}, {{ job.location.country }}
+        &mdash;
+        {{ job.human_job_type }}
+      </h4>
+      <div class="job-description">
+        <p>The Product team in Accedo Stockholm is growing again. This time we’re looking for both junior and senior candidates ready to let go and jump on the Smart TV-ride. People that will build applications for next generations TV services and be game changers.</p>
+        <p>Apps first changed the mobile industry, now it is happening in the TV industry and we are in the middle of it. The working environment in Accedo is international and challenging – giving you the possibility to evolve your skill set while working with new tools and technologies together with exciting customers and partners like HBO, Fox, Viaplay, Spotify, Orange and DTAG. With dev centers in Stockholm, New York and Hong Kong interaction and exchange programs is common and encouraged.</p>
+        <p>Accedo is the global market leader in TV application solutions. Accedo provides applications, tools and services to media companies, consumer electronics and TV operators globally, to help them deliver the next-generation TV experience. Accedo’s cloud-based platform solutions enable customers to cost-efficiently roll out and manage application offerings and stores for multiple devices and markets.</p>
+        <p>Accedo is a privately held company founded in 2004 by telecom and media entrepreneurs Michael Lantz and Fredrik Andersson. Accedo is headquartered in Stockholm, Sweden with branch offices in London, Madrid, Palo Alto, New York, Los Angeles, Hong Kong and Sydney.</p>
+      </div>
+      <div class="infobox">
+        <div class="company-logo">
+          <img src="/static/test.png" width=230 />
+        </div>
+        <div class="company-details">
+          <p class="company-name">Remedica LTD</p>
+          <p class="company-url">
+            <a href="http://remedica.eu">http://remedica.eu</a>
+          </p>
+          <p class="company-about">
+            Accedo is a privately held company founded in 2004 by telecom and media entrepreneurs Michael Lantz and Fredrik Andersson. Accedo is headquartered in Stockholm, Sweden with branch offices in London, Madrid, Palo Alto, New York, Los Angeles, Hong Kong and Sydney.
+          <p>
+        </div>
+        <div class="apply-btn">
+          <a href="#" class="btn">
+            Apply for this job<span>via email</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

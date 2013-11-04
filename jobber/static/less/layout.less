@@ -10,7 +10,6 @@ a.logo {
     font-weight: 500;
     color: @logo-primary;
     text-shadow: 0px 1px 0px darken(@header, 10%);
-    text-decoration: none;
 
     b {
         color: @logo-secondary;
@@ -20,6 +19,24 @@ a.logo {
     span {
         font-weight: 300;
     }
+
+    &:hover {
+        border: none;
+    }
+}
+
+a.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 header {
@@ -44,7 +61,6 @@ header {
             font-weight: 700;
             a {
                 color: @offwhite;
-                text-decoration: none;
                 text-shadow: 0px 1px 0px darken(@header, 10%);
             }
         }

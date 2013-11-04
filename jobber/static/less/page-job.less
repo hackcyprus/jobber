@@ -1,32 +1,80 @@
 #job {
 
     h1 {
-        margin: 0 0 9px 0;
+        margin: 0;
         padding: 0 0 33px 0;
         border-bottom: 1px solid @rule;
+
+        a {
+            float: right;
+            color: @gray;
+            font-size: 0.5em;
+            font-weight: 500;
+            position: relative;
+            top: 13px;
+            span {
+                position: relative;
+                top: 1px;
+            }
+        }
     }
 
     p {
         font-size: 0.875em;
     }
 
-    div.description {
+    div.job-description {
         float: left;
         width: 550px;
     }
 
-    div.company {
+    div.infobox {
         float: left;
-        width: 270px;
-        margin: 13px 0 0 30px;
+        width: 230px;
+        margin-left: 70px;
         text-align: right;
 
-        h4 {
-            text-transform: uppercase;
-            font-weight: 400;
-            margin: 0;
-            padding: 0;
+        div.company-logo {
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 5px solid @rule;
+            position: relative;
+        }
+
+        div.company-details {
+            margin-bottom: 22px;
+            p.company-name {
+                font-weight: 800;
+            }
+            p.company-about,  p.company-url {
+                font-size: 0.8125em;
+            }
+        }
+
+        div.apply-btn {
+            a.btn {
+                background-color: #5cb85c;
+                padding: 12px 30px;
+                color: white;
+                font-weight: 700;
+                span {
+                    display: block;
+                    font-size: 0.75em;
+                    font-weight: normal;
+                    position: relative;
+                    margin-top: 2px;
+                }
+                &:hover {
+                    background-color: darken(@green, 5%);
+                }
+            }
         }
     }
+
+    h4 {
+        color: @gray;
+        font-weight: 500;
+    }
+
 
 }
