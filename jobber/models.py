@@ -64,10 +64,10 @@ class Job(BaseModel, SlugModelMixin):
     __tablename__ = 'jobs'
 
     JOB_TYPES = {
-        1: 'full_time',
-        2: 'part_time',
-        3: 'contract',
-        4: 'internship'
+        1: 'Full Time',
+        2: 'Part Time',
+        3: 'Contract',
+        4: 'Internship'
     }
 
     JOB_TYPES_REVERSED = {v: k for k, v in JOB_TYPES.iteritems()}
