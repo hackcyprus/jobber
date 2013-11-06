@@ -7,7 +7,7 @@ Model declarations.
 """
 from pprint import pformat
 from jobber.extensions import db
-from jobber.utils import slugify, now, transpose_dict
+from jobber.core.utils import slugify, now, transpose_dict
 
 
 class BaseModel(db.Model):

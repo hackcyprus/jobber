@@ -16,7 +16,7 @@ from jobber.factory import create_app
 from jobber.extensions import db
 
 
-TEST_DATABASE_URI = 'sqlite:////opt/jobber/schema/test_jobber.db'
+TEST_DATABASE_URI = 'sqlite:////opt/jobber/data/test_jobber.db'
 
 
 @pytest.fixture(scope='session')

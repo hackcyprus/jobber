@@ -10,7 +10,7 @@ import pytest
 from unicodedata import normalize
 
 from jobber.models import Job, Company, Category, Location
-from jobber.utils import now
+from jobber.core.utils import now
 
 
 def test_company_model(session):

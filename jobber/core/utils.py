@@ -1,6 +1,6 @@
 """
-jobber.utils
-~~~~~~~~~~~~
+jobber.core.utils
+~~~~~~~~~~~~~~~~~
 
 Utility methods.
 

@@ -6,7 +6,7 @@ tests.test_utils
 Tests for utility functions
 
 """
-from jobber import utils
+from jobber.core import utils
 from unicodedata import normalize
 
 

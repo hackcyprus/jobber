@@ -89,12 +89,12 @@ class Index(object):
         The same measures for `commit` should be taken for `add_document_bulk()`
         as for `add_document()`.
 
-        This operation is regarded to be atomic. If any write fails the the
-        whole operation will be cancelled. If all writes succeed then a commit
-        will take place.
+        This operation is regarded to be atomic. If any write fails the whole
+        operation will be cancelled. If all writes succeed then a commit will
+        take place.
 
         :param docs: A list of documents to add.
-        :param commit: Should we commit after adding all documents?
+        :param commit: Auto-commit after adding.
         :param writer: An `IndexWriter` instance.
 
         """
