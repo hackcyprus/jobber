@@ -20,10 +20,10 @@
   </head>
   <body>
     <!--[if lt IE 8]>
-        <p class="browsehappy">
-          You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a>
-          to improve your experience.
-        </p>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a>
+        to improve your experience.
+      </p>
     <![endif]-->
     <div class="wrapper">
       <header>
@@ -33,8 +33,8 @@
           </a>
           <nav>
             <ul class="clearfix">
-                <li><a href="/new">Post a job</a></li>
-                <li><a href="/how">How it works</a></li>
+              <li><a href="/new">Post a job</a></li>
+              <li><a href="/how">How it works</a></li>
             </ul>
           </nav>
         </div>
@@ -44,13 +44,13 @@
           <h1>{{ prompt }}</h1>
           <div>
             <span>&#128269;</span>
-            <input type="text" {% if query %}value="{{ query }}"{% endif %} placeholder="search for e.g '{{ position }}'"></input>
+            <input id="search" type="text" {% if query %}value="{{ query }}"{% endif %} placeholder="search for e.g '{{ position }}'"></input>
           </div>
         </div>
       </div>
       <div id="main" class="container">
-          {% block content %}
-          {% endblock %}
+        {% block content %}
+        {% endblock %}
       </div>
       <div class="push"></div>
     </div>
@@ -64,5 +64,17 @@
         </div>
       </div>
     </footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script>
+      (function($, window) {
+        var $search = $('#search');
+        $search.keydown(function(e) {
+          if (e.which != 13) return;
+          window.location = '/search/' + $search.val();
+        });
+      }(jQuery, window));
+    </script>
+    {% block pagejs %}
+    {% endblock %}
   </body>
 </html>
