@@ -31,11 +31,8 @@ def main(should_create, session):
 
     index = Index()
 
-    def dictify(job):
-        return {'title': job.title}
-
     start = time.time()
-    jobs = map(dictify, Job.query.all())
+    jobs = map(lambda job: job.to_document(), Job.query.all())
     index.add_document_bulk(jobs)
     duration = time.time() - start
 

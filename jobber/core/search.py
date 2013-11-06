@@ -7,7 +7,7 @@ Handles all things search.
 """
 from contextlib import contextmanager
 
-from whoosh.fields import SchemaClass, TEXT
+from whoosh.fields import SchemaClass, TEXT, STORED, KEYWORD
 from whoosh import index
 from whoosh.writing import IndexingError
 
@@ -40,7 +40,36 @@ def safe_write(writer, commit=True):
 
 
 class Schema(SchemaClass):
-    title = TEXT(stored=True)
+    #: The id of the job.
+    id = STORED
+
+    #: The title of the job.
+    title = TEXT()
+
+    #: The job description.
+    description = TEXT()
+
+    #: The name of the company.
+    company = TEXT()
+
+    #: Location as a comma-separated string of city and country.
+    location = KEYWORD(scorable=True)
+
+    #: The type of job.
+    job_type = TEXT()
+
+
+class SearchableMixin(object):
+    """Gives a `to_document()` method to the object, which should return a
+    dictionary ready to be indexed in the search index.
+
+    """
+    def to_document(self):
+        """This method should be overriden in subclasses, since the default
+        behaviour is to just return `__dict__`.
+
+        """
+        return self.__dict__
 
 
 class Index(object):

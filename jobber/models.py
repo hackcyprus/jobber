@@ -8,6 +8,7 @@ Model declarations.
 from pprint import pformat
 from jobber.extensions import db
 from jobber.core.utils import slugify, now, transpose_dict
+from jobber.core.search import SearchableMixin
 
 
 class BaseModel(db.Model):
@@ -60,21 +61,21 @@ class Company(BaseModel):
     about = db.Column(db.UnicodeText, nullable=True)
 
 
-class Job(BaseModel, SlugModelMixin):
+class Job(BaseModel, SlugModelMixin, SearchableMixin):
     __tablename__ = 'jobs'
 
     CONTACT_METHODS = {
-        1: 'url',
-        2: 'email'
+        1: u'url',
+        2: u'email'
     }
 
     CONTACT_METHODS_REVERSED = transpose_dict(CONTACT_METHODS)
 
     JOB_TYPES = {
-        1: 'Full Time',
-        2: 'Part Time',
-        3: 'Contract',
-        4: 'Internship'
+        1: u'Full Time',
+        2: u'Part Time',
+        3: u'Contract',
+        4: u'Internship'
     }
 
     JOB_TYPES_REVERSED = transpose_dict(JOB_TYPES)
@@ -112,7 +113,6 @@ class Job(BaseModel, SlugModelMixin):
     #: Location id as a foreign key relationship.
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', backref=db.backref('jobs', lazy='dynamic'))
-
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -153,6 +153,16 @@ class Job(BaseModel, SlugModelMixin):
         if contact_method not in self.CONTACT_METHODS:
             raise ValueError("'{}'' is not a valid contact method.".format(contact_method))
         return contact_method
+
+    def to_document(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'company': self.company.name,
+            'location': u"{} {}".format(self.location.city, self.location.country),
+            'description': self.description,
+            'job_type': self.human_job_type
+        }
 
 
 class Category(BaseModel, SlugModelMixin):
