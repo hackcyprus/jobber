@@ -10,6 +10,7 @@ from flask import render_template, abort
 
 from jobber.app import app
 from jobber.models import Job
+from jobber.core.search import Index
 
 
 PROMPTS = [
@@ -41,6 +42,16 @@ def inject_swag():
 def index():
     jobs = Job.query.all()
     return render_template('index.html', jobs=jobs)
+
+
+@app.route('/search/<query>')
+def search(query):
+    index = Index()
+    jobs = []
+    for hit in index.search(query):
+        job = Job.query.get(hit['id'])
+        if job: jobs.append(job)
+    return render_template('index.html', jobs=jobs, query=query)
 
 
 @app.route('/new')
