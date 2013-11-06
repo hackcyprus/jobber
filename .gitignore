@@ -35,7 +35,11 @@ nosetests.xml
 .project
 .pydevproject
 
-jobber.db
-test_jobber.db
+# local data
+data/
+
+# local settings
 local.py
+
+# vms
 .vagrant

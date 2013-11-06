@@ -1,5 +1,5 @@
 """
-Creates a new locatin.
+Creates a new location.
 
 Usage:
     create_location.py <city> <country>
