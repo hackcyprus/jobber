@@ -1,3 +1,20 @@
+/* Sticky footer */
+html, body {
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -57px;
+}
+
+footer, .push {
+    height: 55px;
+    clear: both;
+}
+
 .container {
     width: 850px;
     margin: 0 auto;
@@ -67,6 +84,10 @@ header {
     }
 }
 
+#main {
+    margin-bottom: 33px;
+}
+
 #scream {
     background-color: @logo-secondary;
     color: darken(@logo-secondary, 10%);
@@ -127,7 +148,6 @@ header {
 footer {
     background-color: lighten(@rule, 8%);
     border-top: 2px solid @rule;
-    margin-top: 33px;
     height: 55px;
     line-height: 55px;
     color: darken(@rule, 15%);
