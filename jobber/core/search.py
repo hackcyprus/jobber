@@ -7,11 +7,18 @@ Handles all things search.
 """
 from contextlib import contextmanager
 
-from whoosh.fields import SchemaClass, TEXT, STORED, KEYWORD
 from whoosh import index
+from whoosh.fields import SchemaClass, TEXT, STORED, KEYWORD
 from whoosh.writing import IndexingError
+from whoosh.qparser import MultifieldParser
 
 from jobber.conf import settings
+
+
+# Since we're using a `Multifield` query parser, we need to define which fields
+# to search for. These are generally all the fields in the schema apart from
+# job id.
+SEARCHABLE_FIELDS = ('title', 'description', 'company', 'location', 'job_type')
 
 
 class CustomError(Exception):
@@ -40,6 +47,7 @@ def safe_write(writer, commit=True):
 
 
 class Schema(SchemaClass):
+
     #: The id of the job.
     id = STORED
 
@@ -94,6 +102,20 @@ class Index(object):
         """
         directory = settings.SEARCH_INDEX_DIRECTORY
         index.create_in(directory, schema, indexname=cls.name)
+
+    def search(self, query, limit=None):
+        """Searches the index by parsing `query` and creating a `Query` object.
+
+        :param query: A string containing the users query.
+        :param limit: How many results to return, defaults to `None` which will
+        return all results.
+
+        """
+        parser = MultifieldParser(SEARCHABLE_FIELDS, schema=self.index.schema)
+        query = parser.parse(query)
+        with self.index.searcher() as searcher:
+            hits = searcher.search(query, limit=limit)
+            return [hit.fields() for hit in hits]
 
     def add_document(self, doc, commit=True, writer=None):
         """Adds a single document to the index.
