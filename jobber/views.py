@@ -38,6 +38,7 @@ def inject_swag():
     return dict(prompt=prompt, position=position)
 
 
+@app.route('/search/')
 @app.route('/')
 def index():
     jobs = Job.query.all()

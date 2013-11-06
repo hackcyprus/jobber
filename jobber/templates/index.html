@@ -4,11 +4,16 @@
 
 {% block content %}
   <div id="search-results">
+    <h1>
     {% if jobs_count == 1 %}
-      <h1>We found 1 position for you</h1>
+      We found 1 position for you
     {% else %}
-      <h1>We found {{ jobs_count }} positions for you</h1>
+      We found {{ jobs_count }} positions for you
     {% endif %}
+    {% if query %}
+      <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a>
+    {% endif %}
+    </h1>
     <table>
       {% for job in jobs %}
         <tr class="job">

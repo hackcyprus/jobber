@@ -70,6 +70,8 @@
         var $search = $('#search');
         $search.keydown(function(e) {
           if (e.which != 13) return;
+          var query = $search.val();
+          if (query == '' || query == null) return;
           window.location = '/search/' + $search.val();
         });
       }(jQuery, window));
