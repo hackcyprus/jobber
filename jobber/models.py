@@ -160,7 +160,6 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'title': self.title,
             'company': self.company.name,
             'location': u"{} {}".format(self.location.city, self.location.country),
-            'description': self.description,
             'job_type': self.human_job_type
         }
 

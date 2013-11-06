@@ -11,6 +11,7 @@ from whoosh import index
 from whoosh.fields import SchemaClass, TEXT, STORED, KEYWORD
 from whoosh.writing import IndexingError
 from whoosh.qparser import MultifieldParser
+from whoosh.analysis import StemmingAnalyzer
 
 from jobber.conf import settings
 
@@ -19,6 +20,10 @@ from jobber.conf import settings
 # to search for. These are generally all the fields in the schema apart from
 # job id.
 SEARCHABLE_FIELDS = ('title', 'description', 'company', 'location', 'job_type')
+
+
+# Global reference to the stemming analyizer we'll use in the schema.
+stemming_analyzer = StemmingAnalyzer()
 
 
 class CustomError(Exception):
@@ -52,19 +57,16 @@ class Schema(SchemaClass):
     id = STORED
 
     #: The title of the job.
-    title = TEXT()
-
-    #: The job description.
-    description = TEXT()
+    title = TEXT(analyzer=stemming_analyzer)
 
     #: The name of the company.
-    company = TEXT()
+    company = TEXT(analyzer=stemming_analyzer)
 
     #: Location as a comma-separated string of city and country.
-    location = KEYWORD(scorable=True)
+    location = KEYWORD(lowercase=True, scorable=True)
 
     #: The type of job.
-    job_type = TEXT()
+    job_type = TEXT(analyzer=stemming_analyzer)
 
 
 class SearchableMixin(object):
