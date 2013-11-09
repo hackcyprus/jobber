@@ -106,4 +106,3 @@ def main(session):
 if __name__ == '__main__':
     docopt(__doc__)
     run(main)
-

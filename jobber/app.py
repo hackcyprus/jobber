@@ -9,5 +9,6 @@ from jobber import factory
 
 app = factory.create_app(__name__)
 
-# Register all views.
+# Register all views and signals.
 import jobber.views
+import jobber.core.signals

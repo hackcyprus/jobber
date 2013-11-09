@@ -8,7 +8,7 @@ Handles all things search.
 from contextlib import contextmanager
 
 from whoosh import index
-from whoosh.fields import SchemaClass, TEXT, STORED, KEYWORD
+from whoosh.fields import SchemaClass, TEXT, ID, KEYWORD
 from whoosh.writing import IndexingError
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer
@@ -54,7 +54,7 @@ def safe_write(writer, commit=True):
 class Schema(SchemaClass):
 
     #: The id of the job.
-    id = STORED
+    id = ID(stored=True, unique=True)
 
     #: The title of the job.
     title = TEXT(analyzer=stemming_analyzer)
@@ -156,3 +156,30 @@ class Index(object):
         with safe_write(writer, commit):
             for doc in docs:
                 writer.add_document(**doc)
+
+    def update_document(self, doc, commit=True, writer=None):
+        """Updates a document in the index. The document needs to contain a
+        unique property as defined in the schema.
+
+        :param doc: A document to update.
+        :param commit: Auto-commit after updating.
+        :param writer: An `IndexWriter` instance.
+
+        """
+        if writer is None:
+            writer = self.index.writer()
+        with safe_write(writer, commit):
+            writer.update_document(**doc)
+
+    def delete_document(self, docid, commit=True, writer=None):
+        """Deletes the document with `docid` in the index.
+
+        :param docid: The id of the document to delete.
+        :param commit: Auto-commit after updating.
+        :param writer: An `IndexWriter` instance.
+
+        """
+        if writer is None:
+            writer = self.index.writer()
+        with safe_write(writer, commit):
+            writer.delete_by_term('id', docid)

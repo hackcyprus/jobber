@@ -8,7 +8,6 @@ Options:
     <query>  Query to search for.
 
 """
-import time
 from docopt import docopt
 
 from env import path_setup

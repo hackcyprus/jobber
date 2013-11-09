@@ -13,6 +13,7 @@ from jobber.core.search import SearchableMixin
 
 class BaseModel(db.Model):
     """Base model class, adds a `created` timestamp on all deriving models."""
+
     __abstract__ = True
 
     #: A timestamp populated on model creation.
@@ -156,7 +157,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
     def to_document(self):
         return {
-            'id': self.id,
+            'id': unicode(self.id),
             'title': self.title,
             'company': self.company.name,
             'location': u"{} {}".format(self.location.city, self.location.country),
@@ -191,4 +192,3 @@ class Location(BaseModel):
 
     #: Location country.
     country = db.Column(db.Unicode(50), nullable=False)
-
