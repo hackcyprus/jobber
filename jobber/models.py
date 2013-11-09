@@ -184,11 +184,28 @@ class Category(BaseModel, SlugModelMixin):
 class Location(BaseModel):
     __tablename__ = 'locations'
 
+    # Initial supported countries until we open up to more.
+    COUNTRIES = {
+        'CYP': 'Cyprus',
+        'GRC': 'Greece',
+        'GBR': 'United Kingdom'
+    }
+
     #: Location id.
     id = db.Column(db.Integer, primary_key=True)
 
     #: Location city.
     city = db.Column(db.Unicode(75), nullable=False)
 
-    #: Location country.
-    country = db.Column(db.Unicode(50), nullable=False)
+    #: Location country ISO alpha-3 code.
+    country_code = db.Column(db.Unicode(3), nullable=False)
+
+    @property
+    def country_name(self):
+        return self.COUNTRIES[self.country_code]
+
+    @db.validates('country_code')
+    def validate_country_code(self, key, country_code):
+        if country_code not in self.COUNTRIES:
+            raise ValueError("'{}'' is not a valid country code.".format(country_code))
+        return country_code

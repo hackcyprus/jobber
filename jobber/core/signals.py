@@ -20,7 +20,6 @@ def on_models_committed(sender, changes):
 
     """
     app.logger.debug('Model commit signal called.')
-    print "FUCKFUCKFUCK"
     def update_search_index(job, op):
         """Updates the search index according to the operation.
 

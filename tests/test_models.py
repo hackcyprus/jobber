@@ -29,9 +29,7 @@ def test_job_model(session):
     company = Company(name=name)
     session.add(company)
 
-    city = u'Lïｍáｓѕ߀ɭ'
-    country = u'Cϒｐｒúｓ'
-    location = Location(city=city, country=country)
+    location = Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
     session.add(location)
 
     session.flush()
@@ -112,10 +110,16 @@ def test_category_model(session):
 
 def test_location_model(session):
     city = u'Lïｍáｓѕ߀ɭ'
-    country = u'Cϒｐｒúｓ'
-    location = Location(city=city, country=country)
+    code = 'CYP'
+    location = Location(city=city, country_code=code)
     session.add(location)
     session.flush()
     assert location.id > 0
     assert location.city == city
-    assert location.country == country
+    assert location.country_name == 'Cyprus'
+    assert location.country_code == code
+
+
+def test_location_model_country_code_validator():
+    with pytest.raises(ValueError):
+        Location(city='Limassol', country_code='GOT')

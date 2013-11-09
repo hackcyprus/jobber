@@ -19,7 +19,7 @@ def upgrade():
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('city', sa.Unicode(75), nullable=False),
-        sa.Column('country', sa.Unicode(50), nullable=False)
+        sa.Column('country_code', sa.Unicode(3), nullable=False)
     )
 
 def downgrade():
