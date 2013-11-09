@@ -58,16 +58,16 @@ class Company(BaseModel):
     #: Company name.
     name = db.Column(db.Unicode(75), nullable=False)
 
-    #: Few words describing the company.
-    about = db.Column(db.UnicodeText, nullable=True)
+    #: Company website.
+    website = db.Column(db.Unicode(100), nullable=True)
 
 
 class Job(BaseModel, SlugModelMixin, SearchableMixin):
     __tablename__ = 'jobs'
 
     CONTACT_METHODS = {
-        1: u'url',
-        2: u'email'
+        1: u'Link',
+        2: u'Email'
     }
 
     CONTACT_METHODS_REVERSED = transpose_dict(CONTACT_METHODS)
@@ -160,7 +160,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'id': unicode(self.id),
             'title': self.title,
             'company': self.company.name,
-            'location': u"{} {}".format(self.location.city, self.location.country),
+            'location': u"{} {}".format(self.location.city, self.location.country_name),
             'job_type': self.human_job_type
         }
 
@@ -184,7 +184,7 @@ class Category(BaseModel, SlugModelMixin):
 class Location(BaseModel):
     __tablename__ = 'locations'
 
-    # Initial supported countries until we open up to more.
+    # Initial supported countries until we open up more.
     COUNTRIES = {
         'CYP': 'Cyprus',
         'GRC': 'Greece',

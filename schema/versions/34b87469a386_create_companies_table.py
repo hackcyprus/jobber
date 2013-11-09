@@ -19,7 +19,7 @@ def upgrade():
         'companies',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('created', sa.DateTime(timezone=True)),
-        sa.Column('about', sa.UnicodeText, nullable=True),
+        sa.Column('website', sa.Unicode(100), nullable=True),
         sa.Column('name',
                   sa.Unicode(50),
                   nullable=False,

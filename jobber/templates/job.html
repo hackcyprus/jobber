@@ -4,7 +4,7 @@
   <div id="job" class="clearfix">
     <h1>{{ job.title }} <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
     <div class="job-body clearfix">
-      <h4>{{ job.location.city }}, {{ job.location.country }}
+      <h4>{{ job.location.city }}, {{ job.location.country_name }}
         &mdash;
         {{ job.human_job_type }}
       </h4>
@@ -19,13 +19,10 @@
           <img src="/static/test.png" width=230 />
         </div>
         <div class="company-details">
-          <p class="company-name">Remedica LTD</p>
+          <p class="company-name">{{ job.company.name }}</p>
           <p class="company-url">
-            <a href="http://remedica.eu" target="_blank">http://remedica.eu</a>
+            <a href="{{ job.company.website }}" target="_blank">{{ job.company.website }}</a>
           </p>
-          <p class="company-about">
-            Accedo is a privately held company founded in 2004 by telecom and media entrepreneurs Michael Lantz and Fredrik Andersson. Accedo is headquartered in Stockholm, Sweden with branch offices in London, Madrid, Palo Alto, New York, Los Angeles, Hong Kong and Sydney.
-          <p>
         </div>
         <div class="apply-btn">
           {% if job.contact_method == 1 %}
@@ -34,7 +31,7 @@
             <a href="mailto:{{ job.contact_email }}" class="btn">
           {% endif %}
             Apply for this job
-            <span>via {{ job.human_contact_method }}</span>
+            <span>via {{ job.human_contact_method.lower() }}</span>
           </a>
         </div>
       </div>

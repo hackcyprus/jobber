@@ -20,7 +20,7 @@ def test_company_model(session):
     session.flush()
     assert company.id > 0
     assert company.name == name
-    assert company.about is None
+    assert company.website is None
     assert company.created <= now()
 
 
@@ -74,11 +74,11 @@ def test_job_model_job_type_validator():
 
 
 def test_job_model_contact_method_helpers(session):
-    assert Job.machinize_contact_method('url') == 1
+    assert Job.machinize_contact_method('Link') == 1
     with pytest.raises(KeyError):
         Job.machinize_job_type('wat?')
 
-    assert Job.humanize_contact_method(1) == 'url'
+    assert Job.humanize_contact_method(1) == 'Link'
     with pytest.raises(KeyError):
         Job.humanize_job_type(5)
 

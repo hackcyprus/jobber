@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% set hide_search = True %}
+
+{% block content %}
+  <div id="create-job" class="clearfix">
+    <form method="post" action="/new">
+      {{ form.hidden_tag() }}
+      <div class="job-title">
+        {{ form.title.label }}
+        {{ form.title() }}
+      </div>
+      <div class="job-type">
+        {{ form.job_type.label }}
+        {{ form.job_type() }}
+      </div>
+      <div class="job-location">
+        {{ form.city.label }}
+        {{ form.city() }}
+        {{ form.country_code.label }}
+        {{ form.country_code() }}
+      </div>
+      <div class="remote">
+        {{ form.remote_work.label }}
+        {{ form.remote_work() }}
+      </div>
+      <div class="job-description">
+        {{ form.description.label }}
+        {{ form.description() }}
+      </div>
+      <div class="company-name">
+        {{ form.company_name.label }}
+        {{ form.company_name() }}
+      </div>
+      <div class="company-website">
+        {{ form.company_website.label }}
+        {{ form.company_website() }}
+      </div>
+      <div class="contact-method">
+        {{ form.contact_method.label }}
+        {{ form.contact_method() }}
+      </div>
+      <div class="contact-email">
+        {{ form.contact_email.label }}
+        {{ form.contact_email() }}
+      </div>
+      <div class="contact-url">
+        {{ form.contact_url.label }}
+        {{ form.contact_url() }}
+      </div>
+      <div>
+        <input type="submit" value="Create job"></input>
+      </div>
+    </form>
+  </div>
+{% endblock %}
