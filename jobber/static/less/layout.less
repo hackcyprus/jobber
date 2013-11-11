@@ -42,7 +42,7 @@ a.logo {
     }
 }
 
-a.btn {
+.btn {
     display: inline-block;
     padding: 6px 12px;
     margin-bottom: 0;
@@ -54,6 +54,29 @@ a.btn {
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
+    background-color: @offwhite;
+    color: darken(@offwhite, 50%);
+
+    &:hover {
+        background-color: darken(@offwhite, 5%);
+    }
+
+    &.btn-green {
+        background-color: @green;
+        color: white;
+        &:hover {
+            background-color: darken(@green, 5%);
+        }
+    }
+
+    &.btn-blue {
+        background-color: @blue;
+        color: white;
+        &:hover {
+            background-color: darken(@blue, 5%);
+        }
+    }
+
 }
 
 header {
@@ -103,7 +126,11 @@ header {
         padding-bottom: 5px;
         display: block;
         margin: 0 0 17px 0;
-        padding: 0
+        padding: 0;
+        &.hide-search {
+            width: 528px;
+            margin: 0 auto;
+        }
     }
 
     span {

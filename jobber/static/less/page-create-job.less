@@ -1,70 +1,62 @@
 #create-job {
 
-    .position-details {
-        float: left;
-        width: 528px;
-        margin-right: 22px;
-    }
-
-    .info {
-        float: left;
-        width: 230px;
-    }
-
     form {
+        width: 528px;
+        position: relative;
+        margin: 0 auto;
 
         fieldset {
             border: none;
-            padding: 1.5em 0 1.5em 0;
+            padding: 1.7em 0 2em 0;
             border-bottom: 1px dashed @rule;
+            &.no-border {
+                border-bottom: none;
+            }
         }
 
-        legend {
+        h4 {
             font-weight: 700;
             position: relative;
+            margin: 0;
         }
 
         .field {
             font-family: @base-font;
             position: relative;
-            margin-bottom: 1.5em;
+            margin-top: 1.5em;
 
-            input, textarea {
+            input[type="text"], textarea {
                 border: 2px solid @rule;
                 padding: 8px;
                 width: 508px;
                 font-size: 14px;
                 &:focus {
                     outline: none;
-                    border: 2px solid @blue;
+                    border: 2px solid @light-blue;
                 }
                 &.small {
                     width: 200px;
                 }
             }
 
-            .select2-container, .select2-choice {
-                border: none;
-                background-image: none;
-                font-size: 14px;
-                border-radius: 0;
+            input[type="checkbox"] {
+                width: 50px;
+            }
 
-                span.select2-arrow {
-                    background-image: none;
-                    border-radius: 0;
+            &.inline {
+                display: inline-block;
+                vertical-align: middle;
+                input, textarea, .selectize-control {
+                    display: inline-block;
+                    vertical-align: middle;
                 }
             }
 
-            .select2-container {
-                border: 2px solid @rule;
-                height: 37px;
+            .selectize-control {
+                width: 135px;
+                position: relative;
+                top: 2px;
             }
-
-            .select2-choice {
-                height: 33px;
-                line-height: 33px;
-            }
-
 
         }
 
@@ -72,16 +64,34 @@
             color: @gray;
             font-size: 0.875em;
             margin-top: 1.5em;
-            margin-bottom: 1.5em;
+            margin-bottom: 0;
         }
 
-        #contact_method {
-            float: left;
-            margin-right: 25px;
+        #remote-work-field {
+            margin-left: 92px;
+            span {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+            .selectize-control {
+                width: 110px;
+            }
+        }
+
+        #contact-method-field {
+            .selectize-control {
+                width: 80px;
+            }
         }
 
         #contact_url, #contact_email {
             width: 350px;
+        }
+
+        #submit-btn, #preview-btn {
+            font-size: 14px;
+            padding: 10px 20px;
+            font-weight: 700;
         }
 
 

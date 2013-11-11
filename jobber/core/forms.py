@@ -1,4 +1,4 @@
-from wtforms import TextField, BooleanField, SelectField, HiddenField
+from wtforms import TextField, SelectField, HiddenField
 from wtforms.validators import DataRequired
 from flask.ext.wtf import Form
 
@@ -22,7 +22,10 @@ class NewPositionForm(Form):
                            coerce=int)
 
     #: Does the company accept remote workers?
-    remote_work = BooleanField('Remote Work?')
+    remote_work = SelectField('Remote Work?',
+                              validators=[required],
+                              choices=Job.REMOTE_WORK_OPTIONS.items(),
+                              coerce=int)
 
     #: Company Id. Auto-populated from the list of autocomplete suggestions.
     company_id = HiddenField('Company id')

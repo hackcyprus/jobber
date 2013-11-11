@@ -115,7 +115,9 @@ def new():
     if form.validate_on_submit():
         create_position(form)
         return redirect('/')
-    return render_template('new.html', prompt='Post a new position.', form=form)
+    return render_template('create-job.html',
+                           prompt='Great jobs, great people.',
+                           form=form)
 
 
 @app.route('/how')

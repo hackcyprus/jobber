@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% set hide_search = True %}
+
+{% block content %}
+  <div id="create-job" class="clearfix">
+    <form method="post" action="/new">
+      Errors: {{ form.errors }}
+      {{ form.hidden_tag() }}
+      <fieldset>
+        <div class="field">
+          <input type="text" id="title" name="title" placeholder="What's the job title?">
+        </div>
+        <div class="field inline">
+          {{ form.job_type() }}
+        </div>
+        <div class="field inline" id="remote-work-field">
+          <span>Can people work remotely?</span> {{ form.remote_work() }}
+        </div>
+      </fieldset>
+      <fieldset>
+        <h4>Where is the job based?</h4>
+        <div class="field inline">
+          <input class="small" type="text" id="city" name="city" placeholder="City">
+        </div>
+        <div class="field inline">
+          {{ form.country_code() }}
+        </div>
+      </fieldset>
+      <fieldset>
+        <h4>Describe how great the job is</h4>
+        <p class="help-text">
+          Don't forget that the effort you put into the job spec will have a direct effect on the amount and quality of candidates you will receive.
+        </p>
+        <div class="field">
+          <textarea rows="14" id="description" name="description" placeholder="Write a clear and concise description of the job."></textarea>
+        </div>
+      </fieldset>
+      <fieldset>
+        <h4>Some details on your company</h4>
+        <div class="field">
+          <input type="text" id="company_name" name="company_name" placeholder="What's the name of your company?"/>
+        </div>
+        <div class="field">
+          <input type="text" id="company_website" name="company_website" placeholder="What's the website of your company?"/>
+        </div>
+      </fieldset>
+      <fieldset>
+        <h4>How should your candidates apply?</h4>
+        <p class="help-text">
+          Select if you want your candidates to apply via a link to a more specific job page or send you an email.
+        </p>
+        <div class="field inline" id="contact-method-field">
+          {{ form.contact_method() }}
+        </div>
+        <div class="field inline">
+          <input type="text" id="contact_url" name="contact_url" placeholder="Link to job page"/>
+          <input type="text" id="contact_email" name="contact_email" placeholder="Email to contact" style="display:none"/>
+        </div>
+      </fieldset>
+      <div class="field inline">
+        <input id="preview-btn" type="submit" class="btn btn" value="Preview"/>
+      </div>
+      <div class="field inline">
+        <input id="submit-btn" type="submit" class="btn btn-green" value="Submit for approval"/>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block pagejs %}
+  <script src="/static/js/selectize.min.js"></script>
+  <script>
+    (function($, window) {
+      $(function() {
+        var defer = function(fn) {
+          window.setTimeout(fn, 0);
+        };
+
+        defer(function() {
+          $('#job_type').selectize();
+        });
+
+        defer(function() {
+          $('#country_code').selectize();
+        });
+
+        defer(function() {
+          $('#remote_work').selectize();
+        });
+
+        defer(function() {
+          $('#contact_method').selectize({
+            onChange: function(value) {
+              $('#contact_url').toggle();
+              $('#contact_email').toggle();
+            }
+          });
+        });
+      });
+    }(jQuery, window));
+  </script>
+{% endblock %}

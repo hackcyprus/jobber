@@ -26,9 +26,9 @@
         </div>
         <div class="apply-btn">
           {% if job.contact_method == 1 %}
-            <a href="{{ job.contact_url }}" target="_blank" class="btn">
+            <a href="{{ job.contact_url }}" target="_blank" class="btn btn-green">
           {% else %}
-            <a href="mailto:{{ job.contact_email }}" class="btn">
+            <a href="mailto:{{ job.contact_email }}" class="btn btn-green">
           {% endif %}
             Apply for this job
             <span>via {{ job.human_contact_method.lower() }}</span>

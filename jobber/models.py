@@ -81,6 +81,14 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
     JOB_TYPES_REVERSED = transpose_dict(JOB_TYPES)
 
+    REMOTE_WORK_OPTIONS = {
+        1: u'Yes',
+        2: u'No',
+        3: u'Negotiable'
+    }
+
+    REMOTE_WORK_OPTIONS_REVERSED = transpose_dict(REMOTE_WORK_OPTIONS)
+
     SLUG_FIELD = 'title'
 
     #: Job id.

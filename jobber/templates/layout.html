@@ -15,6 +15,8 @@
     <link rel="shortcut icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
 
+    <!--[if lt IE 9]><script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.0.8/es5-shim.min.js"></script><![endif]-->
+
     <script type="text/javascript" src="//use.typekit.net/opv5vuc.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
   </head>
@@ -41,8 +43,10 @@
       </header>
         <div id="scream">
           <div class="container">
+            {% if hide_search %}
+            <h1 class="hide-search">{{ prompt }}</h1>
+            {% else %}
             <h1>{{ prompt }}</h1>
-            {% if not hide_search %}
             <div>
               <span>&#128269;</span>
               <input id="search" type="text" {% if query %}value="{{ query }}"{% endif %} placeholder="search for e.g '{{ position }}'"></input>
