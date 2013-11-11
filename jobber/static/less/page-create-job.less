@@ -1,18 +1,102 @@
 #create-job {
 
-    div.job-title {
+    .position-details {
+        float: left;
+        width: 528px;
+        margin-right: 22px;
+    }
+
+    .info {
+        float: left;
+        width: 230px;
+    }
+
+    form {
+
+        fieldset {
+            border: none;
+            padding: 1.5em 0 1.5em 0;
+            border-bottom: 1px dashed @rule;
+        }
+
+        legend {
+            font-weight: 700;
+            position: relative;
+        }
+
+        .field {
+            font-family: @base-font;
+            position: relative;
+            margin-bottom: 1.5em;
+
+            input, textarea {
+                border: 2px solid @rule;
+                padding: 8px;
+                width: 508px;
+                font-size: 14px;
+                &:focus {
+                    outline: none;
+                    border: 2px solid @blue;
+                }
+                &.small {
+                    width: 200px;
+                }
+            }
+
+            .select2-container, .select2-choice {
+                border: none;
+                background-image: none;
+                font-size: 14px;
+                border-radius: 0;
+
+                span.select2-arrow {
+                    background-image: none;
+                    border-radius: 0;
+                }
+            }
+
+            .select2-container {
+                border: 2px solid @rule;
+                height: 37px;
+            }
+
+            .select2-choice {
+                height: 33px;
+                line-height: 33px;
+            }
+
+
+        }
+
+        p.help-text {
+            color: @gray;
+            font-size: 0.875em;
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
+        }
+
+        #contact_method {
+            float: left;
+            margin-right: 25px;
+        }
+
+        #contact_url, #contact_email {
+            width: 350px;
+        }
+
+
 
     }
 
     // div.job-description {
     //     float: left;
     //     width: 550px;
+
     // }
 
     // div.infobox {
     //     float: left;
     //     width: 230px;
-    //     margin-left: 70px;
     //     text-align: right;
     // }
 
