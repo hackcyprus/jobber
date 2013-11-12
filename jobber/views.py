@@ -115,7 +115,7 @@ def new():
     if form.validate_on_submit():
         create_position(form)
         return redirect('/')
-    return render_template('create-job.html',
+    return render_template('create_job.html',
                            prompt='Great jobs, great people.',
                            form=form)
 
