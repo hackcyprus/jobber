@@ -7,29 +7,53 @@ here is that fixtures prefixed with '_' are supposed to be internal and used
 only by user-facing fixtures.
 
 """
+import os
+
 import pytest
+from alembic.command import upgrade
+from alembic.config import Config
 
 from env import path_setup
 path_setup()
 
 from jobber.factory import create_app
 from jobber.extensions import db
+from jobber.script import blue
 
 
-TEST_DATABASE_URI = 'sqlite:////opt/jobber/data/test_jobber.db'
+TESTDB = 'test_jobber.db'
+TESTDB_PATH = "/opt/jobber/data/{}".format(TESTDB)
+TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
+
+
+ALEMBIC_CONFIG = '/opt/jobber/alembic.ini'
+
+
+def apply_migrations():
+    """Applies all alembic migrations."""
+    config = Config(ALEMBIC_CONFIG)
+    upgrade(config, 'head')
 
 
 @pytest.fixture(scope='session')
 def _db(app, request):
     """Session-wide test database."""
-    def teardown():
-        db.drop_all()
+    print blue('\nInitializing test database.')
 
-    # The way we initialize the app in `factory.create_app()` does not allow
-    # for running `db.create_all()` without a request context so we manually
-    # assign `db.app` to the test application.
+    # Make sure we delete any existing test database.
+    if os.path.exists(TESTDB_PATH):
+        os.unlink(TESTDB_PATH)
+
+    def teardown():
+        print blue('\nDropping all tables from test database.')
+        db.drop_all()
+        print blue('Deleting test database.')
+        os.unlink(TESTDB_PATH)
+
     db.app = app
-    db.create_all()
+
+    print blue('Applying migrations.')
+    apply_migrations()
 
     request.addfinalizer(teardown)
     return db
