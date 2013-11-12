@@ -7,8 +7,8 @@ Model declarations.
 """
 from pprint import pformat
 from jobber.extensions import db
-from jobber.core.utils import slugify, now, transpose_dict
 from jobber.core.search import SearchableMixin
+from jobber.core.utils import Mapping, slugify, now
 
 
 class BaseModel(db.Model):
@@ -65,29 +65,23 @@ class Company(BaseModel):
 class Job(BaseModel, SlugModelMixin, SearchableMixin):
     __tablename__ = 'jobs'
 
-    CONTACT_METHODS = {
+    CONTACT_METHODS = Mapping({
         1: u'Link',
         2: u'Email'
-    }
+    })
 
-    CONTACT_METHODS_REVERSED = transpose_dict(CONTACT_METHODS)
-
-    JOB_TYPES = {
+    JOB_TYPES = Mapping({
         1: u'Full Time',
         2: u'Part Time',
         3: u'Contract',
         4: u'Internship'
-    }
+    })
 
-    JOB_TYPES_REVERSED = transpose_dict(JOB_TYPES)
-
-    REMOTE_WORK_OPTIONS = {
+    REMOTE_WORK_OPTIONS = Mapping({
         1: u'Yes',
         2: u'No',
         3: u'Negotiable'
-    }
-
-    REMOTE_WORK_OPTIONS_REVERSED = transpose_dict(REMOTE_WORK_OPTIONS)
+    })
 
     SLUG_FIELD = 'title'
 
@@ -127,29 +121,13 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         super(Job, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
 
-    @classmethod
-    def machinize_job_type(cls, job_type):
-        return cls.JOB_TYPES_REVERSED[job_type]
-
-    @classmethod
-    def humanize_job_type(cls, job_type):
-        return cls.JOB_TYPES[job_type]
-
-    @classmethod
-    def machinize_contact_method(cls, job_type):
-        return cls.CONTACT_METHODS_REVERSED[job_type]
-
-    @classmethod
-    def humanize_contact_method(cls, job_type):
-        return cls.CONTACT_METHODS[job_type]
-
     @property
     def human_job_type(self):
-        return self.humanize_job_type(self.job_type)
+        return self.JOB_TYPES.map(self.job_type)
 
     @property
     def human_contact_method(self):
-        return self.humanize_contact_method(self.contact_method)
+        return self.CONTACT_METHODS.map(self.contact_method)
 
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):
@@ -193,11 +171,11 @@ class Location(BaseModel):
     __tablename__ = 'locations'
 
     # Initial supported countries until we open up more.
-    COUNTRIES = {
-        'CYP': 'Cyprus',
-        'GRC': 'Greece',
-        'GBR': 'United Kingdom'
-    }
+    COUNTRIES = Mapping({
+        u'CYP': u'Cyprus',
+        u'GRC': u'Greece',
+        u'GBR': u'United Kingdom'
+    })
 
     #: Location id.
     id = db.Column(db.Integer, primary_key=True)
@@ -210,7 +188,7 @@ class Location(BaseModel):
 
     @property
     def country_name(self):
-        return self.COUNTRIES[self.country_code]
+        return self.COUNTRIES.map(self.country_code)
 
     @db.validates('country_code')
     def validate_country_code(self, key, country_code):

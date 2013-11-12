@@ -57,14 +57,16 @@ def test_job_model(session):
     assert job.created <= now()
 
 
-def test_job_model_job_type_helpers(session):
-    assert Job.machinize_job_type('Full Time') == 1
-    with pytest.raises(KeyError):
-        Job.machinize_job_type('wat?')
+def test_job_model_job_type_mapping(session):
+    job_types = Job.JOB_TYPES
 
-    assert Job.humanize_job_type(1) == 'Full Time'
+    assert job_types.inverse('Full Time') == 1
     with pytest.raises(KeyError):
-        Job.humanize_job_type(5)
+        job_types.inverse('wat?')
+
+    assert job_types.map(1) == 'Full Time'
+    with pytest.raises(KeyError):
+        job_types.map(5)
 
 
 def test_job_model_job_type_validator():
@@ -73,14 +75,16 @@ def test_job_model_job_type_validator():
             remote_work='', company_id=0, job_type=10)
 
 
-def test_job_model_contact_method_helpers(session):
-    assert Job.machinize_contact_method('Link') == 1
-    with pytest.raises(KeyError):
-        Job.machinize_job_type('wat?')
+def test_job_model_contact_method_mapping(session):
+    contact_methods = Job.CONTACT_METHODS
 
-    assert Job.humanize_contact_method(1) == 'Link'
+    assert contact_methods.inverse('Link') == 1
     with pytest.raises(KeyError):
-        Job.humanize_job_type(5)
+        contact_methods.inverse('wat?')
+
+    assert contact_methods.map(1) == 'Link'
+    with pytest.raises(KeyError):
+        contact_methods.map(5)
 
 
 def test_job_model_contact_method_validator():

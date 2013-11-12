@@ -50,6 +50,8 @@ def create_position(form):
     company_id = form_data.get('company_id')
     company = None
 
+    print form_data
+
     if company_id:
         company_id = int(company_id)
         company = Company.query.get(company_id)

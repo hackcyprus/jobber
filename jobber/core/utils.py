@@ -9,6 +9,7 @@ import re
 from functools import reduce
 from datetime import datetime
 from unicodedata import normalize
+
 import pytz
 
 
@@ -59,3 +60,40 @@ def now():
 def transpose_dict(d):
     """Returns a dict where values become keys and keys values."""
     return {v: k for k, v in d.iteritems()}
+
+
+class Mapping(object):
+    """A convenient wrapper dict-like object which provides a two-way mapping
+    from a `dict`.
+
+    At this point, the `Mapping` class supports only one-to-one mappings.
+
+    >>> mapping = Mapping({1: 'Link'})
+    >>> mapping.map(1)
+    ... 'Link'
+    >>> mapping.inverse('Link')
+    ... 1
+
+    """
+    def __init__(self, mapping):
+        self.mapping = mapping
+        self.mapping_transposed = transpose_dict(mapping)
+
+    def __getitem__(self, key):
+        return self.mapping[key]
+
+    def __contains__(self, key):
+        return key in self.mapping
+
+    def __len__(self):
+        return len(self.mapping)
+
+    def map(self, key):
+        return self.mapping[key]
+
+    def inverse(self, key):
+        return self.mapping_transposed[key]
+
+    def items(self):
+        return self.mapping.items()
+

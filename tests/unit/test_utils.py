@@ -61,3 +61,19 @@ def test_transpose_dict():
     assert 'b' in t
     assert '1' not in t
     assert '2' not in t
+
+
+def test_mapping():
+    mapping = utils.Mapping({
+        1: 'foo',
+        2: 'bar'
+    })
+    assert 1 in mapping
+    assert 2 in mapping
+    assert mapping[1] == 'foo'
+    assert mapping[2] == 'bar'
+    assert mapping.map(1) == 'foo'
+    assert mapping.map(2) == 'bar'
+    assert mapping.inverse('foo') == 1
+    assert mapping.inverse('bar') == 2
+    assert mapping.items() == [(1, 'foo'), (2, 'bar')]

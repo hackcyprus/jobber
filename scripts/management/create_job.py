@@ -31,11 +31,15 @@ def handle_company(id):
 
 
 def handle_job_type(value):
-    return Job.machinize_job_type(value)
+    return Job.JOB_TYPES.inverse(value)
 
 
 def handle_contact_method(value):
-    return Job.machinize_contact_method(value)
+    return Job.CONTACT_METHODS.inverse(value)
+
+
+def handle_remote_work(value):
+    return Job.REMOTE_WORK_OPTIONS.inverse(value)
 
 
 def pick_contact_field(value):
@@ -63,6 +67,11 @@ field_schema = {
     'job_type': {
         'prompt': 'What type of job is it?',
         'handler': handle_job_type,
+        'next': 'remote_work'
+    },
+    'remote_work': {
+        'prompt': 'Can people work remotely?',
+        'handler': handle_remote_work,
         'next': 'contact_method'
     },
     'contact_method': {

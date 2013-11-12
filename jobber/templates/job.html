@@ -25,7 +25,7 @@
           </p>
         </div>
         <div class="apply-btn">
-          {% if job.contact_method == 1 %}
+          {% if job.human_contact_method == 'Link' %}
             <a href="{{ job.contact_url }}" target="_blank" class="btn btn-green">
           {% else %}
             <a href="mailto:{{ job.contact_email }}" class="btn btn-green">
