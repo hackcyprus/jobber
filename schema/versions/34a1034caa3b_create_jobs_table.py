@@ -20,7 +20,7 @@ def upgrade():
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('title', sa.Unicode(100), nullable=False),
-        sa.Column('slug', sa.Unicode(125), nullable=False, unique=True, index=True),
+        sa.Column('slug', sa.Unicode(125), nullable=False, unique=False, index=True),
         sa.Column('description', sa.UnicodeText, nullable=True),
         sa.Column('contact_method', sa.Integer, nullable=False),
         sa.Column('contact_email', sa.Unicode(150), nullable=True),

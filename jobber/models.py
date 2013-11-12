@@ -38,7 +38,7 @@ class SlugModelMixin(object):
     SLUG_FIELD = None
 
     #: Slugified version of `SLUG_FIELD`.
-    slug = db.Column(db.Unicode(125), nullable=False, unique=True, index=True)
+    slug = db.Column(db.Unicode(125), nullable=False, unique=False, index=True)
 
     def __init__(self, **kwargs):
         # We only auto-generate the slug when it's not explicitly passed in the
@@ -47,6 +47,11 @@ class SlugModelMixin(object):
             # TODO: have a fallback for failed slugs.
             value = getattr(self, self.SLUG_FIELD)
             self.slug = slugify(value)
+
+
+class UniqueSlugModelMixin(SlugModelMixin):
+    """Forces `slug` to be unique."""
+    slug = db.Column(db.Unicode(125), nullable=False, unique=True, index=True)
 
 
 class Company(BaseModel):
@@ -151,7 +156,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         }
 
 
-class Category(BaseModel, SlugModelMixin):
+class Category(BaseModel, UniqueSlugModelMixin):
     __tablename__ = 'categories'
 
     SLUG_FIELD = 'name'

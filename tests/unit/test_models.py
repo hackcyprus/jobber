@@ -9,31 +9,49 @@ Tests the model layer.
 import pytest
 from unicodedata import normalize
 
+from sqlalchemy.exc import IntegrityError
+
 from jobber.models import Job, Company, Category, Location
 from jobber.core.utils import now
 
 
-def test_company_model(session):
+@pytest.fixture(scope='function')
+def location(session):
+    location = Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
+    session.add(location)
+    session.flush()
+    return location
+
+
+@pytest.fixture(scope='function')
+def company(session):
     name = u'٩(͡๏̯͡๏)۶ ٩(-̮̮̃•̃).'
     company = Company(name=name)
     session.add(company)
     session.flush()
+    return company
+
+
+def test_company_model(company, session):
     assert company.id > 0
-    assert company.name == name
+    assert company.name == u'٩(͡๏̯͡๏)۶ ٩(-̮̮̃•̃).'
     assert company.website is None
     assert company.created <= now()
 
 
-def test_job_model(session):
-    name = u'Båｃòｎ'
-    company = Company(name=name)
-    session.add(company)
+def test_location_model(location, session):
+    assert location.id > 0
+    assert location.city == u'Lïｍáｓѕ߀ɭ'
+    assert location.country_name == 'Cyprus'
+    assert location.country_code == 'CYP'
 
-    location = Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
-    session.add(location)
 
-    session.flush()
+def test_location_model_country_code_validator():
+    with pytest.raises(ValueError):
+        Location(city='Limassol', country_code='GOT')
 
+
+def test_job_model(company, location, session):
     title = u'ｒíｂëｙé'
     job = Job(title=title,
               description=title,
@@ -42,8 +60,10 @@ def test_job_model(session):
               company_id=company.id,
               location_id=location.id,
               job_type=1)
+
     session.add(job)
     session.flush()
+
     assert job.id > 0
     assert job.company_id == company.id
     assert job.company.id == company.id
@@ -55,6 +75,23 @@ def test_job_model(session):
     assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
     assert job.created <= now()
+
+
+def test_duplicate_job_model(company, location, session):
+    title = u'foobar'
+
+    for _ in range(3):
+        job = Job(title=title,
+                  description=title,
+                  contact_method=1,
+                  remote_work=False,
+                  company_id=company.id,
+                  location_id=location.id,
+                  job_type=1)
+        session.add(job)
+        session.flush()
+        assert job.id > 0
+        assert job.title == title
 
 
 def test_job_model_job_type_mapping(session):
@@ -112,18 +149,13 @@ def test_category_model(session):
     assert category.created <= now()
 
 
-def test_location_model(session):
-    city = u'Lïｍáｓѕ߀ɭ'
-    code = 'CYP'
-    location = Location(city=city, country_code=code)
-    session.add(location)
+def test_duplicate_category(session):
+    category = Category(name='foobar')
+    session.add(category)
     session.flush()
-    assert location.id > 0
-    assert location.city == city
-    assert location.country_name == 'Cyprus'
-    assert location.country_code == code
 
+    with pytest.raises(IntegrityError):
+        category = Category(name='foobar')
+        session.add(category)
+        session.flush()
 
-def test_location_model_country_code_validator():
-    with pytest.raises(ValueError):
-        Location(city='Limassol', country_code='GOT')
