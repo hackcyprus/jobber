@@ -81,7 +81,7 @@ def create_position(form):
                    location=location,
                    company=company)
 
-    if Job.humanize_contact_method(contact_method) == 'Link':
+    if Job.human_contact_method == 'Link':
         position.contact_url = form_data['contact_url']
     else:
         position.contact_email = form_data['contact_email']
