@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-tests.test_settings
-~~~~~~~~~~~~~~~~~~~
+tests.unit.test_settings
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tests how settings are constructed and overriden.
 

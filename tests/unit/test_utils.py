@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-tests.test_utils
-~~~~~~~~~~~~~~~~
+tests.unit.test_utils
+~~~~~~~~~~~~~~~~~~~~~
 
-Tests for utility functions
+Tests for utility functions.
 
 """
 from jobber.core import utils

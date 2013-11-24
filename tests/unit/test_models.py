@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-tests.test_models
-~~~~~~~~~~~~~~~~~
+tests.unit.test_models
+~~~~~~~~~~~~~~~~~~~~~~
 
 Tests the model layer.
 
@@ -25,8 +25,7 @@ def location(session):
 
 @pytest.fixture(scope='function')
 def company(session):
-    name = u'remedica'
-    company = Company(name=name)
+    company = Company(name=u'remedica')
     session.add(company)
     session.flush()
     return company
