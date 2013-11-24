@@ -78,6 +78,7 @@ def test_job_model(company, location, session):
     session.flush()
 
     assert job.id > 0
+    assert not job.published
     assert job.company_id == company.id
     assert job.company.id == company.id
     assert job.location_id == location.id

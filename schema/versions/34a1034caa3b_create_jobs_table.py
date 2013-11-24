@@ -21,6 +21,7 @@ def upgrade():
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('title', sa.Unicode(100), nullable=False),
         sa.Column('slug', sa.Unicode(125), nullable=False, unique=False, index=True),
+        sa.Column('published', sa.Boolean, nullable=False, default=False),
         sa.Column('description', sa.UnicodeText, nullable=True),
         sa.Column('contact_method', sa.Integer, nullable=False),
         sa.Column('contact_email', sa.Unicode(150), nullable=True),

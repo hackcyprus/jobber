@@ -105,6 +105,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     #: Job description.
     description = db.Column(db.UnicodeText, nullable=False)
 
+    #: Is this job published on the site?
+    published = db.Column(db.Boolean, nullable=False, default=False)
+
     #: Contact method, one of url or email.
     contact_method = db.Column(db.Integer, nullable=False)
 

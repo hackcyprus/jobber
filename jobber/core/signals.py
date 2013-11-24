@@ -20,6 +20,7 @@ def on_models_committed(sender, changes):
 
     """
     app.logger.debug('Model commit signal called.')
+
     def update_search_index(job, op):
         """Updates the search index according to the operation.
 
@@ -28,11 +29,16 @@ def on_models_committed(sender, changes):
 
         """
         # TODO: index updating should be done in an async task.
+        if not job.published:
+            app.logger.info("Job ({}) is unpublished and not added to index."
+                            .format(job.id))
+            return
+
         index = Index()
         document = job.to_document()
         if op == 'insert':
             index.add_document(document)
-            app.logger.info("Added job with id {} to search index.".format(job.id))
+            app.logger.info("Job ({}) add to index.".format(job.id))
         elif op == 'update':
             pass
         elif op == 'delete':
