@@ -25,7 +25,7 @@ def location(session):
 
 @pytest.fixture(scope='function')
 def company(session):
-    name = u'٩(͡๏̯͡๏)۶ ٩(-̮̮̃•̃).'
+    name = u'remedica'
     company = Company(name=name)
     session.add(company)
     session.flush()
@@ -33,10 +33,23 @@ def company(session):
 
 
 def test_company_model(company, session):
+    name = u'remedica'
     assert company.id > 0
-    assert company.name == u'٩(͡๏̯͡๏)۶ ٩(-̮̮̃•̃).'
+    assert company.name == name
     assert company.website is None
+    assert company.slug == normalize('NFKD', name)
     assert company.created <= now()
+
+
+def test_duplicate_company(session):
+    company = Company(name='foobar')
+    session.add(company)
+    session.flush()
+
+    with pytest.raises(IntegrityError):
+        company = Company(name='foobar')
+        session.add(company)
+        session.flush()
 
 
 def test_location_model(location, session):
@@ -74,6 +87,7 @@ def test_job_model(company, location, session):
     assert job.contact_method == 1
     assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
+    assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
     assert job.created <= now()
 
 
@@ -158,4 +172,3 @@ def test_duplicate_category(session):
         category = Category(name='foobar')
         session.add(category)
         session.flush()
-

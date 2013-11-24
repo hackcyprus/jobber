@@ -54,8 +54,10 @@ class UniqueSlugModelMixin(SlugModelMixin):
     slug = db.Column(db.Unicode(125), nullable=False, unique=True, index=True)
 
 
-class Company(BaseModel):
+class Company(BaseModel, UniqueSlugModelMixin):
     __tablename__ = 'companies'
+
+    SLUG_FIELD = 'name'
 
     #: Company id.
     id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +67,10 @@ class Company(BaseModel):
 
     #: Company website.
     website = db.Column(db.Unicode(100), nullable=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Company, self).__init__(*args, **kwargs)
+        UniqueSlugModelMixin.__init__(self, **kwargs)
 
 
 class Job(BaseModel, SlugModelMixin, SearchableMixin):
@@ -133,6 +139,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     @property
     def human_contact_method(self):
         return self.CONTACT_METHODS.map(self.contact_method)
+
+    @property
+    def url(self):
+        return u"{}/{}/{}".format(self.id, self.company.slug, self.slug)
 
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):

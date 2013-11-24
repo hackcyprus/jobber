@@ -127,9 +127,9 @@ def how():
     return 'how it works'
 
 
-@app.route('/jobs/<int:job_id>/<job_slug>')
-def view(job_id, job_slug):
+@app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
+def view(job_id, company_slug, job_slug):
     job = Job.query.get_or_404(job_id)
-    if job.slug != job_slug:
-        abort(404)
-    return render_template('job.html', job=job)
+    if job.slug == job_slug and job.company.slug == company_slug:
+        return render_template('job.html', job=job)
+    abort(404)
