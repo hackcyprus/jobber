@@ -97,7 +97,7 @@ def create_position(form):
 @app.route('/search/')
 @app.route('/')
 def index():
-    jobs = Job.query.all()
+    jobs = Job.query.filter_by(published=False)
     return render_template('index.html', jobs=jobs)
 
 
@@ -107,7 +107,10 @@ def search(query):
     jobs = []
     for hit in index.search(query):
         job = Job.query.get(hit['id'])
-        if job: jobs.append(job)
+        # Make sure that we don't accidentally show an unpublished job that
+        # happened to be in the search index.
+        if job and job.published:
+            jobs.append(job)
     return render_template('index.html', jobs=jobs, query=query)
 
 
