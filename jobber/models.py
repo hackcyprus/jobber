@@ -5,7 +5,10 @@ jobber.models
 Model declarations.
 
 """
+import uuid
+import hashlib
 from pprint import pformat
+
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
 from jobber.core.utils import Mapping, slugify, now
@@ -131,6 +134,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', backref=db.backref('jobs', lazy='dynamic'))
 
+    #: One-to-one relationship with an `AdminToken` model.
+    admin_token = db.relationship('AdminToken', uselist=False, backref='job')
+
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
@@ -213,3 +219,25 @@ class Location(BaseModel):
         if country_code not in self.COUNTRIES:
             raise ValueError("'{}'' is not a valid country code.".format(country_code))
         return country_code
+
+
+class AdminToken(BaseModel):
+    __tablename__ = 'admin_tokens'
+
+    #: Admin token id.
+    id = db.Column(db.Integer, primary_key=True)
+
+    #: A SHA-1 token.
+    token = db.Column(db.String(40), nullable=False)
+
+    #: Job id as a one-to-one relationship.
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+        self.token = self.make_token()
+
+    def make_token(self):
+        """Makes an admin token by getting the SHA-1 hash of a `uuid`."""
+        rnd = uuid.uuid4().hex
+        return hashlib.sha1(rnd).hexdigest()

@@ -11,7 +11,7 @@ from unicodedata import normalize
 
 from sqlalchemy.exc import IntegrityError
 
-from jobber.models import Job, Company, Category, Location
+from jobber.models import Job, Company, Category, Location, AdminToken
 from jobber.core.utils import now
 
 
@@ -172,3 +172,9 @@ def test_duplicate_category(session):
         category = Category(name='foobar')
         session.add(category)
         session.flush()
+
+
+def test_auto_token_generation():
+    admin_token = AdminToken()
+    assert admin_token.token is not None
+    assert len(admin_token.token) == 40

@@ -50,8 +50,6 @@ def create_position(form):
     company_id = form_data.get('company_id')
     company = None
 
-    print form_data
-
     if company_id:
         company_id = int(company_id)
         company = Company.query.get(company_id)
@@ -89,6 +87,10 @@ def create_position(form):
         position.contact_email = form_data['contact_email']
 
     db.session.add(position)
+
+    admin_token = AdminToken(job_id=position.id)
+    db.session.add(admin_token)
+
     db.session.commit()
 
     return position
@@ -135,4 +137,13 @@ def view(job_id, company_slug, job_slug):
     job = Job.query.get_or_404(job_id)
     if job.slug == job_slug and job.company.slug == company_slug:
         return render_template('job.html', job=job)
+    abort(404)
+
+
+@app.route('/admin/<int:job_id>/<token>')
+def admin_view(job_id, token):
+    admin_token = AdminToken.get_or_404(token=token)
+    if admin_token.job_id == job_id:
+        job = Job.get_or_404(job_id)
+        return render_template('create_job.html', job=job)
     abort(404)
