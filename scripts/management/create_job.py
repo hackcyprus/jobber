@@ -109,7 +109,8 @@ def main(session):
     session.add(job)
     session.flush()
 
-    print green("'{}' created okay with id {}.".format(job.title, job.id))
+    print green("'{}' created okay (id: {}, admin_token: {})."
+                .format(job.title, job.id, job.admin_token.token))
 
 
 if __name__ == '__main__':

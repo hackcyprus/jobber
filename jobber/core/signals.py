@@ -5,10 +5,11 @@ jobber.core.signals
 Contains signal registration.
 
 """
+from flask import current_app as app
+
 from jobber.core.search import Index
 from jobber.models import Job, AdminToken
 from jobber.extensions import models_committed
-from jobber.app import app
 from jobber.extensions import db
 
 

@@ -6,7 +6,7 @@ Usage:
 
 Options:
     <city>  The city.
-    <country>  The country.
+    <country_code>  Alpha-3 country code.
 
 """
 from docopt import docopt
@@ -18,8 +18,8 @@ from jobber.script import run, green
 from jobber.models import Location
 
 
-def main(city, country, session):
-    location = Location(city=city, country=country)
+def main(city, country_code, session):
+    location = Location(city=city, country_code=country_code)
     session.add(location)
     session.flush()
     msg = "Location '{}, {}' created okay with id {}."

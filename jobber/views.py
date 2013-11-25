@@ -6,9 +6,10 @@ View declarations.
 
 """
 from random import choice
-from flask import render_template, abort, redirect
 
-from jobber.app import app
+from flask import render_template, abort, redirect
+from flask import current_app as app
+
 from jobber.models import Job, Location, Company
 from jobber.core.search import Index
 from jobber.core.forms import NewPositionForm
@@ -95,7 +96,7 @@ def create_position(form):
 @app.route('/search/')
 @app.route('/')
 def index():
-    jobs = Job.query.filter_by(published=False)
+    jobs = Job.query.filter_by(published=True).all()
     return render_template('index.html', jobs=jobs)
 
 

@@ -19,6 +19,10 @@ def run(main, *args):
     """
     app = create_app(__name__)
     with app.app_context():
+        # Register all signals before running the script. Hackish.
+        import jobber.core.signals
+
+        # Run the script and commit/rollback accordingly.
         session = db.session
         try:
             args += (session,)
