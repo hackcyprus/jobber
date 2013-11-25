@@ -66,7 +66,12 @@ def app():
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI
     }
-    return create_app(__name__, settings_override)
+    app = create_app(__name__, settings_override)
+    ctx = app.app_context()
+    ctx.push()
+    def teardown():
+        ctx.pop()
+    return app
 
 
 @pytest.fixture(scope='function')
