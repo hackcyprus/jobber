@@ -107,10 +107,6 @@ def main(session):
 
     job = Job(**kwargs)
     session.add(job)
-    session.flush()
-
-    print green("'{}' created okay (id: {}, admin_token: {})."
-                .format(job.title, job.id, job.admin_token.token))
 
 
 if __name__ == '__main__':

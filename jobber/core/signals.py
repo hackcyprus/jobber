@@ -65,10 +65,9 @@ def create_admin_token(job):
     """
     admin_token = AdminToken(job_id=job.id)
     db.session.add(admin_token)
-    db.session.commit(admin_token)
 
 
-@models_committed.connect_via(app)
+@models_committed.connect_via(app._get_current_object())
 def on_models_committed(sender, changes):
     """Received when a list of models is committed to the database.
 

@@ -21,9 +21,6 @@ from jobber.models import Location
 def main(city, country_code, session):
     location = Location(city=city, country_code=country_code)
     session.add(location)
-    session.flush()
-    msg = "Location '{}, {}' created okay with id {}."
-    print green(msg.format(city, country, location.id))
 
 
 if __name__ == '__main__':

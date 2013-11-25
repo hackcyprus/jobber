@@ -22,7 +22,7 @@ def run(main, *args):
         # Register all signals before running the script. Hackish.
         import jobber.core.signals
 
-        # Run the script and commit/rollback accordingly.
+        # Create a new session for this script and commit/rollback accordingly.
         session = db.session
         try:
             args += (session,)
@@ -32,7 +32,7 @@ def run(main, *args):
             session.rollback()
             raise
         finally:
-            session.close()
+            session.remove()
 
 
 def die(reason):

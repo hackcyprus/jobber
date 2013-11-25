@@ -20,9 +20,6 @@ from jobber.models import Category
 def main(name, session):
     category = Category(name=name)
     session.add(category)
-    session.flush()
-    msg = "Category '{}' (slug: '{}') created okay with id {}."
-    print green(msg.format(name, category.slug, category.id))
 
 
 if __name__ == '__main__':

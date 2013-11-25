@@ -20,8 +20,6 @@ from jobber.models import Company
 def main(name, session):
     company = Company(name=name)
     session.add(company)
-    session.flush()
-    print green("'{}' created okay with id {}.".format(name, company.id))
 
 
 if __name__ == '__main__':
