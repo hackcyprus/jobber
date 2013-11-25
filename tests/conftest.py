@@ -74,9 +74,10 @@ def session(app, _db, request):
     """Starts a new database session for a test."""
     session = _db.session
     def teardown():
-        # We make sure to rollback the session after the test is finished, so
-        # that tests do not affect each other.
+        # We make sure to rollback and remove the session after the test is
+        # finished, so that tests do not affect each other.
         session.rollback()
+        session.remove()
     request.addfinalizer(teardown)
     return session
 

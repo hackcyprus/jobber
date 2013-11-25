@@ -43,9 +43,17 @@ def job(session, company, location):
     return job
 
 
-def test_on_models_committed_not_job_model(monkeypatch, app):
+def test_find_actions():
+    actions = signals.find_actions(Job, 'insert')
+    assert actions == [signals.index_job, signals.create_admin_token]
+
+    actions = signals.find_actions(Job, 'delete')
+    assert actions == []
+
+
+def test_on_models_committed_no_actions(monkeypatch, app):
     mock = MagicMock()
-    monkeypatch.setattr(signals, 'update_jobs_search_index', mock)
+    monkeypatch.setattr(signals, 'index_job', mock)
 
     company = Company(name='foocorp')
     changes = [(company, 'insert')]
@@ -59,16 +67,27 @@ def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
+    mock_create_admin_token = MagicMock()
+    monkeypatch.setattr('jobber.core.signals.create_admin_token',
+                        mock_create_admin_token)
+
+
     changes = [(job, 'insert')]
     signals.on_models_committed(app, changes)
 
     instance = mock_index.return_value
     assert not instance.add_document.called
 
+    assert mock_create_admin_token.called
+
 
 def test_on_models_committed_job_model_published(monkeypatch, job, app):
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
+
+    mock_create_admin_token = MagicMock()
+    monkeypatch.setattr('jobber.core.signals.create_admin_token',
+                        mock_create_admin_token)
 
     job.published = True
     changes = [(job, 'insert')]
@@ -76,3 +95,6 @@ def test_on_models_committed_job_model_published(monkeypatch, job, app):
 
     instance = mock_index.return_value
     assert instance.add_document.called
+
+    assert mock_create_admin_token.called
+

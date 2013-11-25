@@ -87,10 +87,6 @@ def create_position(form):
         position.contact_email = form_data['contact_email']
 
     db.session.add(position)
-
-    admin_token = AdminToken(job_id=position.id)
-    db.session.add(admin_token)
-
     db.session.commit()
 
     return position
