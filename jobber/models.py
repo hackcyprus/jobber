@@ -71,6 +71,9 @@ class Company(BaseModel, UniqueSlugModelMixin):
     #: Company website.
     website = db.Column(db.Unicode(100), nullable=True)
 
+    #: One-to-many relationship to a `Job`.
+    jobs = db.relationship('Job', backref='company')
+
     def __init__(self, *args, **kwargs):
         super(Company, self).__init__(*args, **kwargs)
         UniqueSlugModelMixin.__init__(self, **kwargs)
@@ -128,11 +131,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
-    company = db.relationship('Company', backref=db.backref('jobs', lazy='dynamic'))
 
     #: Location id as a foreign key relationship.
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
-    location = db.relationship('Location', backref=db.backref('jobs', lazy='dynamic'))
 
     #: One-to-one relationship with an `AdminToken` model.
     admin_token = db.relationship('AdminToken', uselist=False, backref='job')
@@ -209,6 +210,9 @@ class Location(BaseModel):
 
     #: Location country ISO alpha-3 code.
     country_code = db.Column(db.Unicode(3), nullable=False)
+
+    #: One-to-many relationship to a `Job`.
+    jobs = db.relationship('Job', backref='location')
 
     @property
     def country_name(self):

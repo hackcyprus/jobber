@@ -67,10 +67,13 @@ def app():
         'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI
     }
     app = create_app(__name__, settings_override)
+
+    # Establish an application context before running the tests.
     ctx = app.app_context()
     ctx.push()
     def teardown():
         ctx.pop()
+
     return app
 
 

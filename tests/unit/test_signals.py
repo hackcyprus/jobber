@@ -10,7 +10,6 @@ import pytest
 from mock import MagicMock
 
 from jobber.models import Job, Company, Location
-from jobber.core import signals
 
 
 @pytest.fixture(scope='function')
@@ -44,6 +43,8 @@ def job(session, company, location):
 
 
 def test_find_actions():
+    from jobber.core import signals
+
     actions = signals.find_actions(Job, 'insert')
     assert actions == [signals.index_job, signals.create_admin_token]
 
@@ -52,6 +53,8 @@ def test_find_actions():
 
 
 def test_on_models_committed_no_actions(monkeypatch, app):
+    from jobber.core import signals
+
     mock = MagicMock()
     monkeypatch.setattr(signals, 'index_job', mock)
 
@@ -64,6 +67,8 @@ def test_on_models_committed_no_actions(monkeypatch, app):
 
 
 def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
+    from jobber.core import signals
+
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
@@ -82,6 +87,8 @@ def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
 
 
 def test_on_models_committed_job_model_published(monkeypatch, job, app):
+    from jobber.core import signals
+
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
