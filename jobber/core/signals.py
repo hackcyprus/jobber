@@ -8,7 +8,7 @@ Contains signal registration.
 from flask import current_app as app
 
 from jobber.core.search import Index
-from jobber.models import Job, AdminToken
+from jobber.models import Job
 from jobber.extensions import models_committed
 from jobber.extensions import db
 
@@ -20,7 +20,6 @@ DEFAULT_ACTIONMAP = {
     Job: {
         'insert': [
             'index_job',
-            'create_admin_token'
         ]
     }
 }
@@ -55,16 +54,6 @@ def index_job(job):
     document = job.to_document()
     index.add_document(document)
     app.logger.info("Job ({}) add to index.".format(job.id))
-
-
-def create_admin_token(job):
-    """Creates an admin token for the given `job`.
-
-    :param job: A `Job` instance.
-
-    """
-    admin_token = AdminToken(job_id=job.id)
-    db.session.add(admin_token)
 
 
 @models_committed.connect_via(app._get_current_object())

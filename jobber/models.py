@@ -129,18 +129,21 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     #: Does the company consider remote workers?
     remote_work = db.Column(db.Boolean, nullable=False, default=False)
 
+    #: SHA-1 admin token for editing jobs.
+    admin_token = db.Column(db.String(40), nullable=False)
+
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
 
     #: Location id as a foreign key relationship.
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 
-    #: One-to-one relationship with an `AdminToken` model.
-    admin_token = db.relationship('AdminToken', uselist=False, backref='job')
-
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
+
+        if not self.admin_token:
+            self.admin_token = self.make_admin_token()
 
     @property
     def human_job_type(self):
@@ -154,6 +157,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     def url(self):
         return u"{}/{}/{}".format(self.id, self.company.slug, self.slug)
 
+    @property
+    def admin_url(self):
+        return u"{}/{}".format(self.id, self.admin_token)
+
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):
         if job_type not in self.JOB_TYPES:
@@ -165,6 +172,11 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         if contact_method not in self.CONTACT_METHODS:
             raise ValueError("'{}'' is not a valid contact method.".format(contact_method))
         return contact_method
+
+    def make_admin_token(cls):
+        """Makes an admin token by getting the SHA-1 hash of a `uuid`."""
+        rnd = uuid.uuid4().hex
+        return hashlib.sha1(rnd).hexdigest()
 
     def to_document(self):
         return {
@@ -223,25 +235,3 @@ class Location(BaseModel):
         if country_code not in self.COUNTRIES:
             raise ValueError("'{}'' is not a valid country code.".format(country_code))
         return country_code
-
-
-class AdminToken(BaseModel):
-    __tablename__ = 'admin_tokens'
-
-    #: Admin token id.
-    id = db.Column(db.Integer, primary_key=True)
-
-    #: A SHA-1 token.
-    token = db.Column(db.String(40), nullable=False)
-
-    #: Job id as a one-to-one relationship.
-    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
-
-    def __init__(self, *args, **kwargs):
-        super(BaseModel, self).__init__(*args, **kwargs)
-        self.token = self.make_token()
-
-    def make_token(self):
-        """Makes an admin token by getting the SHA-1 hash of a `uuid`."""
-        rnd = uuid.uuid4().hex
-        return hashlib.sha1(rnd).hexdigest()

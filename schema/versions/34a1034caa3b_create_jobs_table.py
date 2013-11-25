@@ -28,6 +28,7 @@ def upgrade():
         sa.Column('contact_url', sa.Unicode(200), nullable=True),
         sa.Column('job_type', sa.Integer, nullable=False),
         sa.Column('remote_work', sa.Integer, nullable=False, default=False),
+        sa.Column('admin_token', sa.String(40), nullable=False),
         sa.Column('company_id',
                   sa.Integer,
                   sa.ForeignKey('companies.id'),

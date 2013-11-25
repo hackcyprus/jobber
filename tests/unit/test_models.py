@@ -11,7 +11,7 @@ from unicodedata import normalize
 
 from sqlalchemy.exc import IntegrityError
 
-from jobber.models import Job, Company, Category, Location, AdminToken
+from jobber.models import Job, Company, Category, Location
 from jobber.core.utils import now
 
 
@@ -88,8 +88,8 @@ def test_job_model(company, location, session):
     assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
     assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
+    assert job.admin_url == u"{}/{}".format(job.id, job.admin_token)
     assert job.created <= now()
-
 
 def test_duplicate_job_model(company, location, session):
     title = u'foobar'
@@ -172,9 +172,3 @@ def test_duplicate_category(session):
         category = Category(name='foobar')
         session.add(category)
         session.flush()
-
-
-def test_auto_token_generation():
-    admin_token = AdminToken()
-    assert admin_token.token is not None
-    assert len(admin_token.token) == 40

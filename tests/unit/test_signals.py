@@ -46,7 +46,7 @@ def test_find_actions():
     from jobber.core import signals
 
     actions = signals.find_actions(Job, 'insert')
-    assert actions == [signals.index_job, signals.create_admin_token]
+    assert actions == [signals.index_job]
 
     actions = signals.find_actions(Job, 'delete')
     assert actions == []
@@ -72,18 +72,11 @@ def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
-    mock_create_admin_token = MagicMock()
-    monkeypatch.setattr('jobber.core.signals.create_admin_token',
-                        mock_create_admin_token)
-
-
     changes = [(job, 'insert')]
     signals.on_models_committed(app, changes)
 
     instance = mock_index.return_value
     assert not instance.add_document.called
-
-    assert mock_create_admin_token.called
 
 
 def test_on_models_committed_job_model_published(monkeypatch, job, app):
@@ -92,16 +85,9 @@ def test_on_models_committed_job_model_published(monkeypatch, job, app):
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
-    mock_create_admin_token = MagicMock()
-    monkeypatch.setattr('jobber.core.signals.create_admin_token',
-                        mock_create_admin_token)
-
     job.published = True
     changes = [(job, 'insert')]
     signals.on_models_committed(app, changes)
 
     instance = mock_index.return_value
     assert instance.add_document.called
-
-    assert mock_create_admin_token.called
-
