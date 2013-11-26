@@ -162,6 +162,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return self.CONTACT_METHODS.map(self.contact_method)
 
     @property
+    def human_remote_work(self):
+        return self.REMOTE_WORK_OPTIONS.map(self.remote_work)
+
+    @property
     def url(self):
         return u"{}/{}/{}".format(self.id, self.company.slug, self.slug)
 
