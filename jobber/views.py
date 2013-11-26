@@ -10,10 +10,11 @@ from random import choice
 from flask import render_template, abort, redirect
 from flask import current_app as app
 
-from jobber.models import Job, Location, Company
+from jobber.models import Job
 from jobber.core.search import Index
-from jobber.core.forms import NewPositionForm
+from jobber.core.forms import JobForm
 from jobber.extensions import db
+from jobber.view_helpers import populate_job, populate_form
 
 
 PROMPTS = [
@@ -41,58 +42,6 @@ def inject_swag():
     return dict(prompt=prompt, position=position)
 
 
-def create_position(form):
-    """Creates a new job position from a form submission.
-
-    :param form: A `NewPositionForm` instance.
-
-    """
-    form_data = form.data
-    company_id = form_data.get('company_id')
-    company = None
-
-    if company_id:
-        company_id = int(company_id)
-        company = Company.query.get(company_id)
-
-    if not company:
-        name = form_data['company_name']
-        website = form_data.get('company_website')
-        company = Company(name=name)
-        if website:
-            company.website = website
-        db.session.add(company)
-
-    city = form_data['city']
-    country_code = form_data['country_code']
-    location = Location(city=city, country_code=country_code)
-    db.session.add(location)
-
-    title = form_data['title']
-    description = form_data['description']
-    job_type = form_data['job_type']
-    contact_method = form_data['contact_method']
-    remote_work = form_data['remote_work']
-
-    position = Job(title=title,
-                   description=description,
-                   job_type=job_type,
-                   remote_work=remote_work,
-                   contact_method=contact_method,
-                   location=location,
-                   company=company)
-
-    if Job.human_contact_method == 'Link':
-        position.contact_url = form_data['contact_url']
-    else:
-        position.contact_email = form_data['contact_email']
-
-    db.session.add(position)
-    db.session.commit()
-
-    return position
-
-
 @app.route('/search/')
 @app.route('/')
 def index():
@@ -113,34 +62,48 @@ def search(query):
     return render_template('index.html', jobs=jobs, query=query)
 
 
-@app.route('/new', methods=['GET', 'POST'])
-def new():
-    form = NewPositionForm()
+@app.route('/create', methods=['GET', 'POST'])
+def create():
+    form = JobForm()
+
     if form.validate_on_submit():
-        create_position(form)
-        return redirect('/')
-    return render_template('create_job.html',
-                           prompt='Great jobs, great people.',
-                           form=form)
+        populate_job(form)
+        db.session.commit()
+        return redirect('/submitted')
+
+    return render_template('jobs/create_or_update.html', form=form)
+
+
+@app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
+def update(job_id, token):
+    job = Job.query.filter_by(admin_token=token).first()
+
+    if not (job and job_id == job.id):
+        abort(404)
+
+    form = populate_form(job)
+
+    if form.validate_on_submit():
+        populate_job(form, job=job)
+        db.session.commit()
+        return redirect('/submitted')
+
+    return render_template('jobs/create_or_update.html', form=form, token=token)
+
+
+@app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
+def show(job_id, company_slug, job_slug):
+    job = Job.query.get_or_404(job_id)
+    if job.slug == job_slug and job.company.slug == company_slug:
+        return render_template('jobs/show.html', job=job)
+    abort(404)
+
+
+@app.route('/submitted', methods=['GET'])
+def submitted():
+    return render_template('jobs/submitted.html')
 
 
 @app.route('/how')
 def how():
     return 'how it works'
-
-
-@app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
-def view(job_id, company_slug, job_slug):
-    job = Job.query.get_or_404(job_id)
-    if job.slug == job_slug and job.company.slug == company_slug:
-        return render_template('job.html', job=job)
-    abort(404)
-
-
-@app.route('/admin/<int:job_id>/<token>')
-def admin_view(job_id, token):
-    admin_token = AdminToken.get_or_404(token=token)
-    if admin_token.job_id == job_id:
-        job = Job.get_or_404(job_id)
-        return render_template('create_job.html', job=job)
-    abort(404)

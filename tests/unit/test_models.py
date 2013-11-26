@@ -11,8 +11,11 @@ from unicodedata import normalize
 
 from sqlalchemy.exc import IntegrityError
 
-from jobber.models import Job, Company, Category, Location
 from jobber.core.utils import now
+from jobber.models import (Job,
+                           Company,
+                           Category,
+                           Location)
 
 
 @pytest.fixture(scope='function')
@@ -38,6 +41,22 @@ def test_company_model(company, session):
     assert company.website is None
     assert company.slug == normalize('NFKD', name)
     assert company.created <= now()
+
+
+def test_company_slug_model_mixin():
+    company = Company()
+    assert company.slug is None
+
+    company.populate_slug()
+    assert company.slug is None
+
+    company.name = u'test'
+    company.populate_slug()
+    assert company.slug == u'test'
+
+    company.name = u'test1'
+    company.populate_slug()
+    assert company.slug == u'test1'
 
 
 def test_duplicate_company(session):
@@ -90,6 +109,23 @@ def test_job_model(company, location, session):
     assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
     assert job.admin_url == u"{}/{}".format(job.id, job.admin_token)
     assert job.created <= now()
+
+
+def test_job_slug_model_mixin():
+    job = Job()
+    assert job.slug is None
+
+    job.populate_slug()
+    assert job.slug is None
+
+    job.title = u'test'
+    job.populate_slug()
+    assert job.slug == u'test'
+
+    job.title = u'test1'
+    job.populate_slug()
+    assert job.slug == u'test1'
+
 
 def test_duplicate_job_model(company, location, session):
     title = u'foobar'

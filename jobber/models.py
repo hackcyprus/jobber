@@ -47,9 +47,17 @@ class SlugModelMixin(object):
         # We only auto-generate the slug when it's not explicitly passed in the
         # constructor.
         if 'slug' not in kwargs:
-            # TODO: have a fallback for failed slugs.
-            value = getattr(self, self.SLUG_FIELD)
-            self.slug = slugify(value)
+            self.populate_slug()
+
+    def populate_slug(self):
+        """Populates the slug in this model. If the `SLUG_FIELD` value is `None`,
+        then this method is a noop.
+
+        """
+        # TODO: have a fallback for failed slugs.
+        value = getattr(self, self.SLUG_FIELD)
+        if value is None: return
+        self.slug = slugify(value)
 
 
 class UniqueSlugModelMixin(SlugModelMixin):
@@ -127,7 +135,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     job_type = db.Column(db.Integer, nullable=False)
 
     #: Does the company consider remote workers?
-    remote_work = db.Column(db.Boolean, nullable=False, default=False)
+    remote_work = db.Column(db.Integer, nullable=False, default=False)
 
     #: SHA-1 admin token for editing jobs.
     admin_token = db.Column(db.String(40), nullable=False)

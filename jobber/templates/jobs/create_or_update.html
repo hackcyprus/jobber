@@ -4,12 +4,16 @@
 
 {% block content %}
   <div id="create-job" class="clearfix">
-    <form method="post" action="/new">
+    {% if token %}
+    <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}">
+    {% else %}
+    <form method="post" action="/create">
+    {% endif %}
       Errors: {{ form.errors }}
       {{ form.hidden_tag() }}
       <fieldset>
         <div class="field">
-          <input type="text" id="title" name="title" placeholder="What's the job title?">
+          {{ form.title(placeholder="What's the job title?") }}
         </div>
         <div class="field inline">
           {{ form.job_type() }}
@@ -21,28 +25,29 @@
       <fieldset>
         <h4>Where is the job based?</h4>
         <div class="field inline">
-          <input class="small" type="text" id="city" name="city" placeholder="City">
+          {{ form.location__city(placeholder="City", class_="small") }}
         </div>
         <div class="field inline">
-          {{ form.country_code() }}
+          {{ form.location__country_code() }}
         </div>
       </fieldset>
       <fieldset>
         <h4>Describe how great the job is</h4>
         <p class="help-text">
-          Don't forget that the effort you put into the job spec will have a direct effect on the amount and quality of candidates you will receive.
+          Don't forget that the effort you put into the job spec will have a direct effect on the
+          amount and quality of candidates you will receive.
         </p>
         <div class="field">
-          <textarea rows="14" id="description" name="description" placeholder="Write a clear and concise description of the job."></textarea>
+          {{ form.description(rows=14, placeholder="Write a clear and concise description of the job.") }}
         </div>
       </fieldset>
       <fieldset>
         <h4>Some details on your company</h4>
         <div class="field">
-          <input type="text" id="company_name" name="company_name" placeholder="What's the name of your company?"/>
+          {{ form.company__name(placeholder="What's the name of your company?") }}
         </div>
         <div class="field">
-          <input type="text" id="company_website" name="company_website" placeholder="What's the website of your company?"/>
+          {{ form.company__website(placeholder="What's the website of your company?") }}
         </div>
       </fieldset>
       <fieldset>
@@ -54,8 +59,8 @@
           {{ form.contact_method() }}
         </div>
         <div class="field inline">
-          <input type="text" id="contact_url" name="contact_url" placeholder="Link to job page"/>
-          <input type="text" id="contact_email" name="contact_email" placeholder="Email to contact" style="display:none"/>
+          {{ form.contact_url(placeholder="Link to job page") }}
+          {{ form.contact_email(style="display: none", placeholder="Email to contact") }}
         </div>
       </fieldset>
       <div class="field inline">
@@ -82,7 +87,7 @@
         });
 
         defer(function() {
-          $('#country_code').selectize();
+          $('#location__country_code').selectize();
         });
 
         defer(function() {
