@@ -10,6 +10,7 @@ import pytest
 from unicodedata import normalize
 
 from sqlalchemy.exc import IntegrityError
+from arrow.arrow import Arrow
 
 from jobber.core.utils import now
 from jobber.models import (Job,
@@ -41,6 +42,9 @@ def test_company_model(company, session):
     assert company.website is None
     assert company.slug == normalize('NFKD', name)
     assert company.created <= now()
+
+    # Check if we get `arrow` dates back.
+    assert type(company.created) is Arrow
 
 
 def test_company_slug_model_mixin():
@@ -75,6 +79,10 @@ def test_location_model(location, session):
     assert location.city == u'Lïｍáｓѕ߀ɭ'
     assert location.country_name == 'Cyprus'
     assert location.country_code == 'CYP'
+    assert location.created <= now()
+
+    # Check if we get `arrow` dates back.
+    assert type(location.created) is Arrow
 
 
 def test_location_model_country_code_validator():
@@ -109,6 +117,9 @@ def test_job_model(company, location, session):
     assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
     assert job.admin_url == u"{}/{}".format(job.id, job.admin_token)
     assert job.created <= now()
+
+    # Check if we get `arrow` dates back.
+    assert type(job.created) is Arrow
 
 
 def test_job_slug_model_mixin():

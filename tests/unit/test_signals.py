@@ -46,7 +46,7 @@ def test_find_actions():
     from jobber.core import signals
 
     actions = signals.find_actions(Job, 'insert')
-    assert actions == [signals.index_job]
+    assert actions == [signals.update_jobs_index]
 
     actions = signals.find_actions(Job, 'delete')
     assert actions == []
@@ -56,7 +56,7 @@ def test_on_models_committed_no_actions(monkeypatch, app):
     from jobber.core import signals
 
     mock = MagicMock()
-    monkeypatch.setattr(signals, 'index_job', mock)
+    monkeypatch.setattr(signals, 'update_jobs_index', mock)
 
     company = Company(name='foocorp')
     changes = [(company, 'insert')]

@@ -27,7 +27,7 @@
           </td>
           <td class="right">
               <h4 class="job-type">{{ job.human_job_type }}</h4>
-              <p class="added">{{ job.created }}</p>
+              <p class="added">{{ job.created.humanize() }}</p>
           </td>
         </tr>
       {% endfor %}

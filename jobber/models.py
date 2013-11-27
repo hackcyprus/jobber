@@ -11,7 +11,7 @@ from pprint import pformat
 
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
-from jobber.core.utils import Mapping, slugify, now
+from jobber.core.utils import Mapping, slugify, now, ArrowDateTime
 
 
 class BaseModel(db.Model):
@@ -20,7 +20,7 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     #: A timestamp populated on model creation.
-    created = db.Column(db.DateTime(timezone=True))
+    created = db.Column(ArrowDateTime(timezone=True))
 
     def __init__(self, *args, **kwargs):
         if self.created is None:

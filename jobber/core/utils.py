@@ -7,10 +7,10 @@ Utility methods.
 """
 import re
 from functools import reduce
-from datetime import datetime
 from unicodedata import normalize
 
-import pytz
+import sqlalchemy.types as types
+import arrow
 
 
 PUNCTUATION_REGEX = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
@@ -54,7 +54,7 @@ def slugify(text, delim='-', limit=75):
 
 def now():
     """Returns `utcnow()` as timezone-aware."""
-    return datetime.utcnow().replace(tzinfo=pytz.utc)
+    return arrow.utcnow()
 
 
 def transpose_dict(d):
@@ -97,3 +97,16 @@ class Mapping(object):
     def items(self):
         return self.mapping.items()
 
+
+class ArrowDateTime(types.TypeDecorator):
+    """Enhances the `DateTime` type to return an `Arrow` object instead of
+    `datetime`.
+
+    """
+    impl = types.DateTime
+
+    def process_bind_param(self, value, dialect):
+        return value.datetime
+
+    def process_result_value(self, value, dialect):
+        return arrow.get(value)
