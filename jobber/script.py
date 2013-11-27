@@ -29,7 +29,8 @@ def run(main, *args):
             main(*args)
             session.commit()
         except:
-            session.rollback()
+            if session.is_active:
+                session.rollback()
             raise
         finally:
             session.remove()

@@ -2,7 +2,7 @@
 Searches the `jobs` index.
 
 Usage:
-    search_index.py <query>
+    query_index.py <query>
 
 Options:
     <query>  Query to search for.

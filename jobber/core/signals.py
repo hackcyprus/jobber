@@ -10,7 +10,6 @@ from flask import current_app as app
 from jobber.core.search import Index
 from jobber.models import Job
 from jobber.extensions import models_committed
-from jobber.extensions import db
 
 
 # A mapping that specifies what actions need to take place for which models and
@@ -19,7 +18,10 @@ from jobber.extensions import db
 DEFAULT_ACTIONMAP = {
     Job: {
         'insert': [
-            'index_job',
+            'update_jobs_index',
+        ],
+        'update': [
+            'update_jobs_index'
         ]
     }
 }
@@ -39,21 +41,23 @@ def find_actions(klass, op, actionmap=None):
     return [g.get(a) for a in actions if g.get(a)]
 
 
-def index_job(job):
-    """Adds `job` to the search index.
+def update_jobs_index(job):
+    """Updates the job index according to the published status of the job.
 
     :param job: A `Job` instance.
 
     """
-    if not job.published:
-        msg = "Job ({}) is unpublished and will not be indexed.".format(job.id)
-        app.logger.info(msg)
-        return
-
     index = Index()
     document = job.to_document()
-    index.add_document(document)
-    app.logger.info("Job ({}) add to index.".format(job.id))
+
+    if not job.published:
+        app.logger.info("Job ({}) is unpublished, deleting from index.".format(job.id))
+        index.delete_document(document['id'])
+        app.logger.info("Job ({}) deleted from index.".format(job.id))
+    else:
+        app.logger.info("Job ({}) is published, adding to index.".format(job.id))
+        index.add_document(document)
+        app.logger.info("Job ({}) added to index.".format(job.id))
 
 
 @models_committed.connect_via(app._get_current_object())
