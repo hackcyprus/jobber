@@ -140,6 +140,12 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     #: SHA-1 admin token for editing jobs.
     admin_token = db.Column(db.String(40), nullable=False)
 
+    #: Recruiter full name.
+    recruiter_name = db.Column(db.Unicode(100), nullable=False)
+
+    #: Recruiter email.
+    recruiter_email = db.Column(db.Unicode(100), nullable=False)
+
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
 

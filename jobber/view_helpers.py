@@ -98,6 +98,8 @@ def populate_job(form, job=None):
     job.job_type = form_data['job_type']
     job.contact_method = form_data['contact_method']
     job.remote_work = form_data['remote_work']
+    job.recruiter_name = form_data['recruiter_name']
+    job.recruiter_email = form_data['recruiter_email']
 
     if job.contact_method == 1:
         job.contact_url = form_data['contact_url']

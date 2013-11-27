@@ -25,4 +25,5 @@ py==1.4.18
 pytest==2.4.2
 python-dateutil==2.2
 pytz==2013.7
+six==1.4.1
 wsgiref==0.1.2

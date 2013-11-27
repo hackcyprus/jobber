@@ -92,13 +92,18 @@ def test_location_model_country_code_validator():
 
 def test_job_model(company, location, session):
     title = u'ｒíｂëｙé'
+    recruiter_name = u'相'
+    recruiter_email = u'思'
+
     job = Job(title=title,
               description=title,
               contact_method=1,
               remote_work=False,
               company_id=company.id,
               location_id=location.id,
-              job_type=1)
+              job_type=1,
+              recruiter_name=recruiter_name,
+              recruiter_email=recruiter_email)
 
     session.add(job)
     session.flush()
@@ -116,6 +121,8 @@ def test_job_model(company, location, session):
     assert job.slug == normalize('NFKD', title)
     assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
     assert job.admin_url == u"{}/{}".format(job.id, job.admin_token)
+    assert job.recruiter_name == recruiter_name
+    assert job.recruiter_email == recruiter_email
     assert job.created <= now()
 
     # Check if we get `arrow` dates back.
@@ -148,7 +155,9 @@ def test_duplicate_job_model(company, location, session):
                   remote_work=False,
                   company_id=company.id,
                   location_id=location.id,
-                  job_type=1)
+                  job_type=1,
+                  recruiter_name=u'Αλέκος',
+                  recruiter_email=u'alekos@Κόκοτας.com')
         session.add(job)
         session.flush()
         assert job.id > 0
@@ -170,7 +179,8 @@ def test_job_model_job_type_mapping(session):
 def test_job_model_job_type_validator():
     with pytest.raises(ValueError):
         Job(title='', description='', contact_method=1,
-            remote_work='', company_id=0, job_type=10)
+            remote_work='', company_id=0, job_type=10,
+            recruiter_name='a', recruiter_email='a')
 
 
 def test_job_model_contact_method_mapping(session):

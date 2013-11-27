@@ -68,3 +68,9 @@ class JobForm(Form):
 
     #: Contact url (if contact method is url).
     contact_url = TextField('Contact Link', validators=[Optional(), URL()])
+
+    #: Recruiter name (freetext).
+    recruiter_name = TextField('Recruiter Name', validators=[DataRequired()])
+
+    #: Recruiter email (email obviously).
+    recruiter_email = TextField('Recruiter Email', validators=[Email()])

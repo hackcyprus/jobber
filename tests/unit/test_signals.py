@@ -36,7 +36,9 @@ def job(session, company, location):
               remote_work=False,
               company_id=company.id,
               location_id=location.id,
-              job_type=1)
+              job_type=1,
+              recruiter_name=u'jon',
+              recruiter_email=u'doe')
     session.add(job)
     session.flush()
     return job
