@@ -14,7 +14,9 @@ from jobber.models import Job
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.extensions import db
-from jobber.view_helpers import populate_job, populate_form
+from jobber.view_helpers import (get_location_context,
+                                 populate_job,
+                                 populate_form)
 
 
 PROMPTS = [
@@ -65,13 +67,14 @@ def search(query):
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     form = JobForm()
+    locations = get_location_context()
 
     if form.validate_on_submit():
         populate_job(form)
         db.session.commit()
         return redirect('/submitted')
 
-    return render_template('jobs/create_or_update.html', form=form)
+    return render_template('jobs/create_or_update.html', form=form, locations=locations)
 
 
 @app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
@@ -82,13 +85,15 @@ def update(job_id, token):
         abort(404)
 
     form = populate_form(job)
+    locations = get_location_context()
 
     if form.validate_on_submit():
         populate_job(form, job=job)
         db.session.commit()
         return redirect('/submitted')
 
-    return render_template('jobs/create_or_update.html', form=form, token=token)
+    return render_template('jobs/create_or_update.html', form=form,
+                           token=token, locations=locations)
 
 
 @app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')

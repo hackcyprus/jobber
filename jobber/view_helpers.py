@@ -10,6 +10,14 @@ from jobber.core.forms import JobForm
 from jobber.extensions import db
 
 
+def get_location_context():
+    """Returns location data for the create/edit form."""
+    return [
+        dict(id=location.id, city=location.city, country_code=location.country_code)
+        for location in Location.query.all()
+    ]
+
+
 def populate_form(job):
     """Populates a `JobForm` object from a `Job` model.
 
@@ -98,15 +106,16 @@ def populate_job(form, job=None):
     job.job_type = form_data['job_type']
     job.contact_method = form_data['contact_method']
     job.remote_work = form_data['remote_work']
+
     job.recruiter_name = form_data['recruiter_name']
     job.recruiter_email = form_data['recruiter_email']
+
+    job.populate_slug()
 
     if job.contact_method == 1:
         job.contact_url = form_data['contact_url']
     else:
         job.contact_email = form_data['contact_email']
-
-    job.populate_slug()
 
     populate_company(job, form_data)
     populate_location(job, form_data)

@@ -24,11 +24,11 @@
       </fieldset>
       <fieldset>
         <h4>Where is the job based?</h4>
-        <div class="field inline">
-          {{ form.location__city(placeholder="City", class_="small") }}
+        <div class="field inline" id="location-city-field">
+          {{ form.location__city(placeholder="Select or type a city..", class_="large") }}
         </div>
         <div class="field inline">
-          {{ form.location__country_code() }}
+          {{ form.location__country_code(class_="large") }}
         </div>
       </fieldset>
       <fieldset>
@@ -57,7 +57,7 @@
           includes your unique link for editing this job post later.
         </p>
         <div class="field">
-          {{ form.recruiter_name(placeholder="What's your name?") }}
+          {{ form.recruiter_name(placeholder="What's your full name?") }}
         </div>
         <div class="field">
           {{ form.recruiter_email(placeholder="What's your email?") }}
@@ -89,31 +89,100 @@
 {% block pagejs %}
   <script src="/static/js/selectize.min.js"></script>
   <script>
+    var LOCATIONS = {{ locations|tojson|safe }};
+  </script>
+  <script>
     (function($, window) {
       $(function() {
-        var defer = function(fn) {
-          window.setTimeout(fn, 0);
+        var $type = $('#job_type')
+          , $locationId = $('#location__id')
+          , $city = $('#location__city')
+          , $country = $('#location__country_code')
+          , $remote = $('#remote_work')
+          , $contact = $('#contact_method')
+          , $contactUrl = $('#contact_url')
+          , $contactEmail = $('#contact_email');
+
+        /*
+         * HELPERS
+         * -------
+         */
+
+        var findLocation = function(cityName) {
+          return _.find(LOCATIONS, function(location) {
+            return location.city == cityName;
+          });
         };
 
-        defer(function() {
-          $('#job_type').selectize();
-        });
+        var updateCities = function(countryCode) {
+          var selectize = $city.selectize()[0].selectize
+            , existingCity = $city.val();
 
-        defer(function() {
-          $('#location__country_code').selectize();
-        });
+          selectize.clearOptions();
 
-        defer(function() {
-          $('#remote_work').selectize();
-        });
-
-        defer(function() {
-          $('#contact_method').selectize({
-            onChange: function(value) {
-              $('#contact_url').toggle();
-              $('#contact_email').toggle();
-            }
+          _.each(LOCATIONS, function(location) {
+            if (location.country_code !== countryCode) return;
+            selectize.addOption(location);
           });
+
+          selectize.refreshOptions(false);
+
+          // If $city already has a *correct* value set (i.e we're in edit mode)
+          // we restore it.
+          var location = findLocation(existingCity);
+          if (location != null && location.country_code === countryCode) {
+            selectize.setValue(existingCity);
+          }
+        };
+
+        var onLocationChange = function(cityName) {
+          var location = findLocation(cityName);
+          $locationId.val(location != null ? location.id : null);
+          return location;
+        };
+
+        /*
+         * SELECTIZE
+         * ---------
+         */
+
+        $type.selectize();
+        $remote.selectize();
+
+        $city.selectize({
+          maxItems: 1,
+          valueField: 'city',
+          labelField: 'city',
+          searchField: ['city'],
+          openOnFocus: true,
+          create: true,
+          onChange: function(value) {
+            this.$input.attr('value', value);
+            onLocationChange(value);
+          }
+        });
+
+        $country.selectize({
+          onInitialize: function(a) {
+            updateCities(this.getValue());
+          },
+          onChange: function(value) {
+            updateCities(value);
+            onLocationChange();
+          }
+        });
+
+        $contact.selectize({
+          onInitialize: function(a) {
+            if (!_.isEmpty($contactEmail.val())) {
+              $contactUrl.toggle();
+              $contactEmail.toggle();
+            }
+          },
+          onChange: function(value) {
+            $contactUrl.toggle();
+            $contactEmail.toggle();
+          }
         });
       });
     }(jQuery, window));

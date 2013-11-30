@@ -32,11 +32,10 @@ class JobForm(Form):
                               choices=Job.REMOTE_WORK_OPTIONS.items(),
                               coerce=int)
 
-    #: Company id (populated if used for updating or auto-populated from a list
-    #: of autocomplete suggestions).
+    #: Company id (populated if used for updating).
     company__id = IntegerField('Company id',
-                               widget=HiddenInput(),
-                               validators=[Optional()])
+                                widget=HiddenInput(),
+                                validators=[Optional()])
 
     #: Company name (freetext).
     company__name = TextField('Company Name', validators=[DataRequired()])
