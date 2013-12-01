@@ -79,13 +79,16 @@ def app():
 
 @pytest.fixture(scope='function')
 def session(app, _db, request):
-    """Starts a new database session for a test."""
-    session = _db.session
+    """Starts a new database session within a transaction for a test."""
+    session = _db.create_scoped_session()
+    session.begin(subtransactions=True)
+
     def teardown():
-        # We make sure to rollback and remove the session after the test is
+        # We make sure to rollback and close the session after a test is
         # finished, so that tests do not affect each other.
         session.rollback()
         session.remove()
+
     request.addfinalizer(teardown)
     return session
 

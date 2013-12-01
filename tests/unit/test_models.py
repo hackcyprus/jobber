@@ -16,29 +16,27 @@ from jobber.core.utils import now
 from jobber.models import (Job,
                            Company,
                            Category,
-                           Location)
+                           Location,
+                           Tag)
 
 
 @pytest.fixture(scope='function')
 def location(session):
-    location = Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
-    session.add(location)
-    session.flush()
-    return location
+    return Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
 
 
 @pytest.fixture(scope='function')
 def company(session):
-    company = Company(name=u'remedica')
-    session.add(company)
-    session.flush()
-    return company
+    return Company(name=u'remedica')
 
 
 def test_company_model(company, session):
+    # Commit session for `company` fixture to be persisted.
+    session.add(company)
+    session.commit()
+
     name = u'remedica'
     assert company.id > 0
-    assert company.name == name
     assert company.website is None
     assert company.slug == normalize('NFKD', name)
     assert company.created <= now()
@@ -66,15 +64,19 @@ def test_company_slug_model_mixin():
 def test_duplicate_company(session):
     company = Company(name='foobar')
     session.add(company)
-    session.flush()
+    session.commit()
 
     with pytest.raises(IntegrityError):
         company = Company(name='foobar')
         session.add(company)
-        session.flush()
+        session.commit()
 
 
 def test_location_model(location, session):
+    # Commit session for `location` fixture to be persisted.
+    session.add(location)
+    session.commit()
+
     assert location.id > 0
     assert location.city == u'Lïｍáｓѕ߀ɭ'
     assert location.country_name == 'Cyprus'
@@ -99,14 +101,14 @@ def test_job_model(company, location, session):
               description=title,
               contact_method=1,
               remote_work=False,
-              company_id=company.id,
-              location_id=location.id,
+              company=company,
+              location=location,
               job_type=1,
               recruiter_name=recruiter_name,
               recruiter_email=recruiter_email)
 
     session.add(job)
-    session.flush()
+    session.commit()
 
     assert job.id > 0
     assert not job.published
@@ -153,13 +155,15 @@ def test_duplicate_job_model(company, location, session):
                   description=title,
                   contact_method=1,
                   remote_work=False,
-                  company_id=company.id,
-                  location_id=location.id,
+                  company=company,
+                  location=location,
                   job_type=1,
                   recruiter_name=u'Αλέκος',
                   recruiter_email=u'alekos@Κόκοτας.com')
+
         session.add(job)
-        session.flush()
+        session.commit()
+
         assert job.id > 0
         assert job.title == title
 

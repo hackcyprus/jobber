@@ -14,34 +14,25 @@ from jobber.models import Job, Company, Location
 
 @pytest.fixture(scope='function')
 def location(session):
-    location = Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
-    session.add(location)
-    session.flush()
-    return location
+    return Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
 
 
 @pytest.fixture(scope='function')
 def company(session):
-    company = Company(name=u'remedica')
-    session.add(company)
-    session.flush()
-    return company
+    return Company(name=u'remedica')
 
 
 @pytest.fixture(scope='function')
 def job(session, company, location):
-    job = Job(title='testfoo',
-              description='testfoo',
-              contact_method=1,
-              remote_work=False,
-              company_id=company.id,
-              location_id=location.id,
-              job_type=1,
-              recruiter_name=u'jon',
-              recruiter_email=u'doe')
-    session.add(job)
-    session.flush()
-    return job
+    return Job(title='testfoo',
+               description='testfoo',
+               contact_method=1,
+               remote_work=False,
+               company=company,
+               location=location,
+               job_type=1,
+               recruiter_name=u'jon',
+               recruiter_email=u'doe')
 
 
 def test_find_actions():
