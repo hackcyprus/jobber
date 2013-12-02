@@ -17,7 +17,7 @@ from env import path_setup
 path_setup()
 
 from jobber.factory import create_app
-from jobber.extensions import db
+from jobber.extensions import db as _db
 from jobber.script import blue
 
 
@@ -29,38 +29,8 @@ TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
 ALEMBIC_CONFIG = '/opt/jobber/alembic.ini'
 
 
-def apply_migrations():
-    """Applies all alembic migrations."""
-    config = Config(ALEMBIC_CONFIG)
-    upgrade(config, 'head')
-
-
 @pytest.fixture(scope='session')
-def _db(app, request):
-    """Session-wide test database."""
-    print blue('\nInitializing test database.')
-
-    # Make sure we delete any existing test database.
-    if os.path.exists(TESTDB_PATH):
-        os.unlink(TESTDB_PATH)
-
-    def teardown():
-        print blue('\nDropping all tables from test database.')
-        db.drop_all()
-        print blue('Deleting test database.')
-        os.unlink(TESTDB_PATH)
-
-    db.app = app
-
-    print blue('Applying migrations.')
-    apply_migrations()
-
-    request.addfinalizer(teardown)
-    return db
-
-
-@pytest.fixture(scope='session')
-def app():
+def app(request):
     """Session-wide test `Flask` application."""
     settings_override = {
         'TESTING': True,
@@ -71,22 +41,56 @@ def app():
     # Establish an application context before running the tests.
     ctx = app.app_context()
     ctx.push()
+
     def teardown():
         ctx.pop()
 
+    request.addfinalizer(teardown)
     return app
 
 
+def apply_migrations():
+    """Applies all alembic migrations."""
+    config = Config(ALEMBIC_CONFIG)
+    upgrade(config, 'head')
+
+
+@pytest.fixture(scope='session')
+def db(app, request):
+    """Session-wide test database."""
+    print blue('\nInitializing test database.')
+
+    # Make sure we delete any existing test database.
+    if os.path.exists(TESTDB_PATH):
+        os.unlink(TESTDB_PATH)
+
+    def teardown():
+        print blue('\nDropping all tables from test database.')
+        _db.drop_all()
+        print blue('Deleting test database.')
+        os.unlink(TESTDB_PATH)
+
+    print blue('Applying migrations.')
+    apply_migrations()
+
+    request.addfinalizer(teardown)
+    return _db
+
+
 @pytest.fixture(scope='function')
-def session(app, _db, request):
+def session(db, request):
     """Starts a new database session within a transaction for a test."""
-    session = _db.create_scoped_session()
-    session.begin(subtransactions=True)
+    connection = db.engine.connect()
+    transaction = connection.begin()
+
+    options = dict(bind=connection, binds={})
+    session = db.create_scoped_session(options=options)
 
     def teardown():
         # We make sure to rollback and close the session after a test is
         # finished, so that tests do not affect each other.
-        session.rollback()
+        transaction.rollback()
+        connection.close()
         session.remove()
 
     request.addfinalizer(teardown)

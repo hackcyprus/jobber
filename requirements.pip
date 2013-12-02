@@ -1,6 +1,6 @@
 Flask==0.10.1
 Flask-Mail==0.9.0
-Flask-SQLAlchemy==1.0
+git+git://github.com/mitsuhiko/flask-sqlalchemy.git@0df8caec04c6812f6bf427cddc5e55d042a4e94f
 Flask-WTF==0.9.3
 Jinja2==2.7.1
 Mako==0.9.0
