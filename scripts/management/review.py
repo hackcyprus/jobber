@@ -30,6 +30,8 @@ def make_summary(job):
     City: {city}
     Country Code: {country_code}
 
+    Tags: {tags}
+
     Published: {published}
 
     Description
@@ -48,6 +50,7 @@ def make_summary(job):
         'city': job.location.city,
         'country_code': job.location.country_code,
         'edit_link': '/edit/{}'.format(job.admin_url),
+        'tags': u', '.join(job.tag_slugs),
         'published': job.published
     })
 
@@ -57,7 +60,7 @@ def main(job_id, session):
     if not job:
         die("Job ({}) does not exist.".format(job_id))
 
-    print "You're reviewing the follow job:"
+    print "You're reviewing the following job:"
     print make_summary(job)
 
     action = 'publish' if not job.published else 'unpublish'
