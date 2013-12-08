@@ -33,6 +33,7 @@ def main(should_create, session):
 
     start = time.time()
     jobs = map(lambda job: job.to_document(), Job.query.all())
+
     index.add_document_bulk(jobs)
     duration = time.time() - start
 

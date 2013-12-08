@@ -190,6 +190,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     def admin_url(self):
         return u"{}/{}".format(self.id, self.admin_token)
 
+    @property
+    def tag_slugs(self):
+        return [tag.slug for tag in self.tags]
+
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):
         if job_type not in self.JOB_TYPES:
@@ -232,8 +236,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'id': unicode(self.id),
             'title': self.title,
             'company': self.company.name,
-            'location': u"{} {}".format(self.location.city, self.location.country_name),
-            'job_type': self.human_job_type
+            'location': u"{},{}".format(self.location.city, self.location.country_name),
+            'job_type': self.human_job_type,
+            'tags': u','.join(self.tag_slugs)
         }
 
 

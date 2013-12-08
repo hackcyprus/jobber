@@ -19,7 +19,7 @@ from jobber.conf import settings
 # Since we're using a `Multifield` query parser, we need to define which fields
 # to search for. These are generally all the fields in the schema apart from
 # job id.
-SEARCHABLE_FIELDS = ('title', 'description', 'company', 'location', 'job_type')
+SEARCHABLE_FIELDS = ('title', 'description', 'company', 'location', 'job_type', 'tags')
 
 
 # Global reference to the stemming analyizer we'll use in the schema.
@@ -63,10 +63,13 @@ class Schema(SchemaClass):
     company = TEXT(analyzer=stemming_analyzer)
 
     #: Location as a comma-separated string of city and country.
-    location = KEYWORD(lowercase=True, scorable=True)
+    location = KEYWORD(lowercase=True, scorable=True, commas=True)
 
     #: The type of job.
     job_type = TEXT(analyzer=stemming_analyzer)
+
+    #: The job tags as a comma-separated string of tag slugs.
+    tags = KEYWORD(lowercase=True, scorable=True, commas=True)
 
 
 class SearchableMixin(object):
