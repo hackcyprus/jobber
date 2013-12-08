@@ -1,0 +1,17 @@
+// tags
+div.tags {
+  a.tag {
+    font-size: 0.75em;
+    padding: 3px 6px;
+    .border-radius(3px);
+    background-color: @rule;
+    color: darken(@rule, 45%);
+    font-weight: 700;
+
+    &:hover {
+        background-color: darken(@rule, 15%);
+        border: none;
+        color: darken(@rule, 60%);
+    }
+  }
+}

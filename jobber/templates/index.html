@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% from 'macros.html' import tags %}
+
 {% set jobs_count = jobs|count %}
 
 {% block content %}
@@ -25,13 +27,7 @@
               {{ job.company.name }} &mdash;
               {{ job.location.city }}, {{ job.location.country_name }}
             </p>
-            {% if job.tags %}
-              <div class="tags">
-                {% for tag in job.tags %}
-                  <a class="tag" href="/search/{{ tag.slug }}">{{ tag.tag }}</a>
-                {% endfor %}
-              </div>
-            {% endif %}
+            {{ tags(job) }}
           </td>
           <td class="right">
               <h4 class="job-type">{{ job.human_job_type }}</h4>

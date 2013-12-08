@@ -1091,9 +1091,27 @@ footer .copy {
   float: right;
   font-size: 0.75em;
 }
+div.tags a.tag {
+  font-size: 0.75em;
+  padding: 3px 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background-color: #dee1e4;
+  color: #646d79;
+  font-weight: 700;
+}
+div.tags a.tag:hover {
+  background-color: #b4bac1;
+  border: none;
+  color: #41474f;
+}
 #search-results h1 {
   padding: 0;
-  margin: 0 0 33px 0;
+  margin: 0 0 14px 0;
 }
 #search-results table {
   width: 100%;
@@ -1116,24 +1134,6 @@ footer .copy {
 #search-results tr.job td.left div.tags {
   margin-top: 10px;
 }
-#search-results tr.job td.left a.tag {
-  font-size: 0.75em;
-  padding: 3px 6px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  background-color: #dee1e4;
-  color: #646d79;
-  font-weight: 700;
-}
-#search-results tr.job td.left a.tag:hover {
-  background-color: #b4bac1;
-  border: none;
-  color: #41474f;
-}
 #search-results tr.job td.right {
   width: 20%;
   text-align: right;
@@ -1154,13 +1154,18 @@ footer .copy {
   padding: 0;
   color: #6f7a87;
 }
-#job h1 {
-  margin: 0;
-  padding: 0 0 33px 0;
-  border-bottom: 1px solid #dee1e4;
-}
 #job p {
   font-size: 0.875em;
+}
+#job div.job-header {
+  border-bottom: 1px solid #dee1e4;
+}
+#job div.job-header h1 {
+  margin: 0;
+  padding: 0 0 14px 0;
+}
+#job div.job-header div.tags {
+  padding-bottom: 18px;
 }
 #job div.job-description {
   float: left;

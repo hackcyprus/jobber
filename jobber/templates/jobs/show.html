@@ -1,8 +1,13 @@
 {% extends "layout.html" %}
 
+{% from 'macros.html' import tags %}
+
 {% block content %}
   <div id="job" class="clearfix">
-    <h1>{{ job.title }} <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
+    <div class="job-header">
+      <h1>{{ job.title }} <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
+      {{ tags(job) }}
+    </div>
     <div class="job-body clearfix">
       <h4>{{ job.location.city }}, {{ job.location.country_name }}
         &mdash;

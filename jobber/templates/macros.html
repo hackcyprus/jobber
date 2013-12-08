@@ -1,0 +1,9 @@
+{% macro tags(job) %}
+    {% if job.tags %}
+      <div class="tags">
+        {% for tag in job.tags %}
+          <a class="tag" href="/search/{{ tag.slug }}">{{ tag.tag }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+{% endmacro %}
