@@ -212,24 +212,104 @@ def test_category_model(session):
     assert category.slug == u'foo-bar'
     assert category.created <= now()
 
-    category = Category(name=name, slug='forced')
+    category = Category(name=name, slug=u'forced')
     assert category.name == name
-    assert category.slug == 'forced'
+    assert category.slug == u'forced'
     assert category.created <= now()
 
     session.add(category)
-    session.flush()
+    session.commit()
+
     assert category.id > 0
     assert category.name == name
     assert category.created <= now()
 
 
 def test_duplicate_category(session):
-    category = Category(name='foobar')
+    category = Category(name=u'foobar')
     session.add(category)
-    session.flush()
+    session.commit()
 
     with pytest.raises(IntegrityError):
-        category = Category(name='foobar')
+        category = Category(name=u'foobar')
         session.add(category)
-        session.flush()
+        session.commit()
+
+
+def test_tag_model(session):
+    tag_name = u'foo bar'
+    tag = Tag(tag=tag_name)
+
+    session.add(tag)
+    session.commit()
+
+    assert tag.tag == tag_name
+    assert tag.slug == u'foo-bar'
+    assert tag.created <= now()
+
+
+def test_duplicate_tag(session):
+    tag = Tag(tag=u'dup')
+    session.add(tag)
+    session.commit()
+
+    with pytest.raises(IntegrityError):
+        tag = Tag(tag=u'dup')
+        session.add(tag)
+        session.commit()
+
+
+def test_adding_tag(session, company, location):
+    one = Tag(tag=u'one')
+
+    # Test adding tags via the constructor.
+    job = Job(title=u'foo',
+              description=u'foo',
+              contact_method=1,
+              remote_work=False,
+              company=company,
+              location=location,
+              job_type=1,
+              recruiter_name=u'foo bar',
+              recruiter_email=u'foo@fooland.com',
+              tags=[one])
+
+    # Try to add one existing and two new tags.
+    tags = job.add_tags([u'one', u'two', u'three'])
+
+    session.add(job)
+    session.commit()
+
+    assert len(job.tags) == 3
+    for tag in tags:
+        assert tag in job.tags
+
+
+def test_removing_tag(session, company, location):
+    one = Tag(tag=u'one')
+    two = Tag(tag=u'two')
+
+    # Test adding tags via the constructor.
+    job = Job(title=u'foo',
+              description=u'foo',
+              contact_method=1,
+              remote_work=False,
+              company=company,
+              location=location,
+              job_type=1,
+              recruiter_name=u'foo bar',
+              recruiter_email=u'foo@fooland.com',
+              tags=[one, two])
+
+    session.add(job)
+
+    job.tags.remove(one)
+
+    # Removing a non-existing tag should throw an exception.
+    with pytest.raises(ValueError):
+        job.tags.remove(Tag(tag=u'three'))
+
+    session.commit()
+
+    assert len(job.tags) == 1
+    assert one not in job.tags

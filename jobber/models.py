@@ -4,6 +4,8 @@ jobber.models
 
 Model declarations.
 
+This file is pending a move to the `core` package.
+
 """
 import uuid
 import hashlib
@@ -12,6 +14,7 @@ from pprint import pformat
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
 from jobber.core.utils import Mapping, slugify, now, ArrowDateTime
+from jobber.core.models.helpers import job_tags_relation
 
 
 class BaseModel(db.Model):
@@ -63,6 +66,11 @@ class SlugModelMixin(object):
 class UniqueSlugModelMixin(SlugModelMixin):
     """Forces `slug` to be unique."""
     slug = db.Column(db.Unicode(125), nullable=False, unique=True, index=True)
+
+
+class PrimaryKeySlugModelMixin(SlugModelMixin):
+    """Forces `slug` to be the primary key."""
+    slug = db.Column(db.Unicode(125), nullable=False, primary_key=True)
 
 
 class Company(BaseModel, UniqueSlugModelMixin):
@@ -152,6 +160,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     #: Location id as a foreign key relationship.
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 
+    #: Many-to-many relationship to `Tag`.
+    tags = db.relationship('Tag', secondary=job_tags_relation, backref='jobs')
+
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
@@ -191,10 +202,30 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             raise ValueError("'{}'' is not a valid contact method.".format(contact_method))
         return contact_method
 
-    def make_admin_token(cls):
+    def make_admin_token(self):
         """Makes an admin token by getting the SHA-1 hash of a `uuid`."""
         rnd = uuid.uuid4().hex
         return hashlib.sha1(rnd).hexdigest()
+
+    def add_tag(self, tag):
+        slug = slugify(tag)
+        instance = Tag.query.get(slug)
+
+        if instance is None:
+            instance = Tag(tag=tag, slug=slug)
+
+        if instance not in self.tags:
+            self.tags.append(instance)
+
+        return instance
+
+    def add_tags(self, tags):
+        ret = []
+        for tag in tags:
+            tag = self.add_tag(tag)
+            if tag:
+                ret.append(tag)
+        return ret
 
     def to_document(self):
         return {
@@ -253,3 +284,19 @@ class Location(BaseModel):
         if country_code not in self.COUNTRIES:
             raise ValueError("'{}'' is not a valid country code.".format(country_code))
         return country_code
+
+
+class Tag(BaseModel, PrimaryKeySlugModelMixin):
+    __tablename__ = 'tags'
+
+    SLUG_FIELD = 'tag'
+
+    #: Tag readable name.
+    tag = db.Column(db.Unicode(75), nullable=False)
+
+    def __init__(self, *args, **kwargs):
+        super(Tag, self).__init__(*args, **kwargs)
+        PrimaryKeySlugModelMixin.__init__(self, **kwargs)
+
+    def __eq__(self, tag):
+        return self.slug == tag.slug
