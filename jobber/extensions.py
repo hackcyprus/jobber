@@ -17,7 +17,7 @@ class _SignallingSession(SignallingSession):
     in the `options` keyword arguments.
 
     """
-    def __init__(self, db, autocommit=False, autoflush=True, **options):
+    def __init__(self, db, autocommit=False, autoflush=False, **options):
         self.app = db.get_app()
         self._model_changes = {}
         self.emit_modification_signals = \
