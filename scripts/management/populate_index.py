@@ -3,10 +3,11 @@ Populates the `jobs` index. So far we've got only one index so this script
 knows how to do one thing well.
 
 Usage:
-    populate_index.py [--create]
+    populate_index.py [--create] [--published]
 
 Options:
-    --create  Whether the index should be re-created.
+    --create     Whether the index should be re-created.
+    --published  Index only published jobs.
 
 """
 import time
@@ -20,7 +21,7 @@ from jobber.models import Job
 from jobber.core.search import Index, Schema
 
 
-def main(should_create, session):
+def main(should_create, only_published, session):
     if should_create:
         print blue("You've asked to (re)create index '{}'.".format(Index.name))
         schema = Schema()
@@ -32,7 +33,10 @@ def main(should_create, session):
     index = Index()
 
     start = time.time()
-    jobs = map(lambda job: job.to_document(), Job.query.all())
+    jobs = [
+        job.to_document() for job in Job.query.all()
+        if (not only_published) or (only_published and job.published)
+    ]
 
     index.add_document_bulk(jobs)
     duration = time.time() - start
@@ -43,4 +47,5 @@ def main(should_create, session):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     should_create = arguments['--create']
-    run(main, should_create)
+    only_published = arguments['--published']
+    run(main, should_create, only_published)
