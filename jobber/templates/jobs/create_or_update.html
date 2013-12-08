@@ -42,6 +42,16 @@
         </div>
       </fieldset>
       <fieldset>
+        <h4>Tag your post</h4>
+        <p class="help-text">
+          Adding tags to your post will make it easier to find and provide a quick summary of the job to
+          potential candidates. Example tags are `python`, `mysql`, `embedded`.
+        </p>
+        <div class="field" id="tags-field">
+          {{ form.tags() }}
+        </div>
+      </fieldset>
+      <fieldset>
         <h4>Some details on your company</h4>
         <div class="field">
           {{ form.company__name(placeholder="What's the name of your company?") }}
@@ -89,10 +99,12 @@
 {% block pagejs %}
   <script src="/static/js/selectize.min.js"></script>
   <script>
-    var LOCATIONS = {{ locations|tojson|safe }};
+    var LOCATIONS = {{ locations|tojson|safe }}
+      , TAGS = {{ tags|tojson|safe }};
   </script>
   <script>
     (function($, window) {
+
       $(function() {
         var $type = $('#job_type')
           , $locationId = $('#location__id')
@@ -101,7 +113,8 @@
           , $remote = $('#remote_work')
           , $contact = $('#contact_method')
           , $contactUrl = $('#contact_url')
-          , $contactEmail = $('#contact_email');
+          , $contactEmail = $('#contact_email')
+          , $tags = $('#tags');
 
         /*
          * HELPERS
@@ -184,6 +197,16 @@
             $contactEmail.toggle();
           }
         });
+
+        $tags.selectize({
+          delimiter: ',',
+          valueField: 'slug',
+          labelField: 'tag',
+          searchField: ['tag', 'slug'],
+          create: true,
+          options: TAGS
+        });
+
       });
     }(jQuery, window));
   </script>

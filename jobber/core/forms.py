@@ -1,9 +1,22 @@
-from wtforms import TextField, SelectField, IntegerField
+from wtforms import Field, TextField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, Optional, URL
-from wtforms.widgets import HiddenInput, TextArea
+from wtforms.widgets import HiddenInput, TextArea, TextInput
 from flask.ext.wtf import Form
 
 from jobber.models import Job, Location
+from jobber.core.utils import parse_tags
+
+
+class TagListField(Field):
+    widget = TextInput()
+
+    def _value(self):
+        return u','.join([tag.slug for tag in self.data]) if self.data else u''
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            valuelist = valuelist[0]
+        self.data = parse_tags(valuelist)
 
 
 class JobForm(Form):
@@ -73,3 +86,6 @@ class JobForm(Form):
 
     #: Recruiter email (email obviously).
     recruiter_email = TextField('Recruiter Email', validators=[Email()])
+
+    #: Job tags.
+    tags = TagListField('Tags', validators=[Optional()])

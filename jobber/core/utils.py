@@ -62,6 +62,20 @@ def transpose_dict(d):
     return {v: k for k, v in d.iteritems()}
 
 
+def parse_tags(tagstring, delim=','):
+    """Splits a `tagstring` where tags are delimited by `delim`, returning a
+    list of unique tags.
+
+    :param tagstring: A string containing tags.
+    :param delim: The delimiter for each tag in tagstring.
+
+    """
+    if not tagstring:
+        return []
+    uniq = set(tag.lower() for tag in tagstring.split(delim))
+    return list(uniq)
+
+
 class Mapping(object):
     """A convenient wrapper dict-like object which provides a two-way mapping
     from a `dict`.

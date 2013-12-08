@@ -5,9 +5,8 @@ jobber.view_helpers
 Utility functions for views.
 
 """
-from jobber.models import Job, Company, Location
+from jobber.models import Job, Company, Location, Tag
 from jobber.core.forms import JobForm
-from jobber.extensions import db
 
 
 def get_location_context():
@@ -15,6 +14,13 @@ def get_location_context():
     return [
         dict(id=location.id, city=location.city, country_code=location.country_code)
         for location in Location.query.all()
+    ]
+
+
+def get_tag_context():
+    """Returns tags data for the create/edit form."""
+    return [
+        dict(slug=tag.slug, tag=tag.tag) for tag in Tag.query.all()
     ]
 
 
@@ -59,7 +65,6 @@ def populate_company(job, form_data):
         name = form_data['company__name']
         website = form_data.get('company__website')
         company = Company(name=name, website=website)
-        db.session.add(company)
 
     job.company = company
 
@@ -84,7 +89,6 @@ def populate_location(job, form_data):
         city = form_data['location__city']
         country_code = form_data['location__country_code']
         location = Location(city=city, country_code=country_code)
-        db.session.add(location)
 
     job.location = location
 
@@ -97,7 +101,6 @@ def populate_job(form, job=None):
     """
     if job is None:
         job = Job()
-        db.session.add(job)
 
     form_data = form.data
 
@@ -106,6 +109,8 @@ def populate_job(form, job=None):
     job.job_type = form_data['job_type']
     job.contact_method = form_data['contact_method']
     job.remote_work = form_data['remote_work']
+
+    job.replace_tags(form_data['tags'])
 
     job.recruiter_name = form_data['recruiter_name']
     job.recruiter_email = form_data['recruiter_email']

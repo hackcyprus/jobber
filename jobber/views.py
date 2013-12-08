@@ -15,8 +15,12 @@ from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.extensions import db
 from jobber.view_helpers import (get_location_context,
+                                 get_tag_context,
                                  populate_job,
                                  populate_form)
+
+
+CREATE_OR_UPDATE_PROMPT = u'Great jobs, great people.'
 
 
 PROMPTS = [
@@ -68,13 +72,18 @@ def search(query):
 def create():
     form = JobForm()
     locations = get_location_context()
+    tags = get_tag_context()
 
     if form.validate_on_submit():
         populate_job(form)
         db.session.commit()
         return redirect('/submitted')
 
-    return render_template('jobs/create_or_update.html', form=form, locations=locations)
+    return render_template('jobs/create_or_update.html',
+                           form=form,
+                           locations=locations,
+                           tags=tags,
+                           prompt=CREATE_OR_UPDATE_PROMPT)
 
 
 @app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
@@ -86,14 +95,20 @@ def update(job_id, token):
 
     form = populate_form(job)
     locations = get_location_context()
+    tags = get_tag_context()
 
     if form.validate_on_submit():
-        populate_job(form, job=job)
+        job = populate_job(form, job=job)
+        db.session.add(job)
         db.session.commit()
         return redirect('/submitted')
 
-    return render_template('jobs/create_or_update.html', form=form,
-                           token=token, locations=locations)
+    return render_template('jobs/create_or_update.html',
+                           form=form,
+                           token=token,
+                           locations=locations,
+                           tags=tags,
+                           prompt=CREATE_OR_UPDATE_PROMPT)
 
 
 @app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')

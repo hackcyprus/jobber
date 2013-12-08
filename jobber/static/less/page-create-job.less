@@ -25,7 +25,8 @@
             position: relative;
             margin-top: 1.5em;
 
-            input[type="text"], textarea {
+            input[type="text"], textarea,
+            .selectize-control.multi .selectize-input {
                 border: 2px solid @rule;
                 padding: 8px;
                 width: 508px;
@@ -36,6 +37,12 @@
                 }
                 &.small {
                     width: 200px;
+                }
+            }
+
+            .selectize-control.multi .selectize-input {
+                .item {
+                    margin-bottom: 0;
                 }
             }
 
@@ -76,13 +83,19 @@
         }
 
         #remote-work-field {
-            margin-left: 92px;
+            margin-left: 75px;
             span {
                 font-size: 14px;
                 margin-right: 10px;
             }
             .selectize-control {
                 width: 110px;
+            }
+        }
+
+        #tags-field {
+            .selectize-input {
+
             }
         }
 
