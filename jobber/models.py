@@ -208,15 +208,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return hashlib.sha1(rnd).hexdigest()
 
     def add_tag(self, tag):
-        slug = slugify(tag)
-        instance = Tag.query.get(slug)
-
-        if instance is None:
-            instance = Tag(tag=tag, slug=slug)
-
+        instance = Tag.get_or_create(tag)
         if instance not in self.tags:
             self.tags.append(instance)
-
         return instance
 
     def add_tags(self, tags):
@@ -226,6 +220,12 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             if tag:
                 ret.append(tag)
         return ret
+
+    def replace_tags(self, tags):
+        while self.tags:
+            tag = self.tags[0]
+            self.tags.remove(tag)
+        self.add_tags(tags)
 
     def to_document(self):
         return {
@@ -300,3 +300,11 @@ class Tag(BaseModel, PrimaryKeySlugModelMixin):
 
     def __eq__(self, tag):
         return self.slug == tag.slug
+
+    @classmethod
+    def get_or_create(cls, tag):
+        slug = slugify(tag)
+        instance = Tag.query.get(slug)
+        if instance is None:
+            instance = Tag(tag=tag, slug=slug)
+        return instance

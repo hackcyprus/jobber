@@ -285,7 +285,7 @@ def test_adding_tag(session, company, location):
         assert tag in job.tags
 
 
-def test_removing_tag(session, company, location):
+def test_replacing_tag(session, company, location):
     one = Tag(tag=u'one')
     two = Tag(tag=u'two')
 
@@ -301,15 +301,11 @@ def test_removing_tag(session, company, location):
               recruiter_email=u'foo@fooland.com',
               tags=[one, two])
 
+    job.replace_tags([u'three'])
+
     session.add(job)
-
-    job.tags.remove(one)
-
-    # Removing a non-existing tag should throw an exception.
-    with pytest.raises(ValueError):
-        job.tags.remove(Tag(tag=u'three'))
-
     session.commit()
 
     assert len(job.tags) == 1
     assert one not in job.tags
+    assert two not in job.tags
