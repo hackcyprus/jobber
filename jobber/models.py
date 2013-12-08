@@ -212,12 +212,22 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return hashlib.sha1(rnd).hexdigest()
 
     def add_tag(self, tag):
+        """Adds a new tag to this job.
+
+        :param tag: A string.
+
+        """
         instance = Tag.get_or_create(tag)
         if instance not in self.tags:
             self.tags.append(instance)
         return instance
 
     def add_tags(self, tags):
+        """Adds multiple tags by utilizing `add_tag()`.
+
+        :param tags: A list of strings.
+
+        """
         ret = []
         for tag in tags:
             tag = self.add_tag(tag)
@@ -226,6 +236,11 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return ret
 
     def replace_tags(self, tags):
+        """Replaces current tags with `tags`.
+
+        :param tags: A list of strings.
+
+        """
         while self.tags:
             tag = self.tags[0]
             self.tags.remove(tag)

@@ -64,17 +64,25 @@ def transpose_dict(d):
 
 def parse_tags(tagstring, delim=','):
     """Splits a `tagstring` where tags are delimited by `delim`, returning a
-    list of unique tags.
+    list of unique tags while preserving the order in `tagstring`.
 
     :param tagstring: A string containing tags.
     :param delim: The delimiter for each tag in tagstring.
 
     """
-    if not tagstring:
-        return []
-    uniq = set(tag.lower() for tag in tagstring.split(delim))
-    return list(uniq)
+    tags = []
 
+    if not tagstring:
+        return tags
+
+    seen = set()
+    for tag in tagstring.split(delim):
+        tag = tag.strip().lower()
+        if tag not in seen:
+            seen.add(tag)
+            tags.append(tag)
+
+    return tags
 
 class Mapping(object):
     """A convenient wrapper dict-like object which provides a two-way mapping

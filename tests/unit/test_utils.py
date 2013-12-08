@@ -77,3 +77,12 @@ def test_mapping():
     assert mapping.inverse('foo') == 1
     assert mapping.inverse('bar') == 2
     assert mapping.items() == [(1, 'foo'), (2, 'bar')]
+
+def test_tag_parser():
+    assert utils.parse_tags('') == []
+    assert utils.parse_tags(None) == []
+    assert utils.parse_tags('one') == ['one']
+    assert utils.parse_tags('one, two') == ['one', 'two']
+    assert utils.parse_tags('one,two') == ['one', 'two']
+    assert utils.parse_tags('one,two,two') == ['one', 'two']
+    assert utils.parse_tags('one two', delim=' ') == ['one', 'two']
