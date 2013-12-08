@@ -1106,12 +1106,33 @@ footer .copy {
   font-size: 0.875em;
 }
 #search-results tr.job td {
-  padding: 17px 0px 17px 0;
+  padding: 23px 0px 23px 0;
   vertical-align: top;
   border-bottom: 1px solid #dee1e4;
 }
 #search-results tr.job td.left {
   width: 80%;
+}
+#search-results tr.job td.left div.tags {
+  margin-top: 10px;
+}
+#search-results tr.job td.left a.tag {
+  font-size: 0.75em;
+  padding: 3px 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background-color: #dee1e4;
+  color: #646d79;
+  font-weight: 700;
+}
+#search-results tr.job td.left a.tag:hover {
+  background-color: #b4bac1;
+  border: none;
+  color: #41474f;
 }
 #search-results tr.job td.right {
   width: 20%;

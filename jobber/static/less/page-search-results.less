@@ -21,12 +21,31 @@
         }
 
         td {
-            padding: 17px 0px 17px 0;
+            padding: 23px 0px 23px 0;
             vertical-align: top;
             border-bottom: 1px solid @rule;
 
             &.left {
                 width: 80%;
+
+                div.tags {
+                    margin-top: 10px;
+                }
+
+                a.tag {
+                    font-size: 0.75em;
+                    padding: 3px 6px;
+                    .border-radius(3px);
+                    background-color: @rule;
+                    color: darken(@rule, 45%);
+                    font-weight: 700;
+
+                    &:hover {
+                        background-color: darken(@rule, 15%);
+                        border: none;
+                        color: darken(@rule, 60%);
+                    }
+                }
             }
 
             &.right {
