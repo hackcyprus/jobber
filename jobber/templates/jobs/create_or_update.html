@@ -42,13 +42,13 @@
         </div>
       </fieldset>
       <fieldset>
-        <h4>Tag your post</h4>
+        <h4>Add relevant tags</h4>
         <p class="help-text">
-          Adding tags to your post will make it easier to find and provide a quick summary of the job to
-          potential candidates. Example tags are `python`, `mysql`, `embedded`.
+          Adding some tags relevant to the job will make the job easier to find and provide a quick summary to
+          potential candidates.
         </p>
         <div class="field" id="tags-field">
-          {{ form.tags() }}
+          {{ form.tags(placeholder="Type some tags, for example 'python'") }}
         </div>
       </fieldset>
       <fieldset>
