@@ -1294,6 +1294,15 @@ div.tags a.tag:hover {
 #create-job form #remote-work-field .selectize-control {
   width: 110px;
 }
+#create-job form #description-field textarea {
+  border-top: none;
+}
+#create-job form #description-toolbar {
+  padding: 8px 4px;
+  font-size: 0.75em;
+  background-color: #eceeef;
+  border: 2px solid #dee1e4;
+}
 #create-job form #contact-method-field .selectize-control {
   width: 80px;
 }

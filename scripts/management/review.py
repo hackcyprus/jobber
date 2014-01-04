@@ -54,6 +54,7 @@ def make_summary(job):
         'published': job.published
     })
 
+
 def main(job_id, session):
     job = Job.query.get(job_id)
 

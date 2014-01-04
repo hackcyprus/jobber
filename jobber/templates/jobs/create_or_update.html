@@ -37,8 +37,21 @@
           Don't forget that the effort you put into the job spec will have a direct effect on the
           amount and quality of candidates you will receive.
         </p>
-        <div class="field">
-          {{ form.description(rows=14, placeholder="Write a clear and concise description of the job.") }}
+        <div class="field" id="description-field">
+          <!-- Toolbar for the description textarea -->
+          <div id="description-toolbar" style="display: none;">
+            <a data-wysihtml5-command="bold">bold</a>
+            <a data-wysihtml5-command="italic">italic</a>
+            <a data-wysihtml5-command="createLink">insert link</a>
+            <div data-wysihtml5-dialog="createLink" style="display: none;">
+              <label>
+                Link:
+                <input data-wysihtml5-dialog-field="href" value="http://" class="text">
+              </label>
+              <a data-wysihtml5-dialog-action="save">OK</a> <a data-wysihtml5-dialog-action="cancel">Cancel</a>
+            </div>
+          </div>
+          {{ form.description(rows=14, placeholder="Write a clear and concise description of the job") }}
         </div>
       </fieldset>
       <fieldset>
@@ -97,7 +110,9 @@
 {% endblock %}
 
 {% block pagejs %}
-  <script src="/static/js/selectize.min.js"></script>
+  <script src="/static/js/vendor/selectize/selectize.min.js"></script>
+  <script src="/static/js/vendor/wysihtml5/rules.js"></script>
+  <script src="/static/js/vendor/wysihtml5/wysihtml5-0.3.0.min.js"></script>
   <script>
     var LOCATIONS = {{ locations|tojson|safe }}
       , TAGS = {{ tags|tojson|safe }};
@@ -205,6 +220,16 @@
           searchField: ['tag', 'slug'],
           create: true,
           options: TAGS
+        });
+
+        /*
+         * WYSIHTML5
+         * ---------
+         */
+
+        var editor = new wysihtml5.Editor('description', {
+          toolbar: "description-toolbar",
+          parserRules:  wysihtml5ParserRules // defined in parser rules set
         });
 
       });
