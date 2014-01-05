@@ -18,7 +18,7 @@ from jobber.models import Job
 
 
 def make_summary(job):
-    summary = """
+    summary = u"""
     Title: {title}
 
     Type: {job_type}

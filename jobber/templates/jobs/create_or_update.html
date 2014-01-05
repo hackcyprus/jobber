@@ -42,14 +42,11 @@
           <div id="description-toolbar" style="display: none;">
             <a data-wysihtml5-command="bold">bold</a>
             <a data-wysihtml5-command="italic">italic</a>
-            <a data-wysihtml5-command="createLink">insert link</a>
-            <div data-wysihtml5-dialog="createLink" style="display: none;">
-              <label>
-                Link:
-                <input data-wysihtml5-dialog-field="href" value="http://" class="text">
-              </label>
-              <a data-wysihtml5-dialog-action="save">OK</a> <a data-wysihtml5-dialog-action="cancel">Cancel</a>
-            </div>
+            <a data-wysihtml5-command="underline">underline</a>
+            <a data-wysihtml5-command="insertOrderedList">olist</a>
+            <a data-wysihtml5-command="insertUnorderedList">ulist</a>
+            <a data-wysihtml5-command="undo">undo</a>
+            <a data-wysihtml5-command="redo">redo</a>
           </div>
           {{ form.description(rows=14, placeholder="Write a clear and concise description of the job") }}
         </div>
@@ -226,10 +223,14 @@
          * WYSIHTML5
          * ---------
          */
-
         var editor = new wysihtml5.Editor('description', {
-          toolbar: "description-toolbar",
-          parserRules:  wysihtml5ParserRules // defined in parser rules set
+          toolbar: 'description-toolbar',
+          parserRules:  wysihtml5ParserRules,
+          stylesheets: [
+            'https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700',
+            '/static/css/editor.css'
+          ]
+
         });
 
       });
