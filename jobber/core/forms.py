@@ -4,7 +4,7 @@ from wtforms.widgets import HiddenInput, TextArea, TextInput
 from flask.ext.wtf import Form
 
 from jobber.models import Job, Location
-from jobber.core.utils import parse_tags
+from jobber.core.utils import parse_tags, clean_html
 
 
 class TagListField(Field):
@@ -31,7 +31,8 @@ class JobForm(Form):
     #: Job description.
     description = TextField('Description',
                             widget=TextArea(),
-                            validators=[DataRequired()])
+                            validators=[DataRequired()],
+                            filters=[clean_html])
 
     #: Job Type (full time, part time, contract or internship).
     job_type = SelectField('Job Type',

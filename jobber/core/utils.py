@@ -11,9 +11,15 @@ from unicodedata import normalize
 
 import sqlalchemy.types as types
 import arrow
+import bleach
 
 
 PUNCTUATION_REGEX = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
+
+ALLOWED_TAGS =  [
+    'a', 'abbr', 'acronym', 'b', 'blockquote', 'br', 'code',
+    'div', 'em', 'i', 'li', 'ol', 'p', 'span', 'strong', 'ul'
+]
 
 
 def compose(*funcs):
@@ -83,6 +89,16 @@ def parse_tags(tagstring, delim=','):
             tags.append(tag)
 
     return tags
+
+
+def clean_html(html):
+    """Cleans an HTML fragment to include only allowed tags and attributes.
+
+    :param html: An HTML string.
+
+    """
+    return bleach.clean(html, tags=ALLOWED_TAGS, strip=True)
+
 
 class Mapping(object):
     """A convenient wrapper dict-like object which provides a two-way mapping

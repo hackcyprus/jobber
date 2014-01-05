@@ -78,6 +78,7 @@ def test_mapping():
     assert mapping.inverse('bar') == 2
     assert mapping.items() == [(1, 'foo'), (2, 'bar')]
 
+
 def test_tag_parser():
     assert utils.parse_tags('') == []
     assert utils.parse_tags(None) == []
@@ -86,3 +87,11 @@ def test_tag_parser():
     assert utils.parse_tags('one,two') == ['one', 'two']
     assert utils.parse_tags('one,two,two') == ['one', 'two']
     assert utils.parse_tags('one two', delim=' ') == ['one', 'two']
+
+
+def test_clean_html():
+    assert utils.clean_html('<div>a</div>') == '<div>a</div>'
+    assert utils.clean_html('<div class="b">a</div>') == '<div>a</div>'
+    assert utils.clean_html('<a href="b">a</a>') == '<a href="b">a</a>'
+    assert utils.clean_html('<script>a</script>') == 'a'
+    assert utils.clean_html('<script src="b">a</script>') == 'a'
