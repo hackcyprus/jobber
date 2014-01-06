@@ -68,9 +68,9 @@ def send_instructory_email(job):
     :param job: A 'Job' instance.
 
     """
-    recipients = [job.recruiter_email]
-    context = dict(job=job)
-    send_email_template('instructory', context, recipients)
+    recipient = job.recruiter_email
+    app.logger.info("About to send instructory email to '%s'.".format(recipient))
+    send_email_template('instructory', dict(job=job), [recipient])
 
 
 @models_committed.connect_via(app._get_current_object())
