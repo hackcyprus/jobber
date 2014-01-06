@@ -66,8 +66,13 @@ def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
 
+    mock_email_send = MagicMock()
+    monkeypatch.setattr(signals, 'send_email_template', mock_email_send)
+
     changes = [(job, 'insert')]
     signals.on_models_committed(app, changes)
+
+    assert mock_email_send.called
 
     instance = mock_index.return_value
     assert not instance.add_document.called
