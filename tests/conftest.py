@@ -16,17 +16,18 @@ from alembic.config import Config
 from env import path_setup
 path_setup()
 
+from jobber.conf import settings
 from jobber.factory import create_app
 from jobber.extensions import db as _db
 from jobber.script import blue
 
 
 TESTDB = 'test_jobber.db'
-TESTDB_PATH = "/opt/jobber/data/{}".format(TESTDB)
+TESTDB_PATH = "{}/data/{}".format(settings.ROOT, TESTDB)
 TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
 
 
-ALEMBIC_CONFIG = '/opt/jobber/alembic.ini'
+ALEMBIC_CONFIG = "{}/alembic.ini".format(settings.ROOT)
 
 
 @pytest.fixture(scope='session')

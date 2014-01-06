@@ -46,7 +46,3 @@ class _SQLAlchemy(SQLAlchemy):
 
 
 db = _SQLAlchemy()
-
-
-from flask.ext.mail import Mail
-mail = Mail()

@@ -12,12 +12,15 @@ import logging
 from flask import Flask
 
 from jobber.conf import settings
-from jobber.extensions import db, mail
+from jobber.extensions import db
 from jobber.logging import make_formatter
+from jobber.core.email import mail
 
 
 def create_app(package_name, settings_override=None):
-    app = Flask(package_name)
+    app = Flask(package_name,
+                static_folder=settings.STATIC_FOLDER,
+                template_folder=settings.TEMPLATES_FOLDER)
 
     configure_settings(app, override=settings_override)
     configure_logging(app)

@@ -10,6 +10,7 @@ from flask import current_app as app
 from jobber.core.search import Index
 from jobber.models import Job
 from jobber.extensions import models_committed
+from jobber.core.email import email_dispatched, send_email_template
 
 
 # A mapping that specifies what actions need to take place for which models and
@@ -19,6 +20,7 @@ DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
             'update_jobs_index',
+            'send_instructory_email'
         ],
         'update': [
             'update_jobs_index'
@@ -60,6 +62,17 @@ def update_jobs_index(job):
         app.logger.info("Job ({}) added to index.".format(job.id))
 
 
+def send_instructory_email(job):
+    """Sends an email to the recruiter with instruction on how to do things.
+
+    :param job: A 'Job' instance.
+
+    """
+    recipients = [job.recruiter_email]
+    context = dict(job=job)
+    send_email_template('instructory', context, recipients)
+
+
 @models_committed.connect_via(app._get_current_object())
 def on_models_committed(sender, changes):
     """Received when a list of models is committed to the database.
@@ -79,3 +92,18 @@ def on_models_committed(sender, changes):
 
         for action in actions:
             action(model)
+
+
+@email_dispatched.connect_via(app._get_current_object())
+def on_email_dispatched(sender, message):
+    """Received when an email is dispatched.
+
+    :param sender: A `Flask` application.
+    :param message: A `Message` instance.
+
+    """
+    app.logger.debug('Email dispatch signal called.')
+    recipients = ','.join(message.recipients)
+    msg = "Sent email from %s to [%s] with subject '%s'."
+    msg = msg.format(message.sender, recipients, message.subject)
+    app.logger.info(msg)

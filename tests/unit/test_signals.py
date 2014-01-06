@@ -39,7 +39,7 @@ def test_find_model_actions():
     from jobber.core import signals
 
     actions = signals.find_model_actions(Job, 'insert')
-    assert actions == [signals.update_jobs_index]
+    assert actions == [signals.update_jobs_index, signals.send_instructory_email]
 
     actions = signals.find_model_actions(Job, 'delete')
     assert actions == []

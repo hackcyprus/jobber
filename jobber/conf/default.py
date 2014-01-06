@@ -5,6 +5,7 @@ jobber.conf.default
 Default configuration.
 
 """
+import os
 import logging
 
 DEBUG = True
@@ -16,6 +17,11 @@ SECRET_KEY = 'secret'
 
 APPLICATION_ROOT = None
 
+ROOT = '/opt/jobber'
+
+STATIC_FOLDER = os.path.join(ROOT, 'jobber', 'static')
+TEMPLATES_FOLDER = os.path.join(ROOT, 'jobber', 'templates')
+
 SESSION_COOKIE_NAME = 'jobber'
 
 LOGGER_NAME = 'jobber'
@@ -26,3 +32,6 @@ SQLALCHEMY_ECHO = True
 
 SEARCH_INDEX_DIRECTORY = '<dir>'
 SEARCH_INDEX_NAME = '<name>'
+
+MAIL_SERVER = 'localhost'
+MAIL_PORT = 25
