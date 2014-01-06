@@ -184,13 +184,22 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     def human_remote_work(self):
         return self.REMOTE_WORK_OPTIONS.map(self.remote_work)
 
+    def _url(self, external=True):
+        kwargs = {
+            'job_id': self.id,
+            'company_slug': self.company.slug,
+            'job_slug': self.slug,
+            '_external': external
+        }
+        return url_for('show', **kwargs)
+
     @property
     def url(self):
-        return url_for('show',
-                       job_id=self.id,
-                       company_slug=self.company.slug,
-                       job_slug=self.slug,
-                       _external=True)
+        return self._url()
+
+    @property
+    def internal_url(self):
+        return self._url(external=False)
 
     @property
     def edit_url(self):
