@@ -100,6 +100,10 @@ def edit(job_id, token):
 
     if form.validate_on_submit():
         job = populate_job(form, job=job)
+
+        # An edited job is pending review so it needs to be unpublished.
+        job.published = False
+
         db.session.commit()
         return render_template('jobs/submitted.html',
                                email=job.recruiter_email,
