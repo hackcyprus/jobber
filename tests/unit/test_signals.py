@@ -35,13 +35,13 @@ def job(session, company, location):
                recruiter_email=u'doe')
 
 
-def test_find_actions():
+def test_find_model_actions():
     from jobber.core import signals
 
-    actions = signals.find_actions(Job, 'insert')
+    actions = signals.find_model_actions(Job, 'insert')
     assert actions == [signals.update_jobs_index]
 
-    actions = signals.find_actions(Job, 'delete')
+    actions = signals.find_model_actions(Job, 'delete')
     assert actions == []
 
 

@@ -15,7 +15,7 @@ from jobber.extensions import models_committed
 # A mapping that specifies what actions need to take place for which models and
 # model operations. The actions are specified as strings and looked up in this
 # module's `globals()` dict at runtime.
-DEFAULT_ACTIONMAP = {
+DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
             'update_jobs_index',
@@ -27,7 +27,7 @@ DEFAULT_ACTIONMAP = {
 }
 
 
-def find_actions(klass, op, actionmap=None):
+def find_model_actions(klass, op, actionmap=None):
     """Finds a list of actions to be performed for the given `klass` and `op`.
 
     :param klass: A model class.
@@ -36,7 +36,7 @@ def find_actions(klass, op, actionmap=None):
     """
     g = globals()
     if actionmap is None:
-        actionmap = DEFAULT_ACTIONMAP
+        actionmap = DEFAULT_MODEL_ACTIONMAP
     actions = actionmap.get(klass, {}).get(op, [])
     return [g.get(a) for a in actions if g.get(a)]
 
@@ -71,7 +71,7 @@ def on_models_committed(sender, changes):
     app.logger.debug('Model commit signal called.')
     for model, op in changes:
         klass = model.__class__
-        actions = find_actions(klass, op)
+        actions = find_model_actions(klass, op)
 
         if not actions:
             app.logger.debug('No actions found for ({}, {}).'.format(klass, op))
