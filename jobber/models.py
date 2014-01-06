@@ -75,7 +75,7 @@ class PrimaryKeySlugModelMixin(SlugModelMixin):
     slug = db.Column(db.Unicode(125), nullable=False, primary_key=True)
 
 
-class Company(BaseModel, UniqueSlugModelMixin):
+class Company(BaseModel, SlugModelMixin):
     __tablename__ = 'companies'
 
     SLUG_FIELD = 'name'
@@ -94,7 +94,7 @@ class Company(BaseModel, UniqueSlugModelMixin):
 
     def __init__(self, *args, **kwargs):
         super(Company, self).__init__(*args, **kwargs)
-        UniqueSlugModelMixin.__init__(self, **kwargs)
+        SlugModelMixin.__init__(self, **kwargs)
 
 
 class Job(BaseModel, SlugModelMixin, SearchableMixin):

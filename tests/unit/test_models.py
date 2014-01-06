@@ -61,15 +61,14 @@ def test_company_slug_model_mixin():
     assert company.slug == u'test1'
 
 
-def test_duplicate_company(session):
+def test_duplicate_company_is_allowed(session):
     company = Company(name='foobar')
     session.add(company)
     session.commit()
 
-    with pytest.raises(IntegrityError):
-        company = Company(name='foobar')
-        session.add(company)
-        session.commit()
+    company = Company(name='foobar')
+    session.add(company)
+    session.commit()
 
 
 def test_location_model(location, session):

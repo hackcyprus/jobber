@@ -21,7 +21,7 @@ def upgrade():
         sa.Column('created', sa.DateTime(timezone=True)),
         sa.Column('website', sa.Unicode(100), nullable=True),
         sa.Column('name', sa.Unicode(125), nullable=False),
-        sa.Column('slug', sa.Unicode(125), nullable=False, unique=True),
+        sa.Column('slug', sa.Unicode(125), nullable=False, unique=False),
     )
 
 
