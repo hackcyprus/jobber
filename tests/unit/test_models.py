@@ -120,7 +120,12 @@ def test_job_model(company, location, session):
     assert job.contact_method == 1
     assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
-    assert str(job.id) in job.url and job.company.slug in job.url
+    assert str(job.id) in job.url
+    assert job.company.slug in job.url
+    assert 'http' not in job.url
+    assert str(job.id) in job.qualified_url
+    assert job.company.slug in job.qualified_url
+    assert 'http' in job.qualified_url
     assert str(job.id) in job.edit_url and job.admin_token in job.edit_url
     assert job.recruiter_name == recruiter_name
     assert job.recruiter_email == recruiter_email

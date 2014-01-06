@@ -195,11 +195,11 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
     @property
     def url(self):
-        return self._url()
+        return self._url(external=False)
 
     @property
-    def internal_url(self):
-        return self._url(external=False)
+    def qualified_url(self):
+        return self._url()
 
     @property
     def edit_url(self):
