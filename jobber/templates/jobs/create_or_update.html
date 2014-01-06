@@ -3,7 +3,7 @@
 {% set hide_search = True %}
 
 {% block content %}
-  <div id="create-job" class="clearfix">
+  <div id="create-job" class="container small clearfix">
     {% if token %}
     <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}">
     {% else %}

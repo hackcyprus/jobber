@@ -7,7 +7,7 @@ View declarations.
 """
 from random import choice
 
-from flask import render_template, abort, redirect
+from flask import render_template, abort
 from flask import current_app as app
 
 from jobber.models import Job
@@ -71,13 +71,16 @@ def search(query):
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     form = JobForm()
-    locations = get_location_context()
-    tags = get_tag_context()
 
     if form.validate_on_submit():
-        populate_job(form)
+        job = populate_job(form)
         db.session.commit()
-        return redirect('/submitted')
+        return render_template('jobs/submitted.html',
+                               email=job.recruiter_email,
+                               prompt=CREATE_OR_UPDATE_PROMPT)
+
+    locations = get_location_context()
+    tags = get_tag_context()
 
     return render_template('jobs/create_or_update.html',
                            form=form,
@@ -94,14 +97,16 @@ def update(job_id, token):
         abort(404)
 
     form = populate_form(job)
-    locations = get_location_context()
-    tags = get_tag_context()
 
     if form.validate_on_submit():
         job = populate_job(form, job=job)
-        db.session.add(job)
         db.session.commit()
-        return redirect('/submitted')
+        return render_template('jobs/submitted.html',
+                               email=job.recruiter_email,
+                               prompt=CREATE_OR_UPDATE_PROMPT)
+
+    locations = get_location_context()
+    tags = get_tag_context()
 
     return render_template('jobs/create_or_update.html',
                            form=form,
@@ -117,11 +122,6 @@ def show(job_id, company_slug, job_slug):
     if job.slug == job_slug and job.company.slug == company_slug:
         return render_template('jobs/show.html', job=job)
     abort(404)
-
-
-@app.route('/submitted', methods=['GET'])
-def submitted():
-    return render_template('jobs/submitted.html')
 
 
 @app.route('/how')

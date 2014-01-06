@@ -63,6 +63,7 @@ def configure_logging(app):
 
     return app
 
+
 def configure_extensions(app):
     """Configures all available `Flask` extensions.
 

@@ -3,6 +3,15 @@
 {% set hide_search = True %}
 
 {% block content %}
-  <h1>submited.</h1>
-  <a href="/">back to index</a>
+  <div id='submitted-job' class="container small">
+    <h1>Thanks!</h1>
+    <p>
+      We have received your job post and it's now being <b>reviewed</b>. We review all posts to ensure their quality. Once we review your post, we will notify you via email.
+    </p>
+    <h4>Next steps</h4>
+    <p>
+      You will soon receive an email at <b>{{ email }}</b> with a unique link which you can use to <b>edit</b> your post at any time. Once you edit a post, it will need to be reviewed again
+      before it's published.
+    </p>
+  </div>
 {% endblock %}
