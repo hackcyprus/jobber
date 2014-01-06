@@ -19,8 +19,9 @@ def run(main, *args):
     """
     app = create_app(__name__)
     with app.app_context():
-        # Register all signals before running the script. Hackish.
+        # Register all signals and views before running the script. Hackish.
         import jobber.core.signals
+        import jobber.views
 
         # Create a new session for this script and commit/rollback accordingly.
         session = db.session

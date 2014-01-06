@@ -38,7 +38,7 @@ def make_summary(job):
     -----------
     {description}
 
-    => You can also view this job online at {edit_link}.
+    => You can also view this job online at {edit_url}.
     """
     return summary.format(**{
         'title': job.title,
@@ -49,7 +49,7 @@ def make_summary(job):
         'company_website': job.company.website,
         'city': job.location.city,
         'country_code': job.location.country_code,
-        'edit_link': '/edit/{}'.format(job.admin_url),
+        'edit_url': job.edit_url,
         'tags': u', '.join(job.tag_slugs),
         'published': job.published
     })

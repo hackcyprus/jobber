@@ -17,6 +17,8 @@ SECRET_KEY = 'secret'
 
 APPLICATION_ROOT = None
 
+SERVER_NAME = '<server_name>'
+
 ROOT = '/opt/jobber'
 
 STATIC_FOLDER = os.path.join(ROOT, 'jobber', 'static')

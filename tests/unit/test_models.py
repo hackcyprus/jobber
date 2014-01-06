@@ -21,12 +21,12 @@ from jobber.models import (Job,
 
 
 @pytest.fixture(scope='function')
-def location(session):
+def location():
     return Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
 
 
 @pytest.fixture(scope='function')
-def company(session):
+def company():
     return Company(name=u'remedica')
 
 
@@ -121,8 +121,8 @@ def test_job_model(company, location, session):
     assert job.contact_method == 1
     assert job.job_type == 1
     assert job.slug == normalize('NFKD', title)
-    assert job.url == u"{}/{}/{}".format(job.id, job.company.slug, job.slug)
-    assert job.admin_url == u"{}/{}".format(job.id, job.admin_token)
+    assert str(job.id) in job.url and job.company.slug in job.url
+    assert str(job.id) in job.edit_url and job.admin_token in job.edit_url
     assert job.recruiter_name == recruiter_name
     assert job.recruiter_email == recruiter_email
     assert job.created <= now()
@@ -168,7 +168,7 @@ def test_duplicate_job_model(company, location, session):
         assert job.title == title
 
 
-def test_job_model_job_type_mapping(session):
+def test_job_model_job_type_mapping():
     job_types = Job.JOB_TYPES
 
     assert job_types.inverse('Full Time') == 1
@@ -187,7 +187,7 @@ def test_job_model_job_type_validator():
             recruiter_name='a', recruiter_email='a')
 
 
-def test_job_model_contact_method_mapping(session):
+def test_job_model_contact_method_mapping():
     contact_methods = Job.CONTACT_METHODS
 
     assert contact_methods.inverse('Link') == 1

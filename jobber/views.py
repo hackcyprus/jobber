@@ -90,7 +90,7 @@ def create():
 
 
 @app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
-def update(job_id, token):
+def edit(job_id, token):
     job = Job.query.filter_by(admin_token=token).first()
 
     if not (job and job_id == job.id):

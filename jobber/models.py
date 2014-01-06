@@ -11,6 +11,8 @@ import uuid
 import hashlib
 from pprint import pformat
 
+from flask import url_for
+
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
 from jobber.core.utils import Mapping, slugify, now, ArrowDateTime
@@ -184,11 +186,15 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
     @property
     def url(self):
-        return u"{}/{}/{}".format(self.id, self.company.slug, self.slug)
+        return url_for('show',
+                       job_id=self.id,
+                       company_slug=self.company.slug,
+                       job_slug=self.slug,
+                       _external=True)
 
     @property
-    def admin_url(self):
-        return u"{}/{}".format(self.id, self.admin_token)
+    def edit_url(self):
+        return url_for('edit', job_id=self.id, token=self.admin_token, _external=True)
 
     @property
     def tag_slugs(self):

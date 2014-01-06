@@ -13,18 +13,19 @@ from jobber.models import Job, Company, Location
 
 
 @pytest.fixture(scope='function')
-def location(session):
+def location():
     return Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
 
 
 @pytest.fixture(scope='function')
-def company(session):
+def company():
     return Company(name=u'remedica')
 
 
 @pytest.fixture(scope='function')
-def job(session, company, location):
-    return Job(title='testfoo',
+def job(company, location):
+    return Job(id=1,
+               title='testfoo',
                description='testfoo',
                contact_method=1,
                remote_work=False,
