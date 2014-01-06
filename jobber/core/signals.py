@@ -20,10 +20,12 @@ DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
             'update_jobs_index',
-            'send_instructory_email'
+            'send_instructory_email',
+            'send_admin_notify_email'
         ],
         'update': [
-            'update_jobs_index'
+            'update_jobs_index',
+            'send_admin_notify_email'
         ]
     }
 }
@@ -73,6 +75,11 @@ def send_instructory_email(job):
     send_email_template('instructory', dict(job=job), [recipient])
 
 
+def send_admin_notify_email(job):
+    """Sends a notification to the admin to review the new/updated job post."""
+    pass
+
+
 @models_committed.connect_via(app._get_current_object())
 def on_models_committed(sender, changes):
     """Received when a list of models is committed to the database.
@@ -91,6 +98,7 @@ def on_models_committed(sender, changes):
             continue
 
         for action in actions:
+            print action
             action(model)
 
 

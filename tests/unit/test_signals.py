@@ -12,6 +12,14 @@ from mock import MagicMock
 from jobber.models import Job, Company, Location
 
 
+class TestObject(object):
+    pass
+
+
+class AnotherTestObject(object):
+    pass
+
+
 @pytest.fixture(scope='function')
 def location():
     return Location(city=u'Lïｍáｓѕ߀ɭ', country_code='CYP')
@@ -36,57 +44,75 @@ def job(company, location):
                recruiter_email=u'doe')
 
 
-def test_find_model_actions():
+@pytest.fixture(scope='function')
+def actionmap(monkeypatch):
+    """Creates a test model action map and patches the existing one."""
     from jobber.core import signals
 
-    actions = signals.find_model_actions(Job, 'insert')
-    assert actions == [signals.update_jobs_index, signals.send_instructory_email]
+    test_actionmap = {
+        TestObject: {
+            'insert': ['on_insert_foo', 'on_insert_bar'],
+            'update': ['on_update_baz']
+        }
+    }
 
-    actions = signals.find_model_actions(Job, 'delete')
+    monkeypatch.setattr(signals, 'DEFAULT_MODEL_ACTIONMAP', test_actionmap)
+    monkeypatch.setattr(signals, 'on_insert_foo', MagicMock(), raising=False)
+    monkeypatch.setattr(signals, 'on_insert_bar', MagicMock(), raising=False)
+    monkeypatch.setattr(signals, 'on_update_baz', MagicMock(), raising=False)
+
+    return test_actionmap
+
+
+def test_find_model_actions(app, actionmap):
+    from jobber.core import signals
+
+    actions = signals.find_model_actions(TestObject, 'insert')
+    assert actions == [signals.on_insert_foo, signals.on_insert_bar]
+
+    actions = signals.find_model_actions(TestObject, 'update')
+    assert actions == [signals.on_update_baz]
+
+    actions = signals.find_model_actions(TestObject, 'delete')
+    assert actions == []
+
+    actions = signals.find_model_actions(AnotherTestObject, 'insert')
     assert actions == []
 
 
-def test_on_models_committed_no_actions(monkeypatch, app):
+def test_on_models_committed(app, actionmap):
     from jobber.core import signals
 
-    mock = MagicMock()
-    monkeypatch.setattr(signals, 'update_jobs_index', mock)
-
-    company = Company(name='foocorp')
-    changes = [(company, 'insert')]
-
+    changes = [(TestObject(), 'insert')]
     signals.on_models_committed(app, changes)
 
-    assert not mock.called
+    assert signals.on_insert_foo.called
+    assert signals.on_insert_bar.called
+    assert not signals.on_update_baz.called
 
 
-def test_on_models_committed_job_model_not_published(monkeypatch, job, app):
+def test_update_jobs_index(job, monkeypatch):
     from jobber.core import signals
 
     mock_index = MagicMock(signals.Index)
     monkeypatch.setattr('jobber.core.signals.Index', mock_index)
-
-    mock_email_send = MagicMock()
-    monkeypatch.setattr(signals, 'send_email_template', mock_email_send)
-
-    changes = [(job, 'insert')]
-    signals.on_models_committed(app, changes)
-
-    assert mock_email_send.called
 
     instance = mock_index.return_value
-    assert not instance.add_document.called
 
-
-def test_on_models_committed_job_model_published(monkeypatch, job, app):
-    from jobber.core import signals
-
-    mock_index = MagicMock(signals.Index)
-    monkeypatch.setattr('jobber.core.signals.Index', mock_index)
+    signals.update_jobs_index(job)
+    assert instance.delete_document.called
 
     job.published = True
-    changes = [(job, 'insert')]
-    signals.on_models_committed(app, changes)
-
-    instance = mock_index.return_value
+    signals.update_jobs_index(job)
     assert instance.add_document.called
+
+
+def test_send_instructory_email(job, monkeypatch):
+    from jobber.core import signals
+
+    mock_send = MagicMock()
+    monkeypatch.setattr(signals, 'send_email_template', mock_send)
+
+    recipient = job.recruiter_email
+    signals.send_instructory_email(job)
+    mock_send.assert_called_with('instructory', dict(job=job), [recipient])
