@@ -9,9 +9,10 @@ from flask import render_template
 from flask.ext.mail import Message, Mail, email_dispatched
 from jinja2 import TemplateNotFound
 
+from jobber.conf import settings
 
-DEFAULT_SENDER = 'Hack Cyprus Jobs <techjobs@projectcel.com>'
 
+DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 
 mail = Mail()
 

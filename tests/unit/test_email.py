@@ -13,14 +13,12 @@ import shutil
 import pytest
 from mock import MagicMock
 
+from jobber.conf import settings
 from jobber.core.email import (DEFAULT_SENDER,
                                mail,
                                render_email_template,
                                send_email_template,
                                send_email)
-
-
-ROOT = '/opt/jobber/'
 
 
 @pytest.fixture
@@ -29,7 +27,7 @@ def template(request):
     def wrapper(parts):
         # Make a random directory.
         name = uuid.uuid4().hex[:7]
-        tmpdir = os.path.join(ROOT, 'jobber', 'templates', 'email', name)
+        tmpdir = os.path.join(settings.ROOT, 'jobber', 'templates', 'email', name)
         os.mkdir(tmpdir)
 
         # Create the necessary templates.

@@ -5,12 +5,19 @@ jobber.core.signals
 Contains signal registration.
 
 """
+import os
+from datetime import timedelta
+
 from flask import current_app as app
 
-from jobber.core.search import Index
 from jobber.models import Job
 from jobber.extensions import models_committed
-from jobber.core.email import email_dispatched, send_email_template
+from jobber.conf import settings
+from jobber.core.search import Index
+from jobber.core.utils import now
+from jobber.core.email import (DEFAULT_SENDER,
+                               email_dispatched,
+                               send_email_template)
 
 
 # A mapping that specifies what actions need to take place for which models and
@@ -21,11 +28,11 @@ DEFAULT_MODEL_ACTIONMAP = {
         'insert': [
             'update_jobs_index',
             'send_instructory_email',
-            'send_admin_notify_email'
+            'send_admin_review_email'
         ],
         'update': [
             'update_jobs_index',
-            'send_admin_notify_email'
+            'send_admin_review_email'
         ]
     }
 }
@@ -67,17 +74,46 @@ def update_jobs_index(job):
 def send_instructory_email(job):
     """Sends an email to the recruiter with instruction on how to do things.
 
-    :param job: A 'Job' instance.
+    :param job: A `Job` instance.
 
     """
     recipient = job.recruiter_email
-    app.logger.info("About to send instructory email to '%s'.".format(recipient))
-    send_email_template('instructory', dict(job=job), [recipient])
+    context = {
+        'job': job,
+        'default_sender': DEFAULT_SENDER
+    }
+    app.logger.debug("Sending instructory email to '{}'.".format(recipient))
+    send_email_template('instructory', context, [recipient])
 
 
-def send_admin_notify_email(job):
-    """Sends a notification to the admin to review the new/updated job post."""
-    pass
+def send_admin_review_email(job):
+    """Sends a notification to the admin to review the new/updated job post.
+
+    :param job: A `Job` instance.
+
+    """
+    # We only wish to contact the admin if the job is not published hence it needs
+    # review. Otherwise, even if the change was to publish the job, the admin would
+    # have received an email.
+    if job.published:
+        return
+
+    recipient = settings.MAIL_ADMIN_RECIPIENT
+
+    probable_update = job.created + timedelta(minutes=5) < now()
+    new_or_update = 'newly updated' if probable_update else 'brand new'
+
+    # Some copy-paste convenience in the email...
+    script_path = os.path.join(settings.ROOT, 'scripts', 'management')
+
+    context = {
+        'job': job,
+        'new_or_update': new_or_update,
+        'script_path': script_path
+    }
+
+    app.logger.debug("Sending admin review email for job ({}).".format(job.id))
+    send_email_template('review', context, [recipient])
 
 
 @models_committed.connect_via(app._get_current_object())
@@ -98,7 +134,6 @@ def on_models_committed(sender, changes):
             continue
 
         for action in actions:
-            print action
             action(model)
 
 
