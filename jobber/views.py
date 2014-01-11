@@ -128,6 +128,17 @@ def show(job_id, company_slug, job_slug):
     abort(404)
 
 
+@app.route('/preview', methods=['POST'])
+def preview():
+    form = JobForm()
+
+    if form.validate_on_submit():
+        job = populate_job(form)
+        return render_template('jobs/show_chromeless.html', job=job)
+
+    return 'Cannot render preview'
+
+
 @app.route('/how')
 def how():
     return 'how it works'

@@ -1,0 +1,38 @@
+{% from 'macros.html' import tags %}
+
+<div id="job" class="clearfix">
+  <div class="job-header">
+    <h1>{{ job.title }} <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
+    {{ tags(job) }}
+  </div>
+  <div class="job-body clearfix">
+    <h4>{{ job.location.city }}, {{ job.location.country_name }}
+      &mdash;
+      {{ job.human_job_type }}
+    </h4>
+    <div class="job-description">
+      {{job.description|safe}}
+    </div>
+    <div class="infobox">
+      <div class="company-logo">
+        <img src="/static/test.png" width=230 />
+      </div>
+      <div class="company-details">
+        <p class="company-name">{{ job.company.name }}</p>
+        <p class="company-url">
+          <a href="{{ job.company.website }}" target="_blank">{{ job.company.website }}</a>
+        </p>
+      </div>
+      <div class="apply-btn">
+        {% if job.human_contact_method == 'Link' %}
+          <a href="{{ job.contact_url }}" target="_blank" class="btn btn-green">
+        {% else %}
+          <a href="mailto:{{ job.contact_email }}?subject=Applying for '{{ job.title }}' via Hack Cyprus Jobs" class="btn btn-green">
+        {% endif %}
+          Apply for this job
+          <span>via {{ job.human_contact_method.lower() }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

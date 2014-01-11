@@ -97,12 +97,24 @@
         </div>
       </fieldset>
       <div class="field inline">
-        <input id="preview-btn" type="submit" class="btn btn" value="Preview"/>
+        <a id="preview-btn" href="/preview" class="btn">Preview</a>
       </div>
       <div class="field inline">
         <input id="submit-btn" type="submit" class="btn btn-green" value="Submit for approval"/>
       </div>
     </form>
+  </div>
+  <div id='preview-sheet' class="sheet right hidden" style="width:850px">
+    <table>
+      <tr>
+        <td class='content'></td>
+      </tr>
+      <tr>
+        <td class='controls'>
+          <button class='hide-btn btn btn-red'>Hide preview</button>
+        </td>
+      </tr>
+    </table>
   </div>
 {% endblock %}
 
@@ -231,6 +243,53 @@
             '/static/css/editor.css'
           ]
 
+        });
+
+        /*
+         * Sheet
+         * -----
+         */
+        var Sheet = function(selector) {
+
+          var $el = $(selector)
+            , $content = $el.find('.content')
+            , $controls = $el.find('.controls')
+            , $hideBtn = $controls.find('.hide-btn')
+            , self = this;
+
+          var setup = function() {
+            $hideBtn.on('click', self.hide);
+          };
+
+          this.show = function(html) {
+            $content.html(html);
+            $el.removeClass('hidden');
+          }
+
+          this.hide = function() {
+            $el.addClass('hidden');
+          };
+
+          setup();
+        };
+
+        /*
+         * Preview button
+         * --------------
+         */
+        var sheet = new Sheet('#preview-sheet', 850);
+
+        $('#preview-btn').click(function(e) {
+          var $el = $(e.target)
+            , href = $el.attr('href')
+            , data = {};
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          $.post(href, data, function(html) {
+            sheet.show(html);
+          });
         });
 
       });

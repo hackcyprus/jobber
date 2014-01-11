@@ -1,0 +1,57 @@
+.sheet {
+    background-color: white;
+    position: fixed;
+    width: 500px;
+    height: 100%;
+    top: 0;
+    z-index: 99999;
+    white-space: nowrap;
+    -webkit-transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+
+    &.left {
+        left: 0;
+        .box-shadow(1px 0px 3px @gray);
+
+        &.hidden {
+            -webkit-transform: translate3d(-110%,0,0);
+            transform: translate3d(-100%,0,0);
+        }
+    }
+
+    &.right {
+        right: 0;
+        .box-shadow(-1px 0px 3px #aaa);
+
+        &.hidden {
+            -webkit-transform: translate3d(110%,0,0);
+            transform: translate3d(100%,0,0);
+        }
+    }
+
+    table {
+        height: 100%;
+        width: 100%;
+    }
+
+    .content {
+        padding: 15px;
+        vertical-align: top;
+    }
+
+    .controls {
+        height: 55px;
+        vertical-align: middle;
+        border-top: 1px solid @rule;
+        padding-left: 7px;
+
+        button {
+            font-size: 14px;
+            padding: 10px 20px;
+            font-weight: 700;
+        }
+    }
+
+}
