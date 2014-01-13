@@ -124,7 +124,9 @@ def edit(job_id, token):
 def show(job_id, company_slug, job_slug):
     job = Job.query.get_or_404(job_id)
     if job.slug == job_slug and job.company.slug == company_slug:
-        return render_template('jobs/show.html', job=job)
+        return render_template('jobs/show.html',
+                               show_all_jobs_link=True,
+                               job=job)
     abort(404)
 
 
@@ -134,7 +136,9 @@ def preview():
 
     if form.validate_on_submit():
         job = populate_job(form)
-        return render_template('jobs/show_chromeless.html', job=job)
+        return render_template('jobs/show_chromeless.html',
+                               show_all_jobs_link=False,
+                               job=job)
 
     return 'Cannot render preview'
 

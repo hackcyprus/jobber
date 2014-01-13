@@ -4,6 +4,7 @@
     width: 500px;
     height: 100%;
     top: 0;
+    bottom: 0;
     z-index: 99999;
     white-space: nowrap;
     -webkit-transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -13,7 +14,7 @@
 
     &.left {
         left: 0;
-        .box-shadow(1px 0px 3px @gray);
+        .box-shadow(1px 0px 5px @rule);
 
         &.hidden {
             -webkit-transform: translate3d(-110%,0,0);
@@ -23,7 +24,7 @@
 
     &.right {
         right: 0;
-        .box-shadow(-1px 0px 3px #aaa);
+        .box-shadow(-1px 0px 3px @rule);
 
         &.hidden {
             -webkit-transform: translate3d(110%,0,0);
@@ -31,21 +32,26 @@
         }
     }
 
-    table {
-        height: 100%;
-        width: 100%;
-    }
-
     .content {
+        position: absolute;
+        top: 0;
+        bottom: 57px;
+        left: 0;
+        right: 0;
         padding: 15px;
-        vertical-align: top;
+        overflow: scroll;
     }
 
     .controls {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         height: 55px;
-        vertical-align: middle;
-        border-top: 1px solid @rule;
+        line-height: 55px;
         padding-left: 7px;
+        background-color: lighten(@rule, 8%);
+        border-top: 2px solid @rule;
 
         button {
             font-size: 14px;

@@ -2,7 +2,12 @@
 
 <div id="job" class="clearfix">
   <div class="job-header">
-    <h1>{{ job.title }} <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a></h1>
+    <h1>
+      {{ job.title }}
+      {% if show_all_jobs_link %}
+        <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a>
+      {% endif %}
+    </h1>
     {{ tags(job) }}
   </div>
   <div class="job-body clearfix">
