@@ -5,10 +5,14 @@
         margin: 0 0 14px 0;
     }
 
+    h2 {
+        font-size: 1em;
+        color: @gray;
+        font-weight: normal;
+    }
+
     table {
         width: 100%;
-        border-top: 1px solid @rule;
-
     }
 
     tr.job {
@@ -23,7 +27,7 @@
         td {
             padding: 23px 0px 23px 0;
             vertical-align: top;
-            border-bottom: 1px solid @rule;
+            border-top: 1px solid @rule;
 
             &.left {
                 width: 80%;
@@ -36,6 +40,7 @@
             &.right {
                 width: 20%;
                 text-align: right;
+                vertical-align: middle;
             }
 
             h4 {
@@ -44,7 +49,7 @@
                 font-size: 1.25em;
 
                 &.job-type {
-                    font-size: 1em;
+                    font-size: 0.875em;
                 }
 
                 a {

@@ -1,11 +1,37 @@
+a.see-all {
+    color: @gray;
+    font-weight: 500;
+    font-size: 0.875em;
+    position: relative;
+
+    span {
+        position: relative;
+        top: 1px;
+        font-weight: 700;
+    }
+}
+
+div.added {
+    color: @gray;
+    font-size: 0.75em;
+    margin-top: 15px;
+}
+
 #job {
 
     div.job-header {
-            border-bottom: 1px solid @rule;
+        border-bottom: 1px solid @rule;
 
-        h1 {
+        h2 {
             margin: 0;
-            padding: 0 0 14px 0;
+            margin-top: 15px;
+            padding: 0 0 15px 0;
+        }
+
+        span {
+            font-size: 0.583333em;
+            color: @gray;
+            font-weight: 500;
         }
 
         div.tags {
@@ -13,49 +39,34 @@
         }
     }
 
-    div.job-description {
-        float: left;
-        width: 550px;
-        font-size: 0.875em;
+    div.job-body {
+        .location-and-apply {
+            margin-top: 1.5em;
+            margin-bottom: 2em;
+            height: 33px;
+            line-height: 33px;
+
+            h4 {
+                float: left;
+                margin: 0;
+            }
+
+            a.apply-btn {
+                float: right;
+                font-size: 0.875em;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+
+            a.job-company-website {
+                color: @gray;
+            }
+        }
     }
 
-    div.infobox {
-        float: left;
-        width: 230px;
-        margin-left: 70px;
-        text-align: right;
-
-        div.company-logo {
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 5px solid @rule;
-            position: relative;
-        }
-
-        div.company-details {
-            margin-bottom: 22px;
-            p.company-name {
-                font-weight: 800;
-                font-size: 1em;
-            }
-            p.company-about,  p.company-url {
-                font-size: 0.8125em;
-            }
-        }
-
-        div.apply-btn {
-            a.btn {
-                padding: 12px 30px;
-                font-weight: 700;
-                span {
-                    display: block;
-                    font-size: 0.75em;
-                    font-weight: normal;
-                    position: relative;
-                    margin-top: 2px;
-                }
-            }
-        }
+    div.job-description {
+        width: 550px;
+        font-size: 0.875em;
     }
 
     h4 {

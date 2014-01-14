@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
-{% set hide_search = True %}
+{% set hide_scream = True %}
 
 {% block content %}
-  <div id="create-job" class="container small clearfix">
+  <div id="create-job" class="container clearfix">
     {% if token %}
     <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" parsley-form>
     {% else %}

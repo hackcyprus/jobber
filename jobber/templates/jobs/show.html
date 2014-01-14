@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
+  <a href="/" class="see-all"><span>&larr;</span> See all jobs</a>
   {% include "jobs/show_chromeless.html" %}
+  <div class="added">&mdash; Added {{ job.created.humanize() }}</div>
 {% endblock %}

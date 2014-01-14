@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Job review script.
 
@@ -60,6 +61,8 @@ def main(job_id, session):
 
     if not job:
         die("Job ({}) does not exist.".format(job_id))
+
+    print isinstance(job.title, unicode)
 
     print "You're reviewing the following job:"
     print make_summary(job)

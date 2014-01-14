@@ -6,16 +6,25 @@
 
 {% block content %}
   <div id="search-results">
-    <h1>
-    {% if jobs_count == 1 %}
-      We found 1 position for you
+    <h2>
+    {% if jobs_count == 0 %}
+      No
     {% else %}
-      We found {{ jobs_count }} positions for you
+      {{ jobs_count }}
     {% endif %}
+
+    {% if jobs_count == 1 %}
+      job
+    {% else %}
+      jobs
+    {% endif %}
+
     {% if query %}
-      <a href="/" class="see-all"><span>&#11013;&nbsp;</span> See all jobs</a>
+      matching '{{ query }}'
+    {% else %}
+      in total
     {% endif %}
-    </h1>
+    </h2>
     <table>
       {% for job in jobs %}
         <tr class="job">

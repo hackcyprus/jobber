@@ -16,12 +16,8 @@ footer, .push {
 }
 
 .container {
-    width: 850px;
+    width: 550px;
     margin: 0 auto;
-
-    &.small {
-        width: 528px;
-    }
 }
 
 a.logo {
@@ -127,22 +123,18 @@ header {
     background-color: @logo-secondary;
     color: darken(@logo-secondary, 10%);
     font-weight: 700;
-    margin-bottom: 33px;
+    margin-bottom: 25px;
 
     div.container {
         padding: 33px 0 35px 0;
     }
 
     h1 {
-        font-size: 2.75em;
+        font-size: 2.25em;
         padding-bottom: 5px;
         display: block;
         margin: 0 0 17px 0;
         padding: 0;
-        &.hide-search {
-            width: 528px;
-            margin: 0 auto;
-        }
     }
 
     span {
@@ -155,10 +147,10 @@ header {
         background: none;
         border: none;
         border-bottom: 2px dashed darken(@logo-secondary, 10%);
-        width: 705px;
+        width: 505px;
         margin-left: 3px;
-        font-size: 1.75em;
-        font-family: @logo-font;
+        font-size: 1.5em;
+        font-family: @base-font;
         position: relative;
         top: -11px;
 
@@ -183,22 +175,6 @@ header {
         }
     }
 }
-
-h1 {
-    a.see-all {
-        float: right;
-        color: @gray;
-        font-size: 0.5em;
-        font-weight: 500;
-        position: relative;
-        top: 13px;
-        span {
-            position: relative;
-            top: 1px;
-        }
-    }
-}
-
 
 footer {
     background-color: lighten(@rule, 8%);
