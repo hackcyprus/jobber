@@ -9,7 +9,6 @@ from flask import current_app as app
 
 from jobber.core.models import Job
 from jobber.extensions import models_committed
-from jobber.functions import send_instructory_email
 from jobber.core.search import Index
 
 
@@ -20,7 +19,6 @@ DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
             'update_jobs_index',
-            'send_instructory_email',
         ],
         'update': [
             'update_jobs_index',

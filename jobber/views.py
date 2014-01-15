@@ -14,6 +14,7 @@ from jobber.core.models import Job
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.extensions import db
+from jobber.functions import send_instructory_email, send_admin_review_email
 from jobber.view_helpers import (get_location_context,
                                  get_tag_context,
                                  populate_job,
@@ -77,6 +78,10 @@ def create():
     if form.validate_on_submit():
         job = populate_job(form)
         db.session.commit()
+
+        send_instructory_email(job)
+        send_admin_review_email(job)
+
         return render_template('jobs/submitted.html',
                                email=job.recruiter_email,
                                prompt=CREATE_OR_UPDATE_PROMPT)
@@ -105,6 +110,8 @@ def edit(job_id, token):
 
         # An edited job is pending review so it needs to be unpublished.
         job.published = False
+
+        send_admin_review_email(job)
 
         db.session.commit()
         return render_template('jobs/submitted.html',

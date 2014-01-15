@@ -39,12 +39,6 @@ def send_admin_review_email(job):
     :param job: A `Job` instance.
 
     """
-    # We only wish to contact the admin if the job is not published hence it needs
-    # review. Otherwise, even if the change was to publish the job, the admin would
-    # have received an email.
-    if job.published:
-        return
-
     recipient = settings.MAIL_ADMIN_RECIPIENT
 
     probable_update = job.created + timedelta(minutes=5) < now()
