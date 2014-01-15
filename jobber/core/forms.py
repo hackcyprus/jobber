@@ -1,5 +1,5 @@
 from wtforms import Field, TextField, SelectField, IntegerField
-from wtforms.validators import DataRequired, Email, Optional, URL
+from wtforms.validators import DataRequired, Email, Optional, URL, Length
 from wtforms.widgets import HiddenInput, TextArea, TextInput
 from flask.ext.wtf import Form
 
@@ -26,7 +26,7 @@ class JobForm(Form):
     id = IntegerField('Id', widget=HiddenInput(), validators=[Optional()])
 
     #: Job title.
-    title = TextField('Title', validators=[DataRequired()])
+    title = TextField('Title', validators=[DataRequired(), Length(max=100)])
 
     #: Job description.
     description = TextField('Description',
@@ -77,16 +77,20 @@ class JobForm(Form):
                                  coerce=int)
 
     #: Contact email (if contact method is email).
-    contact_email = TextField('Contact Email', validators=[Optional(), Email()])
+    contact_email = TextField('Contact Email',
+                              validators=[Optional(), Email(), Length(max=150)])
 
     #: Contact url (if contact method is url).
-    contact_url = TextField('Contact Link', validators=[Optional(), URL()])
+    contact_url = TextField('Contact Link',
+                             validators=[Optional(), URL(), Length(max=200)])
 
     #: Recruiter name (freetext).
-    recruiter_name = TextField('Recruiter Name', validators=[DataRequired()])
+    recruiter_name = TextField('Recruiter Name',
+                                validators=[DataRequired(), Length(max=100)])
 
     #: Recruiter email (email obviously).
-    recruiter_email = TextField('Recruiter Email', validators=[Email()])
+    recruiter_email = TextField('Recruiter Email',
+                                 validators=[Email(), Length(max=100)])
 
     #: Job tags.
     tags = TagListField('Tags', validators=[Optional()])
