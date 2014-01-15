@@ -38,3 +38,5 @@ MAIL_SERVER = 'localhost'
 MAIL_PORT = 25
 MAIL_DEFAULT_SENDER = '<sender>'
 MAIL_ADMIN_RECIPIENT = '<admin>'
+
+GA_TRACKING_ID = '<tracking>'
