@@ -10,7 +10,7 @@ from random import choice
 from flask import render_template, abort
 from flask import current_app as app
 
-from jobber.models import Job
+from jobber.core.models import Job
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.extensions import db

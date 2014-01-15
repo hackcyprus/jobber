@@ -13,7 +13,7 @@ from env import path_setup
 path_setup()
 
 from jobber.script import run, green, die, prompt
-from jobber.models import Company, Job, Location
+from jobber.core.models import Company, Job, Location
 
 
 def handle_location(id):

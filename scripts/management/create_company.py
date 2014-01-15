@@ -14,7 +14,7 @@ from env import path_setup
 path_setup()
 
 from jobber.script import run, green
-from jobber.models import Company
+from jobber.core.models import Company
 
 
 def main(name, session):

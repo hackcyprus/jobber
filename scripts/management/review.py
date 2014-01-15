@@ -15,7 +15,7 @@ from env import path_setup
 path_setup()
 
 from jobber.script import run, green, die, prompt, blue
-from jobber.models import Job
+from jobber.core.models import Job
 
 
 def make_summary(job):

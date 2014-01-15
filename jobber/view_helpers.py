@@ -5,7 +5,7 @@ jobber.view_helpers
 Utility functions for views.
 
 """
-from jobber.models import Job, Company, Location, Tag
+from jobber.core.models import Job, Company, Location, Tag
 from jobber.core.forms import JobForm
 
 

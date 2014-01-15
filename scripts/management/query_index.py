@@ -14,7 +14,7 @@ from env import path_setup
 path_setup()
 
 from jobber.script import run, die
-from jobber.models import Job
+from jobber.core.models import Job
 from jobber.core.search import Index
 
 

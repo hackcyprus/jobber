@@ -6,7 +6,7 @@ Public interface for sending emails using `Flask-Mail`.
 
 """
 from flask import render_template
-from flask.ext.mail import Message, Mail, email_dispatched
+from flask.ext.mail import Message, Mail
 from jinja2 import TemplateNotFound
 
 from jobber.conf import settings

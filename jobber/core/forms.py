@@ -3,7 +3,7 @@ from wtforms.validators import DataRequired, Email, Optional, URL
 from wtforms.widgets import HiddenInput, TextArea, TextInput
 from flask.ext.wtf import Form
 
-from jobber.models import Job, Location
+from jobber.core.models import Job, Location
 from jobber.core.utils import parse_tags, clean_html
 
 

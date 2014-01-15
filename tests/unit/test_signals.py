@@ -9,7 +9,7 @@ Tests signal functions.
 import pytest
 from mock import MagicMock
 
-from jobber.models import Job, Company, Location
+from jobber.core.models import Job, Company, Location
 
 
 class TestObject(object):
@@ -47,7 +47,7 @@ def job(company, location):
 @pytest.fixture(scope='function')
 def actionmap(monkeypatch):
     """Creates a test model action map and patches the existing one."""
-    from jobber.core import signals
+    from jobber import signals
 
     test_actionmap = {
         TestObject: {
@@ -65,7 +65,7 @@ def actionmap(monkeypatch):
 
 
 def test_find_model_actions(app, actionmap):
-    from jobber.core import signals
+    from jobber import signals
 
     actions = signals.find_model_actions(TestObject, 'insert')
     assert actions == [signals.on_insert_foo, signals.on_insert_bar]
@@ -81,7 +81,7 @@ def test_find_model_actions(app, actionmap):
 
 
 def test_on_models_committed(app, actionmap):
-    from jobber.core import signals
+    from jobber import signals
 
     changes = [(TestObject(), 'insert')]
     signals.on_models_committed(app, changes)
@@ -89,30 +89,3 @@ def test_on_models_committed(app, actionmap):
     assert signals.on_insert_foo.called
     assert signals.on_insert_bar.called
     assert not signals.on_update_baz.called
-
-
-def test_update_jobs_index(job, monkeypatch):
-    from jobber.core import signals
-
-    mock_index = MagicMock(signals.Index)
-    monkeypatch.setattr('jobber.core.signals.Index', mock_index)
-
-    instance = mock_index.return_value
-
-    signals.update_jobs_index(job)
-    assert instance.delete_document.called
-
-    job.published = True
-    signals.update_jobs_index(job)
-    assert instance.add_document.called
-
-
-def test_send_instructory_email(job, monkeypatch):
-    from jobber.core import signals
-
-    mock_send = MagicMock()
-    monkeypatch.setattr(signals, 'send_email_template', mock_send)
-
-    recipient = job.recruiter_email
-    signals.send_instructory_email(job)
-    mock_send.assert_called_with('instructory', dict(job=job), [recipient])

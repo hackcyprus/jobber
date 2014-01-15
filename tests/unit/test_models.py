@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from arrow.arrow import Arrow
 
 from jobber.core.utils import now
-from jobber.models import (Job,
+from jobber.core.models import (Job,
                            Company,
                            Category,
                            Location,

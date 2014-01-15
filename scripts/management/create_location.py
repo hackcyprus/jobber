@@ -15,7 +15,7 @@ from env import path_setup
 path_setup()
 
 from jobber.script import run, green
-from jobber.models import Location
+from jobber.core.models import Location
 
 
 def main(city, country_code, session):
