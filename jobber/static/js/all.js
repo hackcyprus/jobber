@@ -124,8 +124,8 @@
 
       var $el = $(selector)
         , $content = $el.find('.content')
-        , $controls = $el.find('.controls')
-        , $hideBtn = $controls.find('.hide-btn')
+        , $notice = $el.find('.notice')
+        , $hideBtn = $notice.find('.hide-btn')
         , self = this;
 
       var setup = function() {
@@ -148,7 +148,7 @@
      * Preview button
      * --------------
      */
-    var sheet = new Sheet('#preview-sheet', 850);
+    var sheet = new Sheet('#preview-sheet');
 
     $('#preview-btn').click(function(e) {
       var $el = $(e.target)

@@ -6,7 +6,6 @@
     top: 0;
     bottom: 0;
     z-index: 99999;
-    white-space: nowrap;
     -webkit-transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
     transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
     -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -14,7 +13,7 @@
 
     &.left {
         left: 0;
-        .box-shadow(1px 0px 5px @rule);
+        border-right: 2px solid @rule;
 
         &.hidden {
             -webkit-transform: translate3d(-110%,0,0);
@@ -24,7 +23,7 @@
 
     &.right {
         right: 0;
-        .box-shadow(-1px 0px 3px @rule);
+        border-left: 2px solid @rule;
 
         &.hidden {
             -webkit-transform: translate3d(110%,0,0);
@@ -32,32 +31,47 @@
         }
     }
 
-    .content {
+    .notice {
         position: absolute;
         top: 0;
-        bottom: 57px;
         left: 0;
         right: 0;
-        padding: 15px;
-        overflow: scroll;
-    }
-
-    .controls {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 55px;
-        line-height: 55px;
-        padding-left: 7px;
         background-color: lighten(@rule, 8%);
-        border-top: 2px solid @rule;
+        height: 44px;
+        line-height: 44px;
+        border-bottom: 2px solid @rule;
+
+        h4 {
+            font-size: 0.875em;
+            font-weight: 700;
+            color: @gray;
+            margin: 0;
+            padding: 0;
+            padding-left: 15px;
+            float: left;
+        }
 
         button {
-            font-size: 14px;
-            padding: 10px 20px;
+            font-size: 0.75em;
+            padding: 5px 10px;
             font-weight: 700;
+            float: right;
+            position: relative;
+            top: 8px;
+            right: 8px;
+            text-transform: uppercase;
         }
+    }
+
+    .content {
+        position: absolute;
+        top: 46px;
+        bottom: 0;
+        width: 550px;
+        left: 0;
+        right: 0;
+        padding: 0px 15px 0px 15px;
+        overflow: scroll;
     }
 
 }
