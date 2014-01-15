@@ -2,7 +2,7 @@
 jobber.core.functions
 ~~~~~~~~~~~~~~~~~~~~~
 
-Email functionality using core email.
+Shared functions.
 
 """
 import os
@@ -16,6 +16,7 @@ from jobber.core.utils import now
 
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
+ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
 
 
 def send_instructory_email(job):
