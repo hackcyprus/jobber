@@ -55,15 +55,15 @@ def prompt(message, yesno=False):
 
     """
     if yesno:
-        message = "{} [y/N]".format(message)
-    value = raw_input("{}: ".format(message))
+        message = u"{} [y/N]".format(message)
+    value = raw_input(u"{}: ".format(message))
     return value.lower() == 'y' if yesno else value
 
 
 def termcolor(code):
     """Decorator that wraps text with `code` for colored terminal output."""
     def wrapper(text):
-        return "\033[{}m{}\033[0m".format(code, text)
+        return u"\033[{}m{}\033[0m".format(code, text)
     return wrapper
 
 

@@ -51,13 +51,13 @@ def update_jobs_index(job):
     document = job.to_document()
 
     if not job.published:
-        app.logger.info("Job ({}) is unpublished, deleting from index.".format(job.id))
+        app.logger.info(u"Job ({}) is unpublished, deleting from index.".format(job.id))
         index.delete_document(document['id'])
-        app.logger.info("Job ({}) deleted from index.".format(job.id))
+        app.logger.info(u"Job ({}) deleted from index.".format(job.id))
     else:
-        app.logger.info("Job ({}) is published, adding to index.".format(job.id))
+        app.logger.info(u"Job ({}) is published, adding to index.".format(job.id))
         index.add_document(document)
-        app.logger.info("Job ({}) added to index.".format(job.id))
+        app.logger.info(u"Job ({}) added to index.".format(job.id))
 
 
 @models_committed.connect_via(app._get_current_object())
@@ -74,7 +74,7 @@ def on_models_committed(sender, changes):
         actions = find_model_actions(klass, op)
 
         if not actions:
-            app.logger.debug('No actions found for ({}, {}).'.format(klass, op))
+            app.logger.debug(u'No actions found for ({}, {}).'.format(klass, op))
             continue
 
         for action in actions:
