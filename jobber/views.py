@@ -82,7 +82,7 @@ def create():
         send_instructory_email(job)
         send_admin_review_email(job)
 
-        return render_template('jobs/submitted.html',
+        return render_template('jobs/created.html',
                                email=job.recruiter_email,
                                prompt=CREATE_OR_UPDATE_PROMPT)
 
@@ -114,7 +114,7 @@ def edit(job_id, token):
         send_admin_review_email(job)
 
         db.session.commit()
-        return render_template('jobs/submitted.html',
+        return render_template('jobs/updated.html',
                                email=job.recruiter_email,
                                prompt=CREATE_OR_UPDATE_PROMPT)
 
