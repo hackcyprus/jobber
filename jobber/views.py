@@ -61,7 +61,7 @@ def search(query):
     index = Index()
     jobs = []
 
-    for hit in index.search(query):
+    for hit in index.search(query, sort=('created', 'desc')):
         job = Job.query.get(hit['id'])
         # Make sure that we don't accidentally show an unpublished job that
         # happened to be in the search index.

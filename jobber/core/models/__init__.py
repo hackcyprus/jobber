@@ -266,7 +266,8 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'company': self.company.name,
             'location': u"{},{}".format(self.location.city, self.location.country_name),
             'job_type': self.human_job_type,
-            'tags': u','.join(self.tag_slugs)
+            'tags': u','.join(self.tag_slugs),
+            'created': self.created.datetime
         }
 
 

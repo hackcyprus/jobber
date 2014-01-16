@@ -8,7 +8,7 @@ Handles all things search.
 from contextlib import contextmanager
 
 from whoosh import index
-from whoosh.fields import SchemaClass, TEXT, ID, KEYWORD
+from whoosh.fields import SchemaClass, TEXT, ID, KEYWORD, DATETIME
 from whoosh.writing import IndexingError
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import StemmingAnalyzer
@@ -71,6 +71,9 @@ class Schema(SchemaClass):
     #: The job tags as a comma-separated string of tag slugs.
     tags = KEYWORD(lowercase=True, scorable=True, commas=True)
 
+    #: When was this job created?
+    created = DATETIME(sortable=True)
+
 
 class SearchableMixin(object):
     """Gives a `to_document()` method to the object, which should return a
@@ -108,18 +111,30 @@ class Index(object):
         directory = settings.SEARCH_INDEX_DIRECTORY
         index.create_in(directory, schema, indexname=cls.name)
 
-    def search(self, query, limit=None):
+    def search(self, query, limit=None, sort=None):
         """Searches the index by parsing `query` and creating a `Query` object.
 
         :param query: A string containing the users query.
         :param limit: How many results to return, defaults to `None` which will
         return all results.
+        :param sort: The field to sort the results on as a tuple of (field, direction).
+        for example ('created', 'asc').
 
         """
         parser = MultifieldParser(SEARCHABLE_FIELDS, schema=self.index.schema)
         query = parser.parse(query)
         with self.index.searcher() as searcher:
-            hits = searcher.search(query, limit=limit)
+            kwargs = {}
+
+            if limit:
+                kwargs['limit'] = limit
+            if sort:
+                field, direction = sort
+                kwargs['sortedby'] = field
+                kwargs['reverse'] = direction == 'desc'
+
+            hits = searcher.search(query, **kwargs)
+
             return [hit.fields() for hit in hits]
 
     def add_document(self, doc, commit=True, writer=None):
