@@ -19,6 +19,10 @@
             margin: 0;
         }
 
+        fieldset {
+            margin: 0;
+        }
+
         .field {
             font-family: @base-font;
             position: relative;
@@ -28,7 +32,7 @@
             .selectize-control.multi .selectize-input {
                 border: 2px solid @rule;
                 padding: 8px;
-                width: 508px;
+                width: 530px;
                 font-size: 14px;
                 &:focus {
                     outline: none;
@@ -99,10 +103,51 @@
         }
 
         #description-toolbar {
-            padding: 8px 4px;
-            font-size: 0.75em;
             background-color: lighten(@rule, 5%);
             border: 2px solid @rule;
+
+            a {
+                border: none;
+                text-decoration: none;
+                margin-right: 8px;
+                display: block;
+                float: left;
+                padding: 5px 11px;
+
+                &:hover {
+                    background-color: lighten(@rule, 2%);
+                }
+            }
+
+            img {
+                height: 12px;
+                width: 12px;
+            }
+
+            a.ul, a.ol {
+                padding: 2px 11px;
+                img {
+                    height: 18px;
+                    width: 18px;
+                    margin-top: 5px;
+                }
+            }
+
+            a.redo, a.undo {
+                padding: 4px 11px;
+                img {
+                    height: 14px;
+                    width: 14px;
+                    margin-top: 5px;
+                }
+            }
+
+            .wysihtml5-command-active {
+                background-color: @rule;
+                &:hover {
+                    background-color: @rule;
+                }
+            }
         }
 
         #contact-method-field {
@@ -112,7 +157,7 @@
         }
 
         #contact_url, #contact_email {
-            width: 350px;
+            width: 446px;
         }
 
         #submit-btn, #preview-btn {

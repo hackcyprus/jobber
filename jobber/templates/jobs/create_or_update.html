@@ -39,14 +39,28 @@
         </p>
         <div class="field" id="description-field">
           <!-- Toolbar for the description textarea -->
-          <div id="description-toolbar" style="display: none;">
-            <a data-wysihtml5-command="bold">bold</a>
-            <a data-wysihtml5-command="italic">italic</a>
-            <a data-wysihtml5-command="underline">underline</a>
-            <a data-wysihtml5-command="insertOrderedList">olist</a>
-            <a data-wysihtml5-command="insertUnorderedList">ulist</a>
-            <a data-wysihtml5-command="undo">undo</a>
-            <a data-wysihtml5-command="redo">redo</a>
+          <div id="description-toolbar" class="clearfix" style="display: none;">
+            <a class="bold" data-wysihtml5-command="bold">
+              <img src="/static/imgs/wysiwyg/b.png" />
+            </a>
+            <a class="i" data-wysihtml5-command="italic">
+              <img src="/static/imgs/wysiwyg/i.png" />
+            </a>
+            <a class="u" data-wysihtml5-command="underline">
+              <img src="/static/imgs/wysiwyg/u.png" />
+            </a>
+            <a class="ol" data-wysihtml5-command="insertOrderedList">
+              <img src="/static/imgs/wysiwyg/ol.png" />
+            </a>
+            <a class="ul" data-wysihtml5-command="insertUnorderedList">
+              <img src="/static/imgs/wysiwyg/ul.png" />
+            </a>
+            <a class="undo" data-wysihtml5-command="undo">
+              <img src="/static/imgs/wysiwyg/undo.png" />
+            </a>
+            <a class="redo" data-wysihtml5-command="redo">
+              <img src="/static/imgs/wysiwyg/redo.png" />
+            </a>
           </div>
           {{ form.description(rows=14, placeholder="Write a clear and concise description of the job") }}
         </div>
