@@ -134,11 +134,11 @@
 
       this.show = function(html) {
         $content.html(html);
-        $el.removeClass('hidden');
+        $el.removeClass('hide');
       }
 
       this.hide = function() {
-        $el.addClass('hidden');
+        $el.addClass('hide');
       };
 
       setup();
@@ -151,15 +151,22 @@
     var sheet = new Sheet('#preview-sheet');
 
     $('#preview-btn').click(function(e) {
-      var $el = $(e.target)
+      var $el = $(this)
         , href = $el.attr('href')
         , $form = $('#create-job form')
+        , $spinner = $el.find('#preview-spinner')
+        , $text = $el.find('#preview-text')
         , data = $form.serialize();
 
       e.preventDefault();
       e.stopPropagation();
 
+      $spinner.removeClass('hidden');
+      $text.hide();
+
       $.post(href, data, function(html) {
+        $spinner.addClass('hidden');
+        $text.show();
         sheet.show(html);
       });
     });

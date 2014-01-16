@@ -111,14 +111,21 @@
         </div>
       </fieldset>
       <div class="field inline">
-        <a id="preview-btn" href="/preview" class="btn">Preview</a>
+        <a id="preview-btn" href="/preview" class="btn">
+          <span id="preview-spinner" class="hidden">
+            <span class="dot dot-1"></span>
+            <span class="dot dot-2"></span>
+            <span class="dot dot-3"></span>
+          </span>
+          <span id="preview-text">Preview</span>
+        </a>
       </div>
       <div class="field inline">
         <input id="submit-btn" type="submit" class="btn btn-green" value="Submit for approval"/>
       </div>
     </form>
   </div>
-  <div id="preview-sheet" class="sheet right hidden">
+  <div id="preview-sheet" class="sheet right hide">
     <div class="notice clearfix">
       <h4>This is your post as it would appear on the site when published.</h4>
       <button class='hide-btn btn'>Close</button>
