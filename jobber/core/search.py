@@ -117,8 +117,8 @@ class Index(object):
         :param query: A string containing the users query.
         :param limit: How many results to return, defaults to `None` which will
         return all results.
-        :param sort: The field to sort the results on as a tuple of (field, direction).
-        for example ('created', 'asc').
+        :param sort: The field to sort the results on, given as a tuple of
+        (field, direction) i.e ('created', 'asc').
 
         """
         parser = MultifieldParser(SEARCHABLE_FIELDS, schema=self.index.schema)
