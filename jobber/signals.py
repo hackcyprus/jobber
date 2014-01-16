@@ -1,6 +1,6 @@
 """
-jobber.core.signals
-~~~~~~~~~~~~~~~~~~~
+jobber.signals
+~~~~~~~~~~~~~~
 
 Contains signal registration.
 
