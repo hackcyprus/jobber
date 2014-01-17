@@ -5,13 +5,20 @@
 {% block content %}
   <div id="create-job" class="container clearfix">
     {% if token %}
+    <div class='notice'>
+      <h4>
+        <img width=16 src="/static/imgs/caution.png" />
+        You are editing this listing. Any submitted changes will need a review.
+      </h4>
+    </div>
+    <h2>Edit listing</h2>
     <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" parsley-form>
     {% else %}
+    <h2>Create listing</h2>
     <form method="post" action="/create" parsley-form>
     {% endif %}
-      Errors: {{ form.errors }}
       {{ form.hidden_tag() }}
-      <fieldset>
+      <fieldset style="padding-top: 0.75em">
         <div class="field">
           {{ form.title(placeholder="What's the job title?") }}
         </div>
@@ -121,7 +128,7 @@
         </a>
       </div>
       <div class="field inline">
-        <input id="submit-btn" type="submit" class="btn btn-green" value="Submit for approval"/>
+        <input id="submit-btn" type="submit" class="btn btn-green" value="Submit for review"/>
       </div>
     </form>
   </div>

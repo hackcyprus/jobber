@@ -89,7 +89,7 @@ def create():
     locations = get_location_context()
     tags = get_tag_context()
 
-    return render_template('jobs/create_or_update.html',
+    return render_template('jobs/create_or_edit.html',
                            form=form,
                            locations=locations,
                            tags=tags,
@@ -114,14 +114,14 @@ def edit(job_id, token):
         send_admin_review_email(job)
 
         db.session.commit()
-        return render_template('jobs/updated.html',
+        return render_template('jobs/edited.html',
                                email=job.recruiter_email,
                                prompt=CREATE_OR_UPDATE_PROMPT)
 
     locations = get_location_context()
     tags = get_tag_context()
 
-    return render_template('jobs/create_or_update.html',
+    return render_template('jobs/create_or_edit.html',
                            form=form,
                            token=token,
                            locations=locations,
