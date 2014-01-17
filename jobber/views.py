@@ -152,6 +152,6 @@ def preview():
     return 'Cannot render preview'
 
 
-@app.route('/how')
+@app.route('/faq')
 def how():
-    return 'how it works'
+    return render_template('faq.html', prompt='Frequently asked questions.')
