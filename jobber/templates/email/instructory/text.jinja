@@ -1,12 +1,18 @@
 Hey {{ job.recruiter_name }},
 
-Great! Your job post is now scheduled for a review, which should take less than a day.
+Your job listing is now scheduled for a review, which should take less than a day.
 
-You can edit your post any time by visiting this link:
+As a brief reminder, here's some information about your listing:
+
+Title: {{ job.title }}
+Company: {{ job.company.name }}
+Job Type: {{ job.job_type }}
+
+You can edit your listing at any time by using this link:
 {{ job.edit_url }}
 
 Regards,
 The Hack Cyprus Team
 
-P.S: If you think we're taking too long to review your post, please send us an email at
+P.S: If you think we're taking too long to review your listing, please send us an email at
 {{ default_sender }}.

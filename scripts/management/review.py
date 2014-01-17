@@ -16,6 +16,7 @@ path_setup()
 
 from jobber.script import run, green, die, prompt, blue
 from jobber.core.models import Job
+from jobber.functions import send_confirmation_email
 
 
 def make_summary(job):
@@ -24,6 +25,9 @@ def make_summary(job):
 
     Type: {job_type}
     Remote Work: {remote_work}
+
+    Recruiter: {recruiter_name}
+    Recruiter email: {recruiter_email}
 
     Company: {company_name}
     Company Website: {company_website}
@@ -39,13 +43,15 @@ def make_summary(job):
     -----------
     {description}
 
-    => You can also view this job online at {edit_url}.
+    => You can also view this listing online at {edit_url}.
     """
     return summary.format(**{
         'title': job.title,
         'job_type': job.human_job_type,
         'remote_work': job.human_remote_work,
         'description': job.description,
+        'recruiter_name': job.recruiter_name,
+        'recruiter_email': job.recruiter_email,
         'company_name': job.company.name,
         'company_website': job.company.website,
         'city': job.location.city,
@@ -64,14 +70,22 @@ def main(job_id, session):
 
     print isinstance(job.title, unicode)
 
-    print "You're reviewing the following job:"
-    print make_summary(job)
+    print "You're reviewing the following listing:"
+    print make_summary(job).encode('utf-8')
 
     action = 'publish' if not job.published else 'unpublish'
-    if prompt("Do you want to {} this job?".format(blue(action)), yesno=True):
+    if prompt("Do you want to {} this listing?".format(blue(action)), yesno=True):
         job.published = not job.published
         session.commit()
+
         print green('Job {}ed!'.format(action))
+
+        if action == 'unpublish':
+            return
+
+        if prompt(blue('Do you want to send a confirmation email?'), yesno=True):
+            send_confirmation_email(job)
+            print green('Confirmation email sent!')
     else:
         die('Bye.')
 

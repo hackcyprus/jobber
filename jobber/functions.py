@@ -30,12 +30,13 @@ def send_instructory_email(job):
         'job': job,
         'default_sender': DEFAULT_SENDER
     }
-    app.logger.debug(u"Sending instructory email to '{}'.".format(recipient))
+    app.logger.debug(u"Sending instructory email to '{}' "
+                     "for job listing ({}).".format(recipient, job.id))
     send_email_template('instructory', context, [recipient])
 
 
 def send_admin_review_email(job):
-    """Sends a notification to the admin to review the new/updated job post.
+    """Sends a notification to the admin to review the new/updated job listing.
 
     :param job: A `Job` instance.
 
@@ -54,5 +55,23 @@ def send_admin_review_email(job):
         'script_path': script_path
     }
 
-    app.logger.debug(u"Sending admin review email for job ({}).".format(job.id))
+    app.logger.debug(u"Sending admin review email for job listing ({}).".format(job.id))
     send_email_template('review', context, [recipient])
+
+
+def send_confirmation_email(job):
+    """Sends an email to the recruiter, confirming that the job has been reviewed,
+    accepted and published.
+
+    :param job: A `Job` instance.
+
+    """
+    recipient = job.recruiter_email
+    context = {
+        'job': job,
+        'default_sender': DEFAULT_SENDER
+    }
+    app.logger.debug(u"Sending confirmation email to '{}' "
+                     "for job listing ({}).".format(recipient, job.id))
+    send_email_template('confirmation', context, [recipient])
+

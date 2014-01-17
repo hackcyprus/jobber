@@ -15,6 +15,7 @@ from jobber.conf import settings
 from jobber.core.models import Location, Company, Job
 from jobber.functions import (send_instructory_email,
                               send_admin_review_email,
+                              send_confirmation_email,
                               DEFAULT_SENDER,
                               ADMIN_RECIPIENT)
 
@@ -70,3 +71,17 @@ def test_send_admin_review_email(app, monkeypatch, job):
 
     send_admin_review_email(job)
     mock.assert_called_with('review', context, recipient)
+
+
+def test_send_confirmation_email(app, monkeypatch, job):
+    mock = MagicMock()
+    monkeypatch.setattr('jobber.functions.send_email_template', mock)
+
+    context = {
+        'job': job,
+        'default_sender': DEFAULT_SENDER
+    }
+    recipient = [job.recruiter_email]
+
+    send_confirmation_email(job)
+    mock.assert_called_with('confirmation', context, recipient)
