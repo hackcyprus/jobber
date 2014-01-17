@@ -11,14 +11,6 @@
     .notice {
         border: 2px solid @rule;
         margin-bottom: 27px;
-
-        img {
-            width: 18px;
-            height: 18px;
-            margin-right: 6px;
-            position: relative;
-            top: 3px;
-        }
     }
 
     form {
@@ -214,4 +206,30 @@
 
 #preview-sheet {
     width: 580px;
+
+    .notice {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+
+        button {
+            font-size: 0.75em;
+            padding: 5px 10px;
+            font-weight: 700;
+            float: right;
+            position: relative;
+            top: 8px;
+            right: 15px;
+            text-transform: uppercase;
+        }
+    }
+
+    .content {
+        .notice {
+            position: relative;
+            margin-top: 15px;
+            border: 2px solid @red;
+        }
+    }
 }

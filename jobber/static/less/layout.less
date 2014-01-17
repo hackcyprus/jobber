@@ -100,16 +100,29 @@ button::-moz-focus-inner {
     height: 44px;
     line-height: 44px;
     border-bottom: 2px solid @rule;
+    color: @gray;
+
+    &.error {
+        background-color: @pink;
+        color: @red;
+    }
 
     h4 {
         font-size: 0.875em;
         font-weight: 700;
-        color: @gray;
         margin: 0;
         padding: 0;
         padding-left: 15px;
         float: left;
-     }
+    }
+
+    img {
+        width: 18px;
+        height: 18px;
+        margin-right: 6px;
+        position: relative;
+        top: 3px;
+    }
 }
 
 header {

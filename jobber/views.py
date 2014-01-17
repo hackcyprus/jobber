@@ -149,7 +149,7 @@ def preview():
                                show_all_jobs_link=False,
                                job=job)
 
-    return 'Cannot render preview'
+    return render_template('jobs/preview_failed.html')
 
 
 @app.route('/faq')
