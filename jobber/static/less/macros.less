@@ -1,5 +1,7 @@
 // tags
 div.tags {
+  .clearfix;
+
   a.tag {
     font-size: 0.75em;
     padding: 3px 6px;
@@ -7,6 +9,9 @@ div.tags {
     background-color: lighten(@rule, 5%);
     color: darken(@rule, 37%);
     font-weight: 700;
+    display: block;
+    float: left;
+    margin: 0px 4px 4px 0px;
 
     &:hover {
         background-color: darken(@rule, 5%);
