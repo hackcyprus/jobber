@@ -7,7 +7,7 @@ View declarations.
 """
 from random import choice
 
-from flask import render_template, abort
+from flask import render_template, abort, redirect, url_for, session
 from flask import current_app as app
 
 from jobber.core.models import Job
@@ -82,9 +82,8 @@ def create():
         send_instructory_email(job)
         send_admin_review_email(job)
 
-        return render_template('jobs/created.html',
-                               email=job.recruiter_email,
-                               prompt=CREATE_OR_UPDATE_PROMPT)
+        session['created_email'] = job.recruiter_email
+        return redirect(url_for('created'))
 
     locations = get_location_context()
     tags = get_tag_context()
@@ -94,6 +93,14 @@ def create():
                            locations=locations,
                            tags=tags,
                            prompt=CREATE_OR_UPDATE_PROMPT)
+
+
+@app.route('/created')
+def created():
+    email = session.pop('created_email', None)
+    if not email:
+        abort(404)
+    return render_template('jobs/created.html', email=email)
 
 
 @app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
@@ -114,9 +121,9 @@ def edit(job_id, token):
         send_admin_review_email(job)
 
         db.session.commit()
-        return render_template('jobs/edited.html',
-                               email=job.recruiter_email,
-                               prompt=CREATE_OR_UPDATE_PROMPT)
+
+        session['edited_email'] = job.recruiter_email
+        return redirect(url_for('edited'))
 
     locations = get_location_context()
     tags = get_tag_context()
@@ -127,6 +134,14 @@ def edit(job_id, token):
                            locations=locations,
                            tags=tags,
                            prompt=CREATE_OR_UPDATE_PROMPT)
+
+
+@app.route('/edited')
+def edited():
+    email = session.pop('edited_email', None)
+    if not email:
+        abort(404)
+    return render_template('jobs/edited.html')
 
 
 @app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
