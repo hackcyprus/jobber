@@ -11,10 +11,10 @@
         You are editing this listing. Any submitted changes will need a review.
       </h4>
     </div>
-    <h2>Edit listing</h2>
+    <h2>Edit job listing</h2>
     <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" parsley-form>
     {% else %}
-    <h2>Create listing</h2>
+    <h2>Post a job listing</h2>
     <form method="post" action="/create" parsley-form>
     {% endif %}
       {{ form.hidden_tag() }}
