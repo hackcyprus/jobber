@@ -96,31 +96,6 @@
                 }
             }
 
-            // Validation
-            // -----------
-            .parsley-error-container {
-                position: absolute;
-
-                .parsley-error-list {
-                    font-size: 0.75em;
-                    font-weight: 700;
-                    margin: 0;
-                    padding: 0;
-                    list-style: none;
-
-                    li {
-                        margin-top: 2px;
-                        color: @red;
-                    }
-                }
-            }
-
-            input[type="text"], textarea {
-                &.parsley-error {
-                    border: 2px solid @red;
-                }
-            }
-
         }
 
         p.help-text {
@@ -230,6 +205,44 @@
 
             &.hidden {
                 display: none;
+            }
+        }
+
+        // Validation
+        // -----------
+        .parsley-error-container {
+            border: 2px solid @red;
+            padding: 7px;
+            margin-top: 33px;
+
+            &.inline {
+                border: 0;
+                padding: 0;
+                margin-top: 0;
+                position: absolute;
+
+                .parsley-error-list {
+                    font-size: 0.75em;
+                }
+            }
+
+            .parsley-error-list {
+                font-weight: 700;
+                font-size: 0.875em;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+
+                li {
+                    margin-top: 2px;
+                    color: @red;
+                }
+            }
+        }
+
+        input[type="text"], textarea {
+            &.parsley-error {
+                border: 2px solid @red;
             }
         }
     }

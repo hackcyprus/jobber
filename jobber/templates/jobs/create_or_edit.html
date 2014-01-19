@@ -17,8 +17,20 @@
     <h2>Post a job listing</h2>
     <form method="post" name='jobform' action="/create" novalidate parsley-validate>
     {% endif %}
+      {% if form.errors %}
+      <div class="parsley-error-container">
+        <ul class="parsley-error-list">
+          {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+              {% for error in field_errors %}
+                  <li>{{ form[field_name].label }}: {{ error }}</li>
+              {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
       {{ form.hidden_tag() }}
-      <fieldset style="padding-top: 0.75em">
+      <fieldset>
+        <h4>Basic stuff</h4>
         <div class="field">
           {{ form.title(placeholder="What's the job title?", **{"parsley-required": "required"}) }}
         </div>

@@ -28,7 +28,7 @@
       , $container = $field.find('.parsley-error-container');
 
     if ($container.length == 0) {
-      $container = $("<div class='parsley-error-container'></div>");
+      $container = $("<div class='parsley-error-container inline'></div>");
 
       if ($el.hasClass('selectized')) {
         $el = $field.find('.selectize-control');
@@ -62,7 +62,7 @@
       onFieldValidate: onFieldValidate
     },
     messages: {
-      required: 'This is required.'
+      required: 'This field is required.'
     }
   };
 
