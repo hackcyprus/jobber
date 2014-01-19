@@ -1,5 +1,7 @@
 {% from 'macros.html' import tags %}
 
+{% set website = job.company.website %}
+
 <div id="job" class="clearfix">
   <div class="job-header">
     <h2>
@@ -10,7 +12,13 @@
   <div class="job-body">
     <div class="location-and-apply clearfix">
       <h4>
-        <a href="{{job.company.website}}" target="_blank" class="job-company-website">{{ job.company.name }}</a>
+        {% if website %}
+          <a href="{{website}}" target="_blank" class="job-company-website">
+            {{ job.company.name }}
+          </a>
+        {% else %}
+          {{ job.company.name }}
+        {% endif %}
         &mdash;
         {{ job.location.city }}, {{ job.location.country_name }}
       </h4>
