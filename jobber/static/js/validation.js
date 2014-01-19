@@ -55,7 +55,6 @@
   var config = {
     inputs: fields.join(', '),
     useHtml5Constraints: false,
-    focus: 'none',
     errors: {
       container: getErrorContainer
     },
