@@ -3,25 +3,12 @@
 {% set website = job.company.website %}
 
 <div id="job" class="clearfix">
-  <div class="job-header">
-    <h2>
-      {{ job.title }} <span>/ {{ job.human_job_type }}</span>
-    </h2>
+  <div class="header">
+    <h2>{{ job.title }}</h2>
     {{ tags(job) }}
   </div>
-  <div class="job-body">
-    <div class="location-and-apply clearfix">
-      <h4>
-        {% if website %}
-          <a href="{{website}}" target="_blank" class="job-company-website">
-            {{ job.company.name }}
-          </a>
-        {% else %}
-          {{ job.company.name }}
-        {% endif %}
-        &mdash;
-        {{ job.location.city }}, {{ job.location.country_name }}
-      </h4>
+  <div class="body clearfix">
+    <div class="infobox">
       {% if job.human_contact_method == 'Link' %}
       <a href="{{ job.contact_url }}" target="_blank" class="apply-btn btn btn-green">
       {% else %}
@@ -29,9 +16,34 @@
       {% endif %}
         Apply for this job
       </a>
-     </div>
-    <div class="job-description">
-      {{job.description|safe}}
+      <div class="row">
+        <img src="/static/imgs/people.png" />
+        {% if website %}
+          <a href="{{website}}" target="_blank" class="job-company-website">
+            {{ job.company.name }}
+          </a>
+        {% else %}
+          {{ job.company.name }}
+        {% endif %}
+      </div>
+      <div class="row">
+        <img src="/static/imgs/pin.png" /> {{ job.location.city }}, {{ job.location.country_name }}
+      </div>
+      <div class="row">
+        <img src="/static/imgs/clock.png" /> {{ job.human_job_type }}
+      </div>
+      {% if job.remote_work != 2 %}
+      <div class="row">
+        <img src="/static/imgs/globe.png" />
+          Work remotely
+          {% if job.remote_work == 3 %}
+            <span>(negotiable)</span>
+          {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="description">
+      {{ job.description|safe }}
     </div>
   </div>
 </div>
