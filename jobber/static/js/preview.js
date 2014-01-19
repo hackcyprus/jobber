@@ -16,13 +16,26 @@
       $hideBtn.on('click', self.hide);
     };
 
+    var noop = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
     this.show = function(html) {
       $content.html(html);
       $el.removeClass('hide');
+      return this;
     }
 
     this.hide = function() {
       $el.addClass('hide');
+      return this;
+    };
+
+    this.hijackAnchors = function() {
+      console.log($content.find('a'));
+      $content.find('a').on('click', noop);
+      return this;
     };
 
     setup();
@@ -55,7 +68,7 @@
     $.post(href, data, function(html) {
       $spinner.addClass('hidden');
       $text.show();
-      sheet.show(html);
+      sheet.show(html).hijackAnchors();
     });
 
     return false;
