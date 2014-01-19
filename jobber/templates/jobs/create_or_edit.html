@@ -32,7 +32,8 @@
       <fieldset>
         <h4>Basic stuff</h4>
         <div class="field">
-          {{ form.title(placeholder="What's the job title?", **{"parsley-required": "required"}) }}
+          {{ form.title(placeholder="What's the job title?",
+             **{"parsley-required": "required", "parsley-maxlength="100"}) }}
         </div>
         <div class="field inline">
           {{ form.job_type() }}
@@ -44,10 +45,10 @@
       <fieldset>
         <h4>Where is the job based?</h4>
         <div class="field inline" id="location-city-field">
-          {{ form.location__city(placeholder="Select or type a city..", class_="large", **{"parsley-required": "required"}) }}
+          {{ form.location__city(placeholder="Select or type a city..", class_="large", **{"parsley-required": "required", parsley-maxlength="75"}) }}
         </div>
         <div class="field inline">
-          {{ form.location__country_code(class_="large", **{"parsley-required": "required"}) }}
+          {{ form.location__country_code(class_="large", **{"parsley-required": "required", parsley-maxlength="3"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -101,10 +102,10 @@
       <fieldset>
         <h4>Some details on your company</h4>
         <div class="field">
-          {{ form.company__name(placeholder="What's the name of your company?", **{"parsley-required": "required"}) }}
+          {{ form.company__name(placeholder="What's the name of your company?", **{"parsley-required": "required", parsley-maxlength="75"}) }}
         </div>
         <div class="field">
-          {{ form.company__website(placeholder="What's the website of your company?", **{"parsley-required": "required"}) }}
+          {{ form.company__website(placeholder="What's the website of your company?", **{"parsley-required": "required", parsley-maxlength="200"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -114,10 +115,10 @@
           includes your unique link for editing this job post later.
         </p>
         <div class="field">
-          {{ form.recruiter_name(placeholder="What's your full name?", **{"parsley-required": "required"}) }}
+          {{ form.recruiter_name(placeholder="What's your full name?", **{"parsley-required": "required", parsley-maxlength="100"}) }}
         </div>
         <div class="field">
-          {{ form.recruiter_email(placeholder="What's your email?", **{"parsley-required": "required"}) }}
+          {{ form.recruiter_email(placeholder="What's your email?", **{"parsley-required": "required", parsley-maxlength="150"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -129,8 +130,8 @@
           {{ form.contact_method(**{"parsley-required": "required"}) }}
         </div>
         <div class="field inline">
-          {{ form.contact_url(placeholder="Link to job page", **{"parsley-required": "required"}) }}
-          {{ form.contact_email(style="display: none", placeholder="Email to contact", **{"parsley-required": "required"}) }}
+          {{ form.contact_url(placeholder="Link to job page", **{"parsley-required": "required", parsley-maxlength="200"}) }}
+          {{ form.contact_email(style="display: none", placeholder="Email to contact", **{"parsley-required": "required", parsley-maxlength="150"}) }}
         </div>
       </fieldset>
       <div class="field inline">

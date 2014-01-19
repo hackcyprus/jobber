@@ -52,10 +52,12 @@ class JobForm(Form):
                                 validators=[Optional()])
 
     #: Company name (freetext).
-    company__name = TextField('Company Name', validators=[DataRequired()])
+    company__name = TextField('Company Name',
+                               validators=[DataRequired(), Length(max=75)])
 
     #: Company website (freetext).
-    company__website = TextField('Company Website', validators=[Optional(), URL()])
+    company__website = TextField('Company Website',
+                                 validators=[Optional(), URL(), Length(max=200)])
 
     #: Location id (populated if used for updating).
     location__id = IntegerField('Location id',
@@ -63,12 +65,13 @@ class JobForm(Form):
                                 validators=[Optional()])
 
     #: Location city (freetext).
-    location__city = TextField('City', validators=[DataRequired()])
+    location__city = TextField('City',
+                               validators=[DataRequired(), Length(max=75)])
 
     #: Location country (country ISO code).
     location__country_code = SelectField('Country',
-                                        validators=[DataRequired()],
-                                        choices=Location.COUNTRIES.items())
+                                         validators=[DataRequired(), Length(max=3)],
+                                         choices=Location.COUNTRIES.items())
 
     #: Contact method (email or url).
     contact_method = SelectField('Contact Method',
@@ -90,7 +93,7 @@ class JobForm(Form):
 
     #: Recruiter email (email obviously).
     recruiter_email = TextField('Recruiter Email',
-                                 validators=[Email(), Length(max=100)])
+                                 validators=[Email(), Length(max=150)])
 
     #: Job tags.
     tags = TagListField('Tags', validators=[Optional()])

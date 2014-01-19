@@ -30,7 +30,7 @@ def upgrade():
         sa.Column('remote_work', sa.Integer, nullable=False, default=False),
         sa.Column('admin_token', sa.String(40), nullable=False, unique=True, index=True),
         sa.Column('recruiter_name', sa.Unicode(100), nullable=False),
-        sa.Column('recruiter_email', sa.Unicode(100), nullable=False),
+        sa.Column('recruiter_email', sa.Unicode(150), nullable=False),
         sa.Column('company_id',
                   sa.Integer,
                   sa.ForeignKey('companies.id'),

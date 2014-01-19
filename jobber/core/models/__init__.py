@@ -85,7 +85,7 @@ class Company(BaseModel, SlugModelMixin):
     name = db.Column(db.Unicode(75), nullable=False)
 
     #: Company website.
-    website = db.Column(db.Unicode(100), nullable=True)
+    website = db.Column(db.Unicode(200), nullable=True)
 
     #: One-to-many relationship to a `Job`.
     jobs = db.relationship('Job', backref='company')
@@ -152,7 +152,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     recruiter_name = db.Column(db.Unicode(100), nullable=False)
 
     #: Recruiter email.
-    recruiter_email = db.Column(db.Unicode(100), nullable=False)
+    recruiter_email = db.Column(db.Unicode(150), nullable=False)
 
     #: Company id as a foreign key relationship.
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
