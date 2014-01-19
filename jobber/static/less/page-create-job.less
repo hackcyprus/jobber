@@ -30,6 +30,13 @@
             font-weight: 700;
             position: relative;
             margin: 0;
+
+            span {
+                font-style: italic;
+                font-weight: 500;
+                color: @gray;
+                font-size: 0.875em;
+            }
         }
 
         fieldset {
@@ -86,6 +93,31 @@
 
                 &.xlarge {
                     width: 528px;
+                }
+            }
+
+            // Validation
+            // -----------
+            .parsley-error-container {
+                position: absolute;
+
+                .parsley-error-list {
+                    font-size: 0.75em;
+                    font-weight: 700;
+                    margin: 0;
+                    padding: 0;
+                    list-style: none;
+
+                    li {
+                        margin-top: 2px;
+                        color: @red;
+                    }
+                }
+            }
+
+            input[type="text"], textarea {
+                &.parsley-error {
+                    border: 2px solid @red;
                 }
             }
 

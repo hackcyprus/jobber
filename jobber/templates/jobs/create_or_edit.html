@@ -12,30 +12,30 @@
       </h4>
     </div>
     <h2>Edit job listing</h2>
-    <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" parsley-form>
+    <form method="post" name='jobform' action="/edit/{{ form.id._value() }}/{{ token }}" novalidate parsley-validate>
     {% else %}
     <h2>Post a job listing</h2>
-    <form method="post" action="/create" parsley-form>
+    <form method="post" name='jobform' action="/create" novalidate parsley-validate>
     {% endif %}
       {{ form.hidden_tag() }}
       <fieldset style="padding-top: 0.75em">
         <div class="field">
-          {{ form.title(placeholder="What's the job title?") }}
+          {{ form.title(placeholder="What's the job title?", **{"parsley-required": "required"}) }}
         </div>
         <div class="field inline">
           {{ form.job_type() }}
         </div>
         <div class="field inline" id="remote-work-field">
-          <span>Can people work remotely?</span> {{ form.remote_work() }}
+          <span>Can people work remotely?</span> {{ form.remote_work(**{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <fieldset>
         <h4>Where is the job based?</h4>
         <div class="field inline" id="location-city-field">
-          {{ form.location__city(placeholder="Select or type a city..", class_="large") }}
+          {{ form.location__city(placeholder="Select or type a city..", class_="large", **{"parsley-required": "required"}) }}
         </div>
         <div class="field inline">
-          {{ form.location__country_code(class_="large") }}
+          {{ form.location__country_code(class_="large", **{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -69,13 +69,17 @@
               <img src="/static/imgs/wysiwyg/redo.png" />
             </a>
           </div>
-          {{ form.description(rows=14, placeholder="Write a clear and concise description of the job") }}
+          {{ form.description(
+            rows=14,
+            placeholder="Write a clear and concise description of the job",
+            class_="wysiwyged",
+            **{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <fieldset>
-        <h4>Add relevant tags</h4>
+        <h4>Add relevant keywords <span>(optional)</span></h4>
         <p class="help-text">
-          Adding some tags relevant to the job will make the job easier to find and provide a quick summary to
+          Adding some keywords relevant to the job will make the job easier to find and provide a quick summary to
           potential candidates.
         </p>
         <div class="field" id="tags-field">
@@ -85,10 +89,10 @@
       <fieldset>
         <h4>Some details on your company</h4>
         <div class="field">
-          {{ form.company__name(placeholder="What's the name of your company?") }}
+          {{ form.company__name(placeholder="What's the name of your company?", **{"parsley-required": "required"}) }}
         </div>
         <div class="field">
-          {{ form.company__website(placeholder="What's the website of your company?") }}
+          {{ form.company__website(placeholder="What's the website of your company?", **{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -98,10 +102,10 @@
           includes your unique link for editing this job post later.
         </p>
         <div class="field">
-          {{ form.recruiter_name(placeholder="What's your full name?") }}
+          {{ form.recruiter_name(placeholder="What's your full name?", **{"parsley-required": "required"}) }}
         </div>
         <div class="field">
-          {{ form.recruiter_email(placeholder="What's your email?") }}
+          {{ form.recruiter_email(placeholder="What's your email?", **{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -110,11 +114,11 @@
           Select if you want your candidates to apply via a link to a more specific job page or send you an email.
         </p>
         <div class="field inline" id="contact-method-field">
-          {{ form.contact_method() }}
+          {{ form.contact_method(**{"parsley-required": "required"}) }}
         </div>
         <div class="field inline">
-          {{ form.contact_url(placeholder="Link to job page") }}
-          {{ form.contact_email(style="display: none", placeholder="Email to contact") }}
+          {{ form.contact_url(placeholder="Link to job page", **{"parsley-required": "required"}) }}
+          {{ form.contact_email(style="display: none", placeholder="Email to contact", **{"parsley-required": "required"}) }}
         </div>
       </fieldset>
       <div class="field inline">
@@ -142,6 +146,7 @@
 {% endblock %}
 
 {% block pagejs %}
+  <script src="/static/js/vendor/parsley/parsley.min.js"></script>
   <script src="/static/js/vendor/selectize/selectize.min.js"></script>
   <script src="/static/js/vendor/wysihtml5/rules.js"></script>
   <script src="/static/js/vendor/wysihtml5/wysihtml5-0.3.0.min.js"></script>
@@ -149,5 +154,7 @@
     var LOCATIONS = {{ locations|tojson|safe }}
       , TAGS = {{ tags|tojson|safe }};
   </script>
-  <script src="/static/js/all.js"></script>
+  <script src="/static/js/preview.js"></script>
+  <script src="/static/js/form.js"></script>
+  <script src="/static/js/validation.js"></script>
 {% endblock %}
