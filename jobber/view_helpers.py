@@ -70,7 +70,7 @@ def populate_company(job, form_data):
 
 
 def populate_location(job, form_data):
-    """Populates the location relation form `job` and `form_data`.
+    """Populates the location relation from `job` and `form_data`.
 
     :param job: A `Job` instance.
     :param form_data: Form data as a `dict`.

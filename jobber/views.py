@@ -77,6 +77,8 @@ def create():
 
     if form.validate_on_submit():
         job = populate_job(form)
+
+        db.session.add(job)
         db.session.commit()
 
         send_instructory_email(job)
@@ -118,9 +120,9 @@ def edit(job_id, token):
         # An edited job is pending review so it needs to be unpublished.
         job.published = False
 
-        send_admin_review_email(job)
-
         db.session.commit()
+
+        send_admin_review_email(job)
 
         session['edited_email'] = job.recruiter_email
         return redirect(url_for('edited'))
