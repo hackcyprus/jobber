@@ -1,6 +1,6 @@
  (function($, window) {
 
-  $(function() {
+  var domReady = function() {
     var $type = $('#job_type')
       , $locationId = $('#location__id')
       , $city = $('#location__city')
@@ -111,9 +111,9 @@
         'https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700',
         '/static/css/editor.css'
       ]
-
     });
+  };
 
-  });
+  $(domReady);
 
 }(jQuery, window));

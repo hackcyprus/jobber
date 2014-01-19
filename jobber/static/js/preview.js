@@ -45,6 +45,10 @@
     e.preventDefault();
     e.stopPropagation();
 
+    // Validate form before submitting for preview. Expects the form to be
+    // already decorated with Parsley.
+    if (!$form.parsley('validate')) return false;
+
     $spinner.removeClass('hidden');
     $text.hide();
 
@@ -53,6 +57,8 @@
       $text.show();
       sheet.show(html);
     });
+
+    return false;
   });
 
 }(jQuery, window));
