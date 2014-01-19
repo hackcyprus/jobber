@@ -192,20 +192,25 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return url_for('show', **kwargs)
 
     @property
-    def url(self):
-        return self._url(external=False)
-
-    @property
-    def qualified_url(self):
-        return self._url()
-
-    @property
-    def edit_url(self):
-        return url_for('edit', job_id=self.id, token=self.admin_token, _external=True)
-
-    @property
     def tag_slugs(self):
         return [tag.slug for tag in self.tags]
+
+    def url(self, external=False):
+        kwargs = {
+            'job_id': self.id,
+            'company_slug': self.company.slug,
+            'job_slug': self.slug,
+            '_external': external
+        }
+        return url_for('show', **kwargs)
+
+    def edit_url(self, external=False):
+        kwargs = {
+            'job_id': self.id,
+            'token': self.admin_token,
+            '_external': external
+        }
+        return url_for('edit', **kwargs)
 
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):

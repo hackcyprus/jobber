@@ -8,7 +8,7 @@ To review:
 $ cd {{ script_path }}; python review.py {{ job.id }}
 
 Alternatively, you can view this listing in your browser by going to:
-{{ job.edit_url }}
+{{ job.edit_url(external=True) }}
 
 Happy reviewing,
 The Robot
