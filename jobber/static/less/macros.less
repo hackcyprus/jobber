@@ -1,22 +1,36 @@
-// tags
-div.tags {
-  .clearfix;
+/*
+ * Tags (ported to multi selectize as well)
+ */
+div.tags, .selectize-control.multi .selectize-input {
+    .clearfix;
+    font-size: 16px;
 
-  a.tag {
-    font-size: 0.75em;
-    padding: 3px 6px;
-    .border-radius(3px);
-    background-color: lighten(@rule, 5%);
-    color: darken(@rule, 37%);
-    font-weight: 700;
-    display: block;
-    float: left;
-    margin: 0px 4px 4px 0px;
-
-    &:hover {
-        background-color: darken(@rule, 5%);
+    a.tag, div.item {
+        font-size: 0.75em;
+        padding: 3px 6px;
+        background: lighten(@rule, 5%);
+        color: darken(@rule, 37%);
+        font-weight: 700;
+        display: block;
+        float: left;
+        margin: 0px 4px 4px 0px;
         border: none;
-        color: darken(@rule, 47%);
+        background-image: none;
+        background-repeat: no-repeat;
+        text-shadow: none;
+        .box-shadow(none);
+        .border-radius(3px);
+
+        &:hover {
+            background: darken(@rule, 5%);
+            border: none;
+            color: darken(@rule, 47%);
+        }
+
+        &.active {
+            background: darken(@rule, 12%);
+            border: none;
+            color: darken(@rule, 50%);
+        }
     }
-  }
 }

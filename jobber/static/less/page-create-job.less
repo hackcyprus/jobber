@@ -13,6 +13,10 @@
         margin-bottom: 27px;
     }
 
+    /*
+     * Form styles
+     * -----------
+     */
     form {
         position: relative;
         margin: 0 auto;
@@ -48,24 +52,19 @@
             position: relative;
             margin-top: 1.5em;
 
-            input[type="text"], textarea,
-            .selectize-control.multi .selectize-input {
+            input[type="text"], textarea {
                 border: 2px solid @rule;
                 padding: 8px;
                 width: 530px;
-                font-size: 14px;
+                font-size: 0.875em;
+
                 &:focus {
                     outline: none;
                     border: 2px solid @light-blue;
                 }
+
                 &.small {
                     width: 200px;
-                }
-            }
-
-            .selectize-control.multi .selectize-input {
-                .item {
-                    margin-bottom: 0;
                 }
             }
 
@@ -82,6 +81,15 @@
                 }
             }
 
+            .selectize-dropdown, .selectize-input,
+            .selectize-input input {
+                font-size: 14px;
+            }
+
+            .selectize-control.multi .selectize-input.items {
+                font-size: 16px;
+            }
+
             .selectize-control {
                 width: 135px;
                 position: relative;
@@ -94,6 +102,19 @@
                 &.xlarge {
                     width: 528px;
                 }
+
+                .selectize-input {
+                    background-image: none;
+                    background: white;
+                    border: 2px solid @rule;
+                    .box-shadow(none);
+                    .border-radius(0);
+                }
+
+                &.multi .selectize-input {
+                    width: 550px;
+                }
+
             }
 
         }
@@ -108,7 +129,7 @@
         #remote-work-field {
             margin-left: 105px;
             span {
-                font-size: 14px;
+                font-size: 0.875em;
                 margin-right: 10px;
             }
             .selectize-control {
@@ -181,7 +202,7 @@
         }
 
         #submit-btn, #preview-btn {
-            font-size: 14px;
+            font-size: 0.875em;
             padding: 0;
             font-weight: 700;
             height: 41px;
@@ -208,8 +229,10 @@
             }
         }
 
-        // Validation
-        // -----------
+        /*
+         * Form Validation
+         * ---------------
+         */
         .parsley-error-container {
             border: 2px solid @red;
             padding: 7px;
