@@ -5,7 +5,7 @@ div.tags, .selectize-control.multi .selectize-input {
     .clearfix;
     font-size: 16px;
 
-    a.tag, div.item {
+    a.tag, div[data-value].item {
         font-size: 0.75em;
         padding: 3px 6px;
         background: @light-rule;
@@ -20,6 +20,8 @@ div.tags, .selectize-control.multi .selectize-input {
         text-shadow: none;
         .box-shadow(none);
         .border-radius(3px);
+        filter: progid:DXImageTransform.Microsoft.gradient(enabled=false) !important;
+
 
         &:hover {
             background: darken(@light-rule, 8%);
