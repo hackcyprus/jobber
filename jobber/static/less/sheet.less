@@ -1,3 +1,7 @@
+/*
+ * BASE STYLES
+ * -----------
+ */
 .sheet {
     background-color: white;
     position: fixed;
@@ -6,18 +10,14 @@
     top: 0;
     bottom: 0;
     z-index: 99999;
-    -webkit-transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    display: block;
 
     &.left {
         left: 0;
         border-right: 2px solid @rule;
 
         &.hide {
-            -webkit-transform: translate3d(-110%,0,0);
-            transform: translate3d(-100%,0,0);
+            display: none;
         }
     }
 
@@ -26,8 +26,7 @@
         border-left: 2px solid @rule;
 
         &.hide {
-            -webkit-transform: translate3d(110%,0,0);
-            transform: translate3d(100%,0,0);
+            display: none;
         }
     }
 
@@ -42,4 +41,33 @@
         overflow: scroll;
     }
 
+}
+
+/*
+ * CSS ANIMATION SUPPORT
+ * ---------------------
+ */
+.csstransforms3d {
+    .sheet {
+        &.left.hide {
+            display: block;
+            -webkit-transform: translate3d(-110%,0,0);
+            transform: translate3d(-100%,0,0);
+        }
+
+        &.right.hide {
+            display: block;
+            -webkit-transform: translate3d(110%,0,0);
+            transform: translate3d(100%,0,0);
+        }
+    }
+}
+
+.csstransitions {
+    .sheet {
+        -webkit-transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        transition: all 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
 }

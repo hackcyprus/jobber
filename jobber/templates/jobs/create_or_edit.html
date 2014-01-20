@@ -12,10 +12,10 @@
       </h4>
     </div>
     <h2>Edit job listing</h2>
-    <form method="post" name='jobform' action="/edit/{{ form.id._value() }}/{{ token }}" novalidate parsley-validate>
+    <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" novalidate parsley-validate>
     {% else %}
     <h2>Post a job listing</h2>
-    <form method="post" name='jobform' action="/create" novalidate parsley-validate>
+    <form method="post" action="/create" novalidate parsley-validate>
     {% endif %}
       {% if form.errors %}
       <div class="parsley-error-container">
@@ -146,7 +146,8 @@
       </fieldset>
       <div class="field inline">
         <a id="preview-btn" href="/preview" class="btn">
-          <span id="preview-spinner" class="hidden">
+          <span id="preview-spinner" class="spinner hidden">
+            <span class="textsub">Wait..</span>
             <span class="dot dot-1"></span>
             <span class="dot dot-2"></span>
             <span class="dot dot-3"></span>

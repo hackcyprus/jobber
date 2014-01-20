@@ -10,12 +10,13 @@
     <meta name="description" content="Tech jobs in Cyprus.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
+    <!--[if lt IE 9]>
+      <script src="/static/js/vendor/shims/html5shiv.js"></script>
+      <script src="/static/js/vendor/shims/es5-shim.js"></script>
+    <![endif]-->
 
     <link rel="shortcut icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
-
-    <!--[if lt IE 9]><script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.0.8/es5-shim.min.js"></script><![endif]-->
 
     <script type="text/javascript" src="//use.typekit.net/opv5vuc.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -70,7 +71,8 @@
     </footer>
 
     <!-- vendor js -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="/static/js/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/js/vendor/modernizr/modernizr.min.js"></script>
 
     <!-- GA -->
     <script>

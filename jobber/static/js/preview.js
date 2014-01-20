@@ -33,7 +33,6 @@
     };
 
     this.hijackAnchors = function() {
-      console.log($content.find('a'));
       $content.find('a').on('click', noop);
       return this;
     };

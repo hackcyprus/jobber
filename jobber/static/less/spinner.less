@@ -1,11 +1,11 @@
-.spinner(@foreground, @background) {
+.spinner {
     .clearfix;
     display: block;
 
     @-moz-keyframes circles {
         0% {}
         50% {
-            background-color: @background;
+            background-color: #485465;
         }
         100% {}
     }
@@ -13,7 +13,7 @@
     @-webkit-keyframes circles{
         0% {}
         50% {
-            background-color: @background;
+            background-color: #485465;
         }
         100% {
         }
@@ -22,7 +22,7 @@
     @-ms-keyframes circles{
         0% {}
         50% {
-            background-color: @background;
+            background-color: #485465;
         }
         100% {}
     }
@@ -30,7 +30,7 @@
     @-o-keyframes circles {
         0% {}
         50% {
-            background-color: @background;
+            background-color: #485465;
         }
         100% {}
     }
@@ -38,19 +38,23 @@
     @keyframes circles {
         0% {}
         50% {
-            background-color: @background;
+            background-color: #485465;
         }
         100% {}
     }
 
     width: 43.666666666666664px;
 
+    .textsub {
+        display: block;
+    }
+
     .dot {
-        background-color: @foreground;
-        float:left;
-        height:10px;
-        margin:0 2px 0 2px;
-        width:10px;
+        background-color: #cfd5dd;
+        float: left;
+        height: 10px;
+        margin: 0 2px 0 2px;
+        width: 10px;
         -moz-animation-name:circles;
         -moz-animation-duration:1.35s;
         -moz-animation-iteration-count:infinite;
@@ -76,6 +80,7 @@
         animation-iteration-count:infinite;
         animation-direction:linear;
         border-radius:7px;
+        display: none;
     }
 
     .dot-1 {
@@ -102,4 +107,19 @@
         animation-delay:0.8099999999999999s;
     }
 
+}
+
+/*
+ * CSS ANIMATION SUPPORT
+ * ---------------------
+ */
+.cssanimations {
+    .spinner {
+        .dot {
+            display: inline;
+        }
+        .textsub {
+            display: none;
+        }
+    }
 }

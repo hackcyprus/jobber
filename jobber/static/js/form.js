@@ -37,7 +37,6 @@
       selectize.clearOptions();
 
       $.each(LOCATIONS, function(index, location) {
-        console.log(location)
         if (location.country_code !== countryCode) return;
         selectize.addOption(location);
       });

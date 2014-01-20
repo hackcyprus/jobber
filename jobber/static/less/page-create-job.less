@@ -220,14 +220,17 @@
 
         #preview-spinner {
             position: relative;
-            top: 16px;
             margin: 0 auto;
-            .spinner(#cfd5dd, #485465);
 
             &.hidden {
                 display: none;
             }
         }
+
+        /*
+         *
+         */
+
 
         /*
          * Form Validation
@@ -299,5 +302,16 @@
             margin-top: 15px;
             border: 2px solid @red;
         }
+    }
+}
+
+/*
+ * CSS ANIMATION SUPPORT
+ * ---------------------
+ * If we have animations, the spinner needs to be centered properly.
+ */
+.cssanimations {
+    #preview-spinner {
+        top: 16px;
     }
 }
