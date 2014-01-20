@@ -32,23 +32,28 @@
 
     var updateCities = function(countryCode) {
       var selectize = $city.selectize()[0].selectize
-        , existingCity = $city.val();
+        , existingCity = $city.val()
+        , replCandidates = [];
 
       selectize.clearOptions();
 
       $.each(LOCATIONS, function(index, location) {
         if (location.country_code !== countryCode) return;
         selectize.addOption(location);
+        replCandidates.push(location)
       });
 
       selectize.refreshOptions(false);
 
       // If $city already has a *correct* value set (i.e we're in edit mode)
-      // we restore it.
+      // we restore it, otherwise we set it to the first value in the
+      // replacement candidate array.
       var location = findLocation(existingCity);
-      if (location != null && location.country_code === countryCode) {
-        selectize.setValue(existingCity);
+      if (location == null || location.country_code != countryCode) {
+        existingCity = (replCandidates[0] || {}).city;
       }
+
+      selectize.setValue(existingCity);
     };
 
     var onLocationChange = function(cityName) {
@@ -87,7 +92,6 @@
       valueField: 'city',
       labelField: 'city',
       searchField: ['city'],
-      openOnFocus: true,
       create: true,
       onChange: function(value) {
         this.$input.attr('value', value);
