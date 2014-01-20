@@ -7,7 +7,7 @@ html, body {
     min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin: 0 auto -57px;
+    margin: 0 auto -55px;
 }
 
 footer, .push {
@@ -67,11 +67,12 @@ button:focus {
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
-    background-color: @offwhite;
-    color: darken(@offwhite, 50%);
+    background-color: @rule;
+    color: @gray;
 
     &:hover {
-        background-color: darken(@offwhite, 5%);
+        background-color: darken(@rule, 8%);
+        color: darken(@gray, 8%);
     }
 
     &.btn-green {
@@ -101,7 +102,7 @@ button:focus {
 }
 
 .notice {
-    background-color: lighten(@rule, 8%);
+    background-color: @light-rule;
     height: 44px;
     line-height: 44px;
     border-bottom: 2px solid @rule;
@@ -218,19 +219,18 @@ header {
 }
 
 footer {
-    background-color: lighten(@rule, 8%);
-    border-top: 2px solid @rule;
+    background-color: @light-rule;
     height: 55px;
     line-height: 55px;
-    color: darken(@rule, 15%);
+    color: @light-gray;
 
     .logo {
         font-size: 1em;
-        color: darken(@rule, 15%);
+        color: @light-gray;
         text-shadow: none;
         float: left;
         b {
-            color: darken(@rule, 15%);
+            color: @light-gray;
         }
     }
 

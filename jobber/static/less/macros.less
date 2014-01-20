@@ -8,8 +8,8 @@ div.tags, .selectize-control.multi .selectize-input {
     a.tag, div.item {
         font-size: 0.75em;
         padding: 3px 6px;
-        background: lighten(@rule, 5%);
-        color: darken(@rule, 37%);
+        background: @light-rule;
+        color: @light-gray;
         font-weight: 700;
         display: block;
         float: left;
@@ -22,15 +22,15 @@ div.tags, .selectize-control.multi .selectize-input {
         .border-radius(3px);
 
         &:hover {
-            background: darken(@rule, 5%);
+            background: darken(@light-rule, 8%);
             border: none;
-            color: darken(@rule, 47%);
+            color: darken(@light-gray, 10%);
         }
 
         &.active {
-            background: darken(@rule, 12%);
+            background: darken(@light-rule, 15%);
             border: none;
-            color: darken(@rule, 50%);
+            color: darken(@light-gray, 18%);
         }
     }
 }
