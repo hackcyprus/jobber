@@ -169,14 +169,18 @@
 {% endblock %}
 
 {% block pagejs %}
-  <script src="/static/js/vendor/parsley/parsley.min.js"></script>
-  <script src="/static/js/vendor/selectize/selectize.min.js"></script>
-  <script src="/static/js/vendor/wysihtml5/rules.js"></script>
-  <script src="/static/js/vendor/wysihtml5/wysihtml5-0.3.0.min.js"></script>
   <script>
     var LOCATIONS = {{ locations|tojson|safe }}
       , TAGS = {{ tags|tojson|safe }};
   </script>
+
+  <script src="/static/js/vendor/wysihtml5/rules.js"></script>
+  <script src="/static/js/vendor/selectize/selectize.min.js"></script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.0.7/jquery.placeholder.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/1.2.2/parsley.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/wysihtml5/0.3.0/wysihtml5.min.js"></script>
+
   <script src="/static/js/preview.js"></script>
   <script src="/static/js/form.js"></script>
   <script src="/static/js/validation.js"></script>

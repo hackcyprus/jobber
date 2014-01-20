@@ -1,7 +1,8 @@
  (function($, window) {
 
   var domReady = function() {
-    var $type = $('#job_type')
+    var $title = $('#title')
+      , $type = $('#job_type')
       , $locationId = $('#location__id')
       , $city = $('#location__city')
       , $country = $('#location__country_code')
@@ -9,6 +10,10 @@
       , $contact = $('#contact_method')
       , $contactUrl = $('#contact_url')
       , $contactEmail = $('#contact_email')
+      , $companyName = $('#company__name')
+      , $companyWebsite = $('#company__website')
+      , $recruiterName = $('#recruiter_name')
+      , $recruiterEmail = $('#recruiter_email')
       , $tags = $('#tags');
 
     /*
@@ -16,9 +21,13 @@
      * -------
      */
     var findLocation = function(cityName) {
-      return _.find(LOCATIONS, function(location) {
-        return location.city == cityName;
-      });
+      var len = LOCATIONS.length
+        , i, location;
+
+      for (i = 0; i < len; i++) {
+        location = LOCATIONS[i];
+        if (location.city == cityName) return location;
+      }
     };
 
     var updateCities = function(countryCode) {
@@ -27,7 +36,8 @@
 
       selectize.clearOptions();
 
-      _.each(LOCATIONS, function(location) {
+      $.each(LOCATIONS, function(index, location) {
+        console.log(location)
         if (location.country_code !== countryCode) return;
         selectize.addOption(location);
       });
@@ -47,6 +57,24 @@
       $locationId.val(location != null ? location.id : null);
       return location;
     };
+
+    /*
+     * JQUERY-PLACEHOLDER
+     * ------------------
+     */
+    var placeholders = [
+      $title,
+      $companyName,
+      $companyWebsite,
+      $recruiterName,
+      $recruiterEmail,
+      $contactUrl,
+      $contactEmail
+    ];
+
+    $.each(placeholders, function(i, $el) {
+      $el.placeholder();
+    });
 
     /*
      * SELECTIZE
@@ -80,7 +108,7 @@
 
     $contact.selectize({
       onInitialize: function(a) {
-        if (!_.isEmpty($contactEmail.val())) {
+        if ($contactEmail.val()) {
           $contactUrl.toggle();
           $contactEmail.toggle();
         }

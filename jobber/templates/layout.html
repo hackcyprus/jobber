@@ -68,8 +68,11 @@
         </div>
       </div>
     </footer>
+
+    <!-- vendor js -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
+    <!-- GA -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -79,17 +82,8 @@
       ga('create', '{{ config.GA_TRACKING_ID }}', 'hackcyprus.com');
       ga('send', 'pageview');
     </script>
-    <script>
-      (function($, window) {
-        var $search = $('#search');
-        $search.keydown(function(e) {
-          if (e.which != 13) return;
-          var query = $search.val();
-          if (query == '' || query == null) return;
-          window.location = '/search/' + $search.val();
-        });
-      }(jQuery, window));
-    </script>
+
+    <!-- page js -->
     {% block pagejs %}
     {% endblock %}
   </body>

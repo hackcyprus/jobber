@@ -5,3 +5,7 @@
   {% include "jobs/show_chromeless.html" %}
   <div class="added">&mdash; Added {{ job.created.humanize() }}</div>
 {% endblock %}
+
+{% block pagejs %}
+  <script src="/static/js/search.js"></script>
+{% endblock %}
