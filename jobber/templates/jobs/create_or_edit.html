@@ -109,7 +109,7 @@
         </div>
         <div class="field">
           {{ form.company__website(placeholder="What's the website of your company?",
-             **{"parsley-required": "required", "parsley-maxlength": "200"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "200", "parsley-type": "url"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -124,7 +124,7 @@
         </div>
         <div class="field">
           {{ form.recruiter_email(placeholder="What's your email?",
-             **{"parsley-required": "required", "parsley-maxlength": "150"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "150", "parsley-type": "email"}) }}
         </div>
       </fieldset>
       <fieldset>
@@ -137,10 +137,10 @@
         </div>
         <div class="field inline">
           {{ form.contact_url(placeholder="Link to job page",
-             **{"parsley-required": "required", "parsley-maxlength": "200"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "200", "parsley-type": "url"}) }}
           {{ form.contact_email(style="display: none",
              placeholder="Email to contact",
-             **{"parsley-required": "required", "parsley-maxlength": "150"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "150", "parsley-type": "email"}) }}
         </div>
       </fieldset>
       <div class="field inline">
