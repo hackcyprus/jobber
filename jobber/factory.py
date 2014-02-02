@@ -7,14 +7,13 @@ Factory module for creating `Flask` applications.
 """
 from __future__ import absolute_import
 
-from logging import StreamHandler
+from logging import StreamHandler, Formatter
 from logging.handlers import SysLogHandler
 
 from flask import Flask
 
 from jobber.conf import settings
 from jobber.extensions import db
-from jobber.logging import JsonFormatter
 from jobber.core.email import mail
 
 
@@ -44,8 +43,7 @@ def configure_settings(app, override=None):
 
 
 def configure_logging(app):
-    """Configures logging. Employs a custom formatter which logs in JSON for
-    human and machine readability.
+    """Configures logging to syslog.
 
     :param app: A `Flask` application.
 
@@ -55,7 +53,7 @@ def configure_logging(app):
     # Remove existing handlers.
     del app.logger.handlers[:]
 
-    formatter = JsonFormatter()
+    formatter = Formatter('%(asctime)s %(name)s %(levelname)s >> %(message)s')
 
     if app.debug:
         handler = StreamHandler()
