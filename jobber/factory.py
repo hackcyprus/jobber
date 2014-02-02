@@ -13,7 +13,7 @@ from flask import Flask
 
 from jobber.conf import settings
 from jobber.extensions import db
-from jobber.logging import make_formatter
+from jobber.logging import JsonFormatter
 from jobber.core.email import mail
 
 
@@ -56,7 +56,7 @@ def configure_logging(app):
     del app.logger.handlers[:]
 
     # Attach a `StreamHandler` with a JSON formatter.
-    formatter = make_formatter(verbose=not app.debug)
+    formatter = JsonFormatter()
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     handler.setLevel(level)
