@@ -3,3 +3,4 @@
 user: root
 owner: root
 local: false
+hostname: jobber.production

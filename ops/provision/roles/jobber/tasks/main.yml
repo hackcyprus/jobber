@@ -11,12 +11,36 @@
   lineinfile: "dest='/home/{{ owner }}/.profile' line='source {{ root }}/env/bin/activate; cd {{ root }}/jobber'"
   when: local
 
+- name: install postfix
+  apt: "package={{ item }} state=installed"
+  sudo: yes
+  with_items:
+    - postfix
+    - libsasl2-modules
+
+- name: copy postfix credentials
+  template: src=postfix/sasl_passwd.j2 dest=/etc/postfix/sasl_passwd owner=root
+  sudo: yes
+
+- name: chmod postfix credentials
+  command: chmod 600 /etc/postfix/sasl_passwd
+  sudo: yes
+
+- name: postmap postfix credentials
+  command: postmap /etc/postfix/sasl_passwd
+  sudo: yes
+
+- name: configure postfix
+  template: src=postfix/main.cf.j2 dest=/etc/postfix/main.cf
+  sudo: yes
+  notify: restart postfix
+
 - name: install uwsgi
   pip: name=uwsgi state=present
   sudo: yes
 
 - name: create uwsgi directory
-  file: "path=/etc/uwsgi state=directory mode=0755"
+  file: path=/etc/uwsgi state=directory mode=0755
   sudo: yes
 
 - name: configure uwsgi

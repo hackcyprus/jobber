@@ -3,3 +3,4 @@
 user: vagrant
 owner: vagrant
 local: true
+hostname: jobber.dev

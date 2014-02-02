@@ -44,5 +44,8 @@ local.py
 # production settings template
 ops/provision/roles/jobber/templates/production.py.j2
 
+# postfix credentials
+ops/provision/roles/jobber/templates/postfix/sasl_passwd.j2
+
 # vms
 .vagrant

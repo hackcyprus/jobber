@@ -11,5 +11,4 @@
     - itop
     - curl
     - wget
-    - postfix
   sudo: yes
