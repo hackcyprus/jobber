@@ -1,0 +1,9 @@
+---
+
+- name: install syslog-ng
+  apt: name=syslog-ng state=installed
+
+- name: configure syslog-ng
+  template: src=syslog-ng.conf.j2 dest=/etc/syslog-ng/syslog-ng.conf
+  sudo: yes
+  notify: restart syslog-ng

@@ -11,6 +11,11 @@
   lineinfile: "dest='/home/{{ owner }}/.profile' line='source {{ root }}/env/bin/activate; cd {{ root }}/jobber'"
   when: local
 
+- name: add project syslog-ng configuration
+  template: src=syslog-ng/jobber.conf.j2 dest=/etc/syslog-ng/conf.d/jobber.conf
+  sudo: yes
+  notify: restart syslog-ng
+
 - name: install postfix
   apt: "package={{ item }} state=installed"
   sudo: yes

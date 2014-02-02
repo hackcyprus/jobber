@@ -1,0 +1,42 @@
+# ============
+# Destinations
+# ============
+
+# Our application logs.
+#
+destination d_hackcyprus_app { file("/var/log/hackcyprus/$PROGRAM/$R_YEAR-$R_MONTH-$R_DAY.log"); };
+destination d_hackcyprus_error { file("/var/log/hackcyprus/error/$R_YEAR-$R_MONTH-$R_DAY.log"); };
+destination d_hackcyprus_warn { file("/var/log/hackcyprus/warn/$R_YEAR-$R_MONTH-$R_DAY.log"); };
+
+# =======
+# Filters
+# =======
+
+# Application filters.
+#
+filter f_local0 { facility(local0); };
+filter f_hackcyprus_app { filter(f_local0) and level(debug, info, notice); };
+filter f_hackcyprus_error { filter(f_local0) and filter(f_error); };
+filter f_hackcyprus_warn { filter(f_local0) and filter(f_warn); };
+
+# ====
+# Logs
+# ====
+
+log {
+  source(s_src);
+  filter(f_hackcyprus_app);
+  destination(d_hackcyprus_app);
+};
+
+log {
+  source(s_src);
+  filter(f_hackcyprus_error);
+  destination(d_hackcyprus_error);
+};
+
+log {
+  source(s_src);
+  filter(f_hackcyprus_warn);
+  destination(d_hackcyprus_warn);
+};

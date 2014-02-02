@@ -30,8 +30,8 @@ def send_instructory_email(job):
         'job': job,
         'default_sender': DEFAULT_SENDER
     }
-    app.logger.debug(u"Sending instructory email to '{}' "
-                     "for job listing ({}).".format(recipient, job.id))
+    app.logger.info(u"Sending instructory email to '{}' "
+                    "for job listing ({}).".format(recipient, job.id))
     send_email_template('instructory', context, [recipient])
 
 
@@ -55,7 +55,7 @@ def send_admin_review_email(job):
         'script_path': script_path
     }
 
-    app.logger.debug(u"Sending admin review email for job listing ({}).".format(job.id))
+    app.logger.info(u"Sending admin review email for job listing ({}).".format(job.id))
     send_email_template('review', context, [recipient])
 
 
@@ -71,7 +71,7 @@ def send_confirmation_email(job):
         'job': job,
         'default_sender': DEFAULT_SENDER
     }
-    app.logger.debug(u"Sending confirmation email to '{}' "
-                     "for job listing ({}).".format(recipient, job.id))
+    app.logger.info(u"Sending confirmation email to '{}' "
+                    "for job listing ({}).".format(recipient, job.id))
     send_email_template('confirmation', context, [recipient])
 
