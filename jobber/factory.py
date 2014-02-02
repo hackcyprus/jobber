@@ -7,7 +7,8 @@ Factory module for creating `Flask` applications.
 """
 from __future__ import absolute_import
 
-import logging
+from logging import StreamHandler
+from logging.handlers import SysLogHandler
 
 from flask import Flask
 
@@ -43,9 +44,8 @@ def configure_settings(app, override=None):
 
 
 def configure_logging(app):
-    """Configures logging, keeping it intentionally dead simple by logging to
-    `stderr` and letting the OS handle it thereafter. Employs a custom formatter
-    which logs in JSON for human and machine readability.
+    """Configures logging. Employs a custom formatter which logs in JSON for
+    human and machine readability.
 
     :param app: A `Flask` application.
 
@@ -55,12 +55,18 @@ def configure_logging(app):
     # Remove existing handlers.
     del app.logger.handlers[:]
 
-    # Attach a `StreamHandler` with a JSON formatter.
     formatter = JsonFormatter()
-    handler = logging.StreamHandler()
+
+    if app.debug:
+        handler = StreamHandler()
+    else:
+        local0 = SysLogHandler.LOG_LOCAL0
+        handler = SysLogHandler(address='/dev/log', facility=local0)
+
     handler.setFormatter(formatter)
     handler.setLevel(level)
 
+    app.logger_name = 'jobber'
     app.logger.addHandler(handler)
     app.logger.setLevel(level)
 

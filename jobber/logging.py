@@ -21,8 +21,7 @@ except ImportError:
 FIELDS = ('name',
           'levelname',
           'funcName',
-          'message',
-          'pathname')
+          'message')
 
 
 class _LogEncoder(json.JSONEncoder):
