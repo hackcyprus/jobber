@@ -1,7 +1,9 @@
 ---
 
 - name: restart supervisor
-  command: sudo supervisorctl reload
+  command: supervisorctl reload
+  sudo: yes
 
 - name: restart postfix
-  command: sudo service postfix restart
+  service: name=postfix state=restarted
+  sudo: yes

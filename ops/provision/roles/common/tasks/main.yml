@@ -12,3 +12,8 @@
     - curl
     - wget
   sudo: yes
+
+- name: set timezone to UTC
+  file: src=/usr/share/zoneinfo/UTC path=/etc/localtime state=link force=yes
+  sudo: yes
+  notify: restart cron
