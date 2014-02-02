@@ -53,7 +53,7 @@ def configure_logging(app):
     # Remove existing handlers.
     del app.logger.handlers[:]
 
-    formatter = Formatter('%(asctime)s %(name)s %(levelname)s >> %(message)s')
+    formatter = Formatter('%(name)s %(levelname)s >> %(message)s')
 
     if app.debug:
         handler = StreamHandler()
