@@ -56,7 +56,7 @@ def make_summary(job):
         'company_website': job.company.website,
         'city': job.location.city,
         'country_code': job.location.country_code,
-        'edit_url': job.edit_url,
+        'edit_url': job.edit_url(),
         'tags': u', '.join(job.tag_slugs),
         'published': job.published
     })

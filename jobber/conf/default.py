@@ -14,6 +14,8 @@ PORT = 8000
 
 SECRET_KEY = '<secret>'
 
+SERVER_NAME = '<server name>'
+
 APPLICATION_ROOT = None
 
 ROOT = '<root>'
