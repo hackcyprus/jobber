@@ -1,0 +1,15 @@
+---
+
+- name: install system packages
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - build-essential
+    - git
+    - python-dev
+    - python-pip
+    - htop
+    - itop
+    - curl
+    - wget
+    - postfix
+  sudo: yes

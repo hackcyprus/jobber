@@ -12,9 +12,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     devbox.vm.network :forwarded_port, guest: 80, host: 80
     devbox.vm.network :private_network, ip: "192.168.33.12"
 
-    devbox.vm.synced_folder "../", "/opt/jobber/"
+    devbox.vm.synced_folder "../", "/opt/hackcyprus/jobber"
 
     devbox.vm.hostname = "jobber.dev"
+
+    devbox.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provision/site.yml"
+      ansible.inventory_path = "provision/hosts"
+      ansible.limit = "local"
+      ansible.verbose = "vv"
+    end
   end
 
 end

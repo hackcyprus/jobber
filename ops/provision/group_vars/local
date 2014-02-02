@@ -1,0 +1,4 @@
+user: vagrant
+owner: vagrant
+owner_group: vagrant
+local: true

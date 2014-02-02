@@ -1,0 +1,69 @@
+---
+- name: create owner
+  user: "name={{ owner }} group={{ owner_group }} state=present"
+  when: not local
+
+- name: create code directory
+  file: "path={{ root }}/jobber owner={{ owner }} state=directory mode=0755"
+  when: not local
+
+- name: create data directory
+  file: "path={{ root }}/jobber/data owner={{ owner }} state=directory mode=0755"
+
+- name: create sqlite database
+  file: "path={{ root }}/jobber/data/jobber.db owner={{ owner }} state=file mode=0744"
+
+- name: add some .profile convenience
+  lineinfile: "dest='/home/{{ owner }}/.profile' line='source {{ root }}/env/bin/activate; cd {{ root }}/jobber'"
+  when: local
+
+- name: install uwsgi
+  pip: name=uwsgi state=present
+  sudo: yes
+
+- name: create uwsgi directory
+  file: "path=/etc/uwsgi state=directory mode=0755"
+  sudo: yes
+
+- name: configure uwsgi
+  template: src=uwsgi/jobber.ini.j2 dest=/etc/uwsgi/jobber.ini
+
+- name: install supervisor
+  pip: name=supervisor state=present
+  sudo: yes
+
+- name: create supervisor directory
+  file: "path=/etc/supervisor/conf.d state=directory mode=0755"
+  sudo: yes
+
+- name: create supervisor logging directory
+  file: "path=/var/log/supervisor state=directory mode=0755"
+  sudo: yes
+
+- name: configure supervisor
+  template: src=supervisord/supervisord.conf.j2 dest=/etc/supervisord.conf
+  sudo: yes
+
+- name: add project supervisor configuration
+  template: src=supervisord/jobber.conf.j2 dest=/etc/supervisor/conf.d/jobber.conf
+  sudo: yes
+  notify: restart supervisor
+
+- name: install virtualenv
+  pip: name=virtualenv state=present
+  sudo: yes
+
+- name: create virtualenv directory
+  file: "path={{ root }}/env owner={{ owner }} state=directory mode=0755"
+  sudo: yes
+
+- name: checkout code
+  git: "repo={{ repo }}/jobber dest={{ root }}/jobber version={{ branch }}"
+  when: not local
+  notify: restart supervisor
+
+- name: install python dependencies
+  pip: "requirements={{ root }}/jobber/requirements.pip virtualenv={{ root }}/env state=present"
+
+- name: run migrations
+  command: "{{ root }}/env/bin/alembic upgrade head chdir={{ root }}/jobber"

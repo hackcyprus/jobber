@@ -1,0 +1,12 @@
+[program:app]
+user={{ owner }}
+numprocs=2
+numprocs_start=0
+process_name=%(program_name)s-%(process_num)s
+command=uwsgi /etc/uwsgi/jobber.ini --module runserver --callable app --http-socket localhost:800%(process_num)s --stats localhost:910%(process_num)s
+environment=PYTHONPATH='{{ root }}/jobber/:$PYTHONPATH'
+autostart=true
+autorestart=true
+directory={{ root }}/jobber
+stdout_logfile=syslog
+stderr_logfile=syslog

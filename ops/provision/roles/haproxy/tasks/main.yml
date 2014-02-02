@@ -1,0 +1,19 @@
+---
+
+- name: install haproxy
+  apt: pkg=haproxy state=installed
+  sudo: yes
+
+- name: install socat
+  apt: pkg=socat state=installed
+  sudo: yes
+
+- name: enable HAproxy to be started by the init script
+  lineinfile: dest=/etc/default/haproxy regexp=^ENABLED= line=ENABLED=1 state=present
+  sudo: yes
+
+- name: configure haproxy
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+  sudo: yes
+  notify:
+    - restart haproxy
