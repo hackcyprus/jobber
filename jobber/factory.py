@@ -64,7 +64,6 @@ def configure_logging(app):
     handler.setFormatter(formatter)
     handler.setLevel(level)
 
-    app.logger_name = 'jobber'
     app.logger.addHandler(handler)
     app.logger.setLevel(level)
 

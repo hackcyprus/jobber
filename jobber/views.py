@@ -84,6 +84,8 @@ def create():
         send_instructory_email(job)
         send_admin_review_email(job)
 
+        app.logger.info("Job ({}) was created.".format(job.id))
+
         session['created_email'] = job.recruiter_email
         return redirect(url_for('created'))
 
@@ -123,6 +125,8 @@ def edit(job_id, token):
         db.session.commit()
 
         send_admin_review_email(job)
+
+        app.logger.info("Job ({}) was edited.".format(job.id))
 
         session['edited_email'] = job.recruiter_email
         return redirect(url_for('edited'))
