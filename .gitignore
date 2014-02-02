@@ -41,5 +41,8 @@ data/
 # local settings
 local.py
 
+# production settings template
+ops/provision/roles/jobber/templates/production.py.j2
+
 # vms
 .vagrant

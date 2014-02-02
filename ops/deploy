@@ -1,0 +1,2 @@
+echo "Starting deployment..."
+ansible-playbook -u root -i provision/hosts --limit production provision/site.yml

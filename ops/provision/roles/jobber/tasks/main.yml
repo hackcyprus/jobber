@@ -1,17 +1,11 @@
 ---
 - name: create owner
-  user: "name={{ owner }} group={{ owner_group }} state=present"
+  user: "name={{ owner }} state=present"
   when: not local
 
-- name: create code directory
-  file: "path={{ root }}/jobber owner={{ owner }} state=directory mode=0755"
+- name: upload SSH key
+  copy: "src=~/.ssh/jobber_rsa dest=~/.ssh/id_rsa mode=0600"
   when: not local
-
-- name: create data directory
-  file: "path={{ root }}/jobber/data owner={{ owner }} state=directory mode=0755"
-
-- name: create sqlite database
-  file: "path={{ root }}/jobber/data/jobber.db owner={{ owner }} state=file mode=0744"
 
 - name: add some .profile convenience
   lineinfile: "dest='/home/{{ owner }}/.profile' line='source {{ root }}/env/bin/activate; cd {{ root }}/jobber'"
@@ -58,12 +52,22 @@
   sudo: yes
 
 - name: checkout code
-  git: "repo={{ repo }}/jobber dest={{ root }}/jobber version={{ branch }}"
+  git: "repo={{ repo }} dest={{ root }}/jobber version={{ branch }}"
+  when: not local
+  notify: restart supervisor
+
+- name: create data directory
+  file: "path={{ root }}/jobber/data owner={{ owner }} state=directory mode=0755"
+
+- name: upload production configuration
+  template: "src=production.py.j2 dest={{ root }}/jobber/jobber/conf/local.py"
   when: not local
   notify: restart supervisor
 
 - name: install python dependencies
   pip: "requirements={{ root }}/jobber/requirements.pip virtualenv={{ root }}/env state=present"
+  notify: restart supervisor
 
 - name: run migrations
   command: "{{ root }}/env/bin/alembic upgrade head chdir={{ root }}/jobber"
+  notify: restart supervisor

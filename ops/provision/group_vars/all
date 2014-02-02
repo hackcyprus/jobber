@@ -1,4 +1,5 @@
-# Common variables across all groups.
+# Common variables
+# ----------------
 root: /opt/hackcyprus
 repo: git@github.com:hackcyprus/jobber
 branch: master

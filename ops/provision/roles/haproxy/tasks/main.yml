@@ -15,5 +15,4 @@
 - name: configure haproxy
   template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
   sudo: yes
-  notify:
-    - restart haproxy
+  notify: restart haproxy
