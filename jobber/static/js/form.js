@@ -20,44 +20,39 @@
      * HELPERS
      * -------
      */
-    var findLocation = function(cityName) {
+    var findLocation = function(city, country) {
       var len = LOCATIONS.length
-        , i, location;
+        , i, loc;
 
       for (i = 0; i < len; i++) {
-        location = LOCATIONS[i];
-        if (location.city == cityName) return location;
+        loc = LOCATIONS[i];
+        if (loc.city === city && loc.country_code === country) return loc;
       }
     };
 
-    var updateCities = function(countryCode) {
+    var updateCities = function(country) {
       var selectize = $city.selectize()[0].selectize
-        , existingCity = $city.val()
-        , replCandidates = [];
+        , city = $city.val();
 
       selectize.clearOptions();
 
       $.each(LOCATIONS, function(index, location) {
-        if (location.country_code !== countryCode) return;
+        if (location.country_code !== country) return;
         selectize.addOption(location);
-        replCandidates.push(location)
       });
 
       selectize.refreshOptions(false);
 
       // If $city already has a *correct* value set (i.e we're in edit mode)
-      // we restore it, otherwise we set it to the first value in the
-      // replacement candidate array.
-      var location = findLocation(existingCity);
-      if (location == null || location.country_code != countryCode) {
-        existingCity = (replCandidates[0] || {}).city;
+      // then we restore it.
+      var location = findLocation(city, country);
+      if (location && location.country_code == country) {
+        selectize.setValue(city);
       }
-
-      selectize.setValue(existingCity);
     };
 
-    var onLocationChange = function(cityName) {
-      var location = findLocation(cityName);
+    var onLocationChange = function(city, country) {
+      var location = findLocation(city, country);
       $locationId.val(location != null ? location.id : null);
       return location;
     };
@@ -94,8 +89,10 @@
       searchField: ['city'],
       create: true,
       onChange: function(value) {
-        this.$input.attr('value', value);
-        onLocationChange(value);
+        var city = value
+          , country = $country.selectize()[0].selectize.getValue();
+        this.$input.attr('val', city);
+        onLocationChange(city, country);
       }
     });
 
@@ -104,8 +101,9 @@
         updateCities(this.getValue());
       },
       onChange: function(value) {
+        // Cleanup the currently selected location.
+        $locationId.val(null);
         updateCities(value);
-        onLocationChange();
       }
     });
 
