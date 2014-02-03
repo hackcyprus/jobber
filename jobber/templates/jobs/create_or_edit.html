@@ -36,22 +36,22 @@
              **{"parsley-required": "required", "parsley-maxlength": "100"}) }}
         </div>
         <div class="field inline">
-          {{ form.job_type() }}
+          {{ form.job_type(**{"parsley-required": "required", "parsley-trigger": "change"}) }}
         </div>
         <div class="field inline" id="remote-work-field">
           <span>Can people work remotely?</span>
-          {{ form.remote_work(**{"parsley-required": "required"}) }}
+          {{ form.remote_work(**{"parsley-required": "required", "parsley-trigger": "change"}) }}
         </div>
       </fieldset>
       <fieldset>
         <h4>Where is the job based?</h4>
         <div class="field inline" id="location-city-field">
           {{ form.location__city(placeholder="Select or type a city..", class_="large",
-             **{"parsley-required": "required", "parsley-maxlength": "75"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "75", "parsley-trigger": "change"}) }}
         </div>
         <div class="field inline">
           {{ form.location__country_code(class_="large",
-             **{"parsley-required": "required", "parsley-maxlength": "3"}) }}
+             **{"parsley-required": "required", "parsley-maxlength": "3", "parsley-trigger": "change"}) }}
         </div>
       </fieldset>
       <fieldset>
