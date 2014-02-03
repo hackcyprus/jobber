@@ -11,7 +11,17 @@ class TagListField(Field):
     widget = TextInput()
 
     def _value(self):
-        return u','.join([tag.slug for tag in self.data]) if self.data else u''
+        tags = []
+
+        if not self.data:
+            return u''
+
+        for tag in self.data:
+            if hasattr(tag, 'slug'):
+                tag = tag.slug
+            tags.append(tag)
+
+        return u','.join(tags)
 
     def process_formdata(self, valuelist):
         if valuelist:
