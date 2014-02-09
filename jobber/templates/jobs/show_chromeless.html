@@ -1,6 +1,6 @@
 {% from 'macros.html' import tags %}
 
-{% set website = job.company.website %}
+{% set company_website = job.company.website %}
 
 <div id="job" class="clearfix {% if chromeless %} chromeless {% endif %}">
   <div class="header">
@@ -18,8 +18,8 @@
       </a>
       <div class="row">
         <img src="/static/imgs/people.png" />
-        {% if website %}
-          <a href="{{website}}" target="_blank" class="job-company-website">
+        {% if company_website %}
+          <a href="{{company_website}}" target="_blank" class="job-company-website">
             {{ job.company.name }}
           </a>
         {% else %}
