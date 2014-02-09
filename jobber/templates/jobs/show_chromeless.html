@@ -41,6 +41,21 @@
           {% endif %}
       </div>
       {% endif %}
+      <div class="row social">
+        <div class="fb-share-button"
+             data-href="{{ job.url(external=True) }}"
+             data-type="button">
+        </div>
+
+        <a href="https://twitter.com/share"
+           class="twitter-share-button"
+           data-url="{{ job.url(external=True) }}"
+           data-via="hackcyprusjobs"
+           data-count="none">Tweet
+        </a>
+
+        <script type="IN/Share" data-url="{{ job.url(external=True) }}"></script>
+      </div>
     </div>
     <div class="description">
       {{ job.description|safe }}
