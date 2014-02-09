@@ -9,13 +9,13 @@
 {% block og_tags %}
   <meta property="og:url" content="{{ job.url(external=True) }}">
   <meta property="og:title" content="{{ job.title }} at {{ company_name }}">
-  <meta property="og:description" content="{{ job.description[:197] }}...">
+  <meta property="og:description" content="{{ job.description_text[:197] }}...">
 {% endblock %}
 
 {% block twitter_tags %}
   <meta name="twitter:site" content="{{ job.url(external=True) }}">
   <meta name="twitter:title" content="{{ job.title }} at {{ company_name }}">
-  <meta name="twitter:description" content="{{ job.description[:137] }}...">
+  <meta name="twitter:description" content="{{ job.description_text[:137] }}...">
 {% endblock %}
 
 {% block content %}
