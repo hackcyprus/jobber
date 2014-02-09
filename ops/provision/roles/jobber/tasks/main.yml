@@ -16,12 +16,14 @@
   sudo: yes
   notify: restart syslog-ng
 
-- name: install postfix
+- name: install system dependencies
   apt: "package={{ item }} state=installed"
   sudo: yes
   with_items:
     - postfix
     - libsasl2-modules
+    - libxml2-dev
+    - libxslt-dev
 
 - name: copy postfix credentials
   template: src=postfix/sasl_passwd.j2 dest=/etc/postfix/sasl_passwd owner=root

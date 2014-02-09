@@ -27,3 +27,5 @@ python-dateutil==2.2
 pytz==2013.7
 six==1.4.1
 wsgiref==0.1.2
+feedgen==0.2.8
+lxml==3.3.0
