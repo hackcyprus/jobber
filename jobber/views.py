@@ -7,9 +7,10 @@ View declarations.
 """
 from random import choice
 
-from flask import render_template, abort, redirect, url_for, session
+from flask import render_template, abort, redirect, url_for, session, Response
 from flask import current_app as app
 
+from jobber import rss
 from jobber.core.models import Job
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
@@ -174,3 +175,8 @@ def preview():
 @app.route('/faq')
 def how():
     return render_template('faq.html', prompt='Frequently asked questions.')
+
+
+@app.route('/feed')
+def feed():
+    return Response(rss.render_feed(), mimetype='text/xml')
