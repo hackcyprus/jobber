@@ -13,21 +13,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta property="fb:app_id" content="101469336666147">
-    <meta property="og:image" content="/static/imgs/hc-jobs.png">
-    <meta property="og:type" content="website">
 
     {% block og_tags %}
+      <meta property="og:image" content="/static/imgs/hc-jobs.png">
+      <meta property="og:type" content="website">
       <meta property="og:url" content="http://{{ config['SERVER_NAME'] }}">
       <meta property="og:title" content="Hack Cyprus Jobs">
       <meta property="og:description" content="Great tech jobs, by Hack Cyprus.">
     {% endblock %}
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:creator" content="@hackcyprusjobs">
-    <meta name="twitter:image" content="/static/imgs/hc-jobs.png">
-
     {% block twitter_tags %}
-      <meta name="twitter:site" content="http://{{ config['SERVER_NAME'] }}">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:creator" content="@hackcyprusjobs">
+      <meta name="twitter:site" content="@hackcyprusjobs">
+      <meta name="twitter:image:src" content="/static/imgs/hc-jobs.png">
       <meta name="twitter:title" content="Hack Cyprus Jobs">
       <meta name="twitter:description" content="Great tech jobs, by Hack Cyprus.">
     {% endblock %}
