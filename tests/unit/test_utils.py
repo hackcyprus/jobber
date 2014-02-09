@@ -95,3 +95,11 @@ def test_clean_html():
     assert utils.clean_html('<a href="b">a</a>') == '<a href="b">a</a>'
     assert utils.clean_html('<script>a</script>') == 'a'
     assert utils.clean_html('<script src="b">a</script>') == 'a'
+
+
+def test_strip_html():
+    assert utils.strip_html('<div>a</div>') == 'a'
+    assert utils.strip_html('<div class="b">a</div>') == 'a'
+    assert utils.strip_html('<a href="b">a</a>') == 'a'
+    assert utils.strip_html('<script>a</script>') == 'a'
+    assert utils.strip_html('<script src="b">a</script>') == 'a'

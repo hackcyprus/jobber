@@ -100,6 +100,15 @@ def clean_html(html):
     return bleach.clean(html, tags=ALLOWED_TAGS, strip=True)
 
 
+def strip_html(html):
+    """Completely removes HTML entitiesfrom `html`.
+
+    :param html: An HTML string
+
+    """
+    return bleach.clean(html, tags=[], strip=True)
+
+
 class Mapping(object):
     """A convenient wrapper dict-like object which provides a two-way mapping
     from a `dict`.

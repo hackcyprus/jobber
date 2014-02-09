@@ -13,7 +13,7 @@ from flask import url_for
 
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
-from jobber.core.utils import Mapping, slugify, now, ArrowDateTime
+from jobber.core.utils import Mapping, slugify, now, ArrowDateTime, strip_html
 from jobber.core.models.helpers import job_tags_relation
 
 
@@ -169,6 +169,11 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
 
         if not self.admin_token:
             self.admin_token = self.make_admin_token()
+
+    @property
+    def description_text(self):
+        """Returns the description without HTML entities."""
+        return strip_html(self.description)
 
     @property
     def human_job_type(self):
