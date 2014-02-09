@@ -1,6 +1,7 @@
 {% from 'macros.html' import tags %}
 
 {% set company_website = job.company.website %}
+{% set company_name = job.company.name %}
 
 <div id="job" class="clearfix {% if chromeless %} chromeless {% endif %}">
   <div class="header">
@@ -20,10 +21,10 @@
         <img src="/static/imgs/people.png" />
         {% if company_website %}
           <a href="{{company_website}}" target="_blank" class="job-company-website">
-            {{ job.company.name }}
+            {{ company_name }}
           </a>
         {% else %}
-          {{ job.company.name }}
+          {{ company_name }}
         {% endif %}
       </div>
       <div class="row">
@@ -50,6 +51,7 @@
         <a href="https://twitter.com/share"
            class="twitter-share-button"
            data-url="{{ job.url(external=True) }}"
+           data-text="{{ company_name }} is looking for a {{ job.title }}"
            data-via="hackcyprusjobs"
            data-count="none">Tweet
         </a>
