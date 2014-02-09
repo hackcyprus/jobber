@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html class="no-js">
   <head>
-    <title>Hack Cyprus Jobs</title>
+    {% block title %}
+      <title>Hack Cyprus Jobs</title>
+    {% endblock %}
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="Hack Cyprus">
     <meta name="keywords" content="tech, technology, jobs, software, engineer, programming, cyprus, design">
-    <meta name="description" content="Tech jobs in Cyprus.">
+    <meta name="description" content="Great tech jobs, by Hack Cyprus.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="fb:app_id" content="101469336666147">
+    <meta property="og:image" content="/static/imgs/hc-jobs.png">
+    <meta property="og:type" content="website">
+
+    {% block og_tags %}
+      <meta property="og:url" content="http://{{ config['SERVER_NAME'] }}">
+      <meta property="og:title" content="Hack Cyprus Jobs">
+      <meta property="og:description" content="Great tech jobs, by Hack Cyprus.">
+    {% endblock %}
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@hackcyprusjobs">
+    <meta name="twitter:image" content="/static/imgs/hc-jobs.png">
+
+    {% block twitter_tags %}
+      <meta name="twitter:site" content="http://{{ config['SERVER_NAME'] }}">
+      <meta name="twitter:title" content="Hack Cyprus Jobs">
+      <meta name="twitter:description" content="Great tech jobs, by Hack Cyprus.">
+    {% endblock %}
 
     <!--[if lt IE 9]>
       <script src="/static/js/vendor/shims/html5shiv.min.js"></script>
