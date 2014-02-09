@@ -7,9 +7,10 @@
 {% endblock %}
 
 {% block og_tags %}
+  <meta property="og:image" content="http://{{ config['SERVER_NAME'] }}/static/imgs/hack-cyprus-logo-small.png">
   <meta property="og:url" content="{{ job.url(external=True) }}">
   <meta property="og:title" content="{{ job.title }} at {{ company_name }}">
-  <meta property="og:description" content="{{ job.description_text[:200] }}">
+  <meta property="og:description" content="{{ job.description_text[:197]... }}">
   <meta property="og:site_name" content="Hack Cyprus Jobs">
 {% endblock %}
 
@@ -18,7 +19,7 @@
   <meta name="twitter:creator" content="@hackcyprusjobs">
   <meta name="twitter:site" content="@hackcyprusjobs">
   <meta name="twitter:title" content="{{ job.title }} at {{ company_name }}">
-  <meta name="twitter:description" content="{{ job.description_text[:200] }}">
+  <meta name="twitter:description" content="{{ job.description_text[:197]... }}">
 {% endblock %}
 
 {% block content %}
