@@ -2,7 +2,7 @@
 
 {% set website = job.company.website %}
 
-<div id="job" class="clearfix">
+<div id="job" class="clearfix {% if chromeless %} chromeless {% endif %}">
   <div class="header">
     <h2>{{ job.title }}</h2>
     {{ tags(job) }}

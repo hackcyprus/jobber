@@ -196,6 +196,8 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return [tag.slug for tag in self.tags]
 
     def url(self, external=False):
+        if not self.id:
+            return None
         kwargs = {
             'job_id': self.id,
             'company_slug': self.company.slug,
@@ -205,6 +207,8 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
         return url_for('show', **kwargs)
 
     def edit_url(self, external=False):
+        if not self.id:
+            return None
         kwargs = {
             'job_id': self.id,
             'token': self.admin_token,
