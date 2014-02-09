@@ -1,5 +1,23 @@
 {% extends "layout.html" %}
 
+{% set company_name = job.company.name %}
+
+{% block title %}
+  <title>{{ job.title }} | Hack Cyprus Jobs</title>
+{% endblock %}
+
+{% block og_tags %}
+  <meta property="og:url" content="{{ job.url(external=True) }}">
+  <meta property="og:title" content="{{ job.title }} at {{ company_name }}">
+  <meta property="og:description" content="{{ job.description[:197] }}...">
+{% endblock %}
+
+{% block twitter_tags %}
+  <meta name="twitter:site" content="{{ job.url(external=True) }}">
+  <meta name="twitter:title" content="{{ job.title }} at {{ company_name }}">
+  <meta name="twitter:description" content="{{ job.description[:137] }}...">
+{% endblock %}
+
 {% block content %}
   <a href="/" class="see-all"><span>&larr;</span> See all jobs</a>
   {% include "jobs/show_chromeless.html" %}
