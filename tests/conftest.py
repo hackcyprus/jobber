@@ -90,6 +90,10 @@ def session(db, request):
     options = dict(bind=connection, binds={})
     session = db.create_scoped_session(options=options)
 
+    # Replace the session used by `Flask-SQLAlchemy` with the one we created
+    # so it can be used by the models.
+    db.session = session
+
     def teardown():
         # We make sure to rollback and close the session after a test is
         # finished, so that tests do not affect each other.
