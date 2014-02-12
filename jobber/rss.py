@@ -31,7 +31,7 @@ def build_feed_generator():
 def render_feed(limit=DEFAULT_LIMIT):
     gen = build_feed_generator()
 
-    listings = Job.query.order_by(Job.created).limit(limit).all()
+    listings = Job.query.filter_by(published=True).order_by(Job.created).limit(limit).all()
 
     for job in listings:
         url = job.url(external=True)
