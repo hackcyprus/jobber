@@ -22,8 +22,10 @@
   with_items:
     - postfix
     - libsasl2-modules
+    - libxml2
     - libxml2-dev
-    - libxslt-dev
+    - libxslt1.1
+    - libxslt1-dev
 
 - name: copy postfix credentials
   template: src=postfix/sasl_passwd.j2 dest=/etc/postfix/sasl_passwd owner=root
