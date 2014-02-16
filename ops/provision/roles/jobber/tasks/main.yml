@@ -27,6 +27,10 @@
     - libxslt1.1
     - libxslt1-dev
 
+- name: add hourly backup cron job
+  cron: "name='backup database' user={{ owner }} minute='0' job='{{ root }}/env/bin/python {{ root }}/jobber/scripts/cron/backup.py'"
+  when: not local
+
 - name: copy postfix credentials
   template: src=postfix/sasl_passwd.j2 dest=/etc/postfix/sasl_passwd owner=root
   sudo: yes
