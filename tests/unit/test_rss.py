@@ -29,9 +29,10 @@ def job(company, location):
                remote_work=False,
                company=company,
                location=location,
+               published=True,
                job_type=1,
                recruiter_name=u'jon',
-               recruiter_email=u'doe')
+               recruiter_email=u'jon@doe.com')
 
 
 def test_rss_generation(job, session):

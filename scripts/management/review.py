@@ -53,7 +53,7 @@ def make_summary(job):
         'recruiter_name': job.recruiter_name,
         'recruiter_email': job.recruiter_email,
         'company_name': job.company.name,
-        'company_website': job.company.website,
+        'company_website': job.company.website_with_protocol,
         'city': job.location.city,
         'country_code': job.location.country_code,
         'edit_url': job.edit_url(),

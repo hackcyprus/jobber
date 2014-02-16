@@ -13,8 +13,9 @@ from flask import url_for
 
 from jobber.extensions import db
 from jobber.core.search import SearchableMixin
-from jobber.core.utils import Mapping, slugify, now, ArrowDateTime, strip_html
 from jobber.core.models.helpers import job_tags_relation
+from jobber.core.utils import Mapping, slugify, now
+from jobber.core.utils import ensure_protocol, ArrowDateTime, strip_html
 
 
 class BaseModel(db.Model):
@@ -93,6 +94,10 @@ class Company(BaseModel, SlugModelMixin):
     def __init__(self, *args, **kwargs):
         super(Company, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
+
+    @property
+    def website_with_protocol(self):
+        return ensure_protocol(self.website)
 
 
 class Job(BaseModel, SlugModelMixin, SearchableMixin):
@@ -186,6 +191,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     @property
     def human_remote_work(self):
         return self.REMOTE_WORK_OPTIONS.map(self.remote_work)
+
+    @property
+    def contact_url_with_protocol(self):
+        return ensure_protocol(self.contact_url)
 
     def _url(self, external=True):
         kwargs = {

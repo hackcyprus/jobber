@@ -1,6 +1,6 @@
 {% from 'macros.html' import tags %}
 
-{% set company_website = job.company.website %}
+{% set company_website = job.company.website_with_protocol %}
 {% set company_name = job.company.name %}
 
 <div id="job" class="clearfix {% if chromeless %} chromeless {% endif %}">
@@ -11,7 +11,7 @@
   <div class="body clearfix">
     <div class="infobox">
       {% if job.human_contact_method == 'Link' %}
-      <a href="{{ job.contact_url }}" target="_blank" class="apply-btn btn btn-green">
+      <a href="{{ job.contact_url_with_protocol }}" target="_blank" class="apply-btn btn btn-green">
       {% else %}
       <a href="mailto:{{ job.contact_email }}?subject=Applying for '{{ job.title }}' via Hack Cyprus Jobs" class="apply-btn btn btn-green">
       {% endif %}

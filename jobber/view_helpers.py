@@ -39,7 +39,7 @@ def populate_form(job):
         'location__country_code': location.country_code,
         'company__id': company.id,
         'company__name': company.name,
-        'company__website': company.website
+        'company__website': company.website_with_protocol
     }
 
     return JobForm(obj=job, **related_data)

@@ -1,5 +1,5 @@
 from wtforms import Field, TextField, SelectField, IntegerField
-from wtforms.validators import DataRequired, Email, Optional, URL, Length
+from wtforms.validators import DataRequired, Email, Optional, Length
 from wtforms.widgets import HiddenInput, TextArea, TextInput
 from flask.ext.wtf import Form
 
@@ -67,7 +67,7 @@ class JobForm(Form):
 
     #: Company website (freetext).
     company__website = TextField('Company Website',
-                                 validators=[Optional(), URL(), Length(max=200)])
+                                 validators=[Optional(), Length(max=200)])
 
     #: Location id (populated if used for updating).
     location__id = IntegerField('Location id',
@@ -95,7 +95,7 @@ class JobForm(Form):
 
     #: Contact url (if contact method is url).
     contact_url = TextField('Contact Link',
-                             validators=[Optional(), URL(), Length(max=200)])
+                             validators=[Optional(), Length(max=200)])
 
     #: Recruiter name (freetext).
     recruiter_name = TextField('Recruiter Name',

@@ -6,6 +6,7 @@ tests.unit.test_utils
 Tests for utility functions.
 
 """
+import pytest
 from jobber.core import utils
 from unicodedata import normalize
 
@@ -89,17 +90,35 @@ def test_tag_parser():
     assert utils.parse_tags('one two', delim=' ') == ['one', 'two']
 
 
-def test_clean_html():
-    assert utils.clean_html('<div>a</div>') == '<div>a</div>'
-    assert utils.clean_html('<div class="b">a</div>') == '<div>a</div>'
-    assert utils.clean_html('<a href="b">a</a>') == '<a href="b">a</a>'
-    assert utils.clean_html('<script>a</script>') == 'a'
-    assert utils.clean_html('<script src="b">a</script>') == 'a'
+@pytest.mark.parametrize('input,expected', [
+    ('<div>a</div>', '<div>a</div>'),
+    ('<div class="b">a</div>', '<div>a</div>'),
+    ('<a href="b">a</a>', '<a href="b">a</a>'),
+    ('<script>a</script>', 'a'),
+    ('<script src="b">a</script>', 'a'),
+])
+def test_clean_html(input, expected):
+    assert utils.clean_html(input) == expected
 
 
-def test_strip_html():
-    assert utils.strip_html('<div>a</div>') == 'a'
-    assert utils.strip_html('<div class="b">a</div>') == 'a'
-    assert utils.strip_html('<a href="b">a</a>') == 'a'
-    assert utils.strip_html('<script>a</script>') == 'a'
-    assert utils.strip_html('<script src="b">a</script>') == 'a'
+@pytest.mark.parametrize('input,expected', [
+    ('<div>a</div>', 'a'),
+    ('<div class="b">a</div>', 'a'),
+    ('<a href="b">a</a>', 'a'),
+    ('<script>a</script>', 'a'),
+    ('<script src="b">a</script>', 'a'),
+])
+def test_strip_html(input, expected):
+    assert utils.strip_html(input) == expected
+
+
+@pytest.mark.parametrize('input,expected', [
+    ('http://example.com', 'http://example.com'),
+    ('https://example.com', 'https://example.com'),
+    ('ftp://example.com', 'ftp://example.com'),
+    ('example.com', 'http://example.com'),
+    ('', ''),
+    (None, None),
+])
+def test_ensure_protocol(input, expected):
+    assert utils.ensure_protocol(input) == expected

@@ -15,6 +15,7 @@ import bleach
 
 
 PUNCTUATION_REGEX = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
+STARTS_WITH_PROTOCOL = re.compile(r'^(http|ftp|https):\/\/.*$')
 
 ALLOWED_TAGS =  [
     'a', 'abbr', 'acronym', 'b', 'blockquote', 'br', 'code',
@@ -107,6 +108,20 @@ def strip_html(html):
 
     """
     return bleach.clean(html, tags=[], strip=True)
+
+
+def ensure_protocol(url, fallback='http://'):
+    """Ensures a `url` has a protocol.
+
+    :param url: The url to check.
+    :param fallback: The protocol to attach if none, defaults to 'http://'.
+
+    """
+    if not url:
+        return url
+    if not STARTS_WITH_PROTOCOL.match(url):
+        url = fallback + url
+    return url
 
 
 class Mapping(object):
