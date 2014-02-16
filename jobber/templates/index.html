@@ -36,12 +36,12 @@
             </h4>
             <p class="details">
               {{ job.company.name }} &mdash;
-              {{ job.location.city }}, {{ job.location.country_name }}
+              {{ job.human_job_type }}
             </p>
             {{ tags(job) }}
           </td>
           <td class="right">
-              <h4 class="job-type">{{ job.human_job_type }}</h4>
+              <h4 class="location">{{ job.location.city }}, {{ job.location.country_name }}</h4>
               <p class="added">{{ job.created.humanize() }}</p>
           </td>
         </tr>
