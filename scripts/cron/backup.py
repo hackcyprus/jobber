@@ -33,7 +33,6 @@ def main(session):
     app.logger.info('Backup started for {} with filename {}'.format(dbpath, filename))
     with open(dbpath) as db:
         try:
-            # We keep diffent files for each day, but overwrite hourly backups.
             response = dropbox.put_file(filename, db)
             rev = response['rev']
             app.logger.info("Backup complete with revision id {}".format(rev))
