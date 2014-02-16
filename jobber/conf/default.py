@@ -40,3 +40,6 @@ MAIL_DEFAULT_SENDER = '<sender>'
 MAIL_ADMIN_RECIPIENT = '<admin>'
 
 GA_TRACKING_ID = '<tracking>'
+
+DROPBOX_OAUTH_TOKEN = '<dropbox-token>'
+
