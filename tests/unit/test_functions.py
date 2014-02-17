@@ -7,7 +7,6 @@ Tests shared functions.
 
 """
 import os
-import re
 
 import pytest
 from mock import MagicMock
@@ -17,7 +16,6 @@ from jobber.core.models import Location, Company, Job
 from jobber.functions import (send_instructory_email,
                               send_admin_review_email,
                               send_confirmation_email,
-                              insert_token,
                               DEFAULT_SENDER,
                               ADMIN_RECIPIENT)
 
@@ -46,18 +44,6 @@ def job(company, location):
                recruiter_email=u'doe')
 
 
-def test_insert_token():
-    recipient = 'bob@example.com'
-
-    nonced = insert_token(recipient)
-
-    assert 'bob+' in nonced
-    assert re.match('.*[a-z0-9]{10}.*', nonced) is not None
-
-    nonced = insert_token(recipient, token='foofoofoo')
-    assert 'bob+foofoofoo' in nonced
-
-
 def test_send_instructory_email(app, monkeypatch, job):
     mock = MagicMock()
     monkeypatch.setattr('jobber.functions.send_email_template', mock)
@@ -82,11 +68,11 @@ def test_send_admin_review_email(app, monkeypatch, job):
         'script_path': os.path.join(settings.ROOT, 'scripts', 'management')
     }
 
-    token = 'foo'
-    recipient = [insert_token(ADMIN_RECIPIENT, token=token)]
+    sender= 'tech+reviewer+foo@projectcel.com'
+    recipient = [ADMIN_RECIPIENT]
 
-    send_admin_review_email(job, token=token)
-    mock.assert_called_with('review', context, recipient)
+    send_admin_review_email(job, sender=sender)
+    mock.assert_called_with('review', context, recipient, sender=sender)
 
 
 def test_send_confirmation_email(app, monkeypatch, job):

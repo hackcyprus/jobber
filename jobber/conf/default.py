@@ -38,6 +38,7 @@ MAIL_SERVER = 'localhost'
 MAIL_PORT = 25
 MAIL_DEFAULT_SENDER = '<sender>'
 MAIL_ADMIN_RECIPIENT = '<admin>'
+MAIL_REVIEWER_ROBOT = '<robot>'
 
 GA_TRACKING_ID = '<tracking>'
 

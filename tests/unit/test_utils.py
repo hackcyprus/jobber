@@ -6,6 +6,8 @@ tests.unit.test_utils
 Tests for utility functions.
 
 """
+import re
+
 import pytest
 from jobber.core import utils
 from unicodedata import normalize
@@ -122,3 +124,15 @@ def test_strip_html(input, expected):
 ])
 def test_ensure_protocol(input, expected):
     assert utils.ensure_protocol(input) == expected
+
+
+def test_insert_email_token():
+    recipient = 'bob@example.com'
+
+    tokened = utils.insert_email_token(recipient)
+
+    assert 'bob+' in tokened
+    assert re.match('.*[a-z0-9]{10}.*', tokened) is not None
+
+    tokened = utils.insert_email_token(recipient, token='foofoofoo')
+    assert 'bob+foofoofoo' in tokened

@@ -6,7 +6,6 @@ Shared functions.
 
 """
 import os
-import uuid
 from datetime import timedelta
 
 from flask import current_app as app
@@ -18,19 +17,6 @@ from jobber.core.utils import now
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
-
-
-def insert_token(email, token=None):
-    """Inserts a unique token into the admin recipient address.
-
-    :param nonce: A string to attach to the local part of the email. If not
-    defined, one will be created randomly.
-
-    """
-    localpart, domain = email.split('@')
-    if not token:
-        token = uuid.uuid4().hex[:10]
-    return '@'.join(['{}+{}'.format(localpart, token), domain])
 
 
 def send_instructory_email(job):
@@ -49,17 +35,14 @@ def send_instructory_email(job):
     send_email_template('instructory', context, [recipient])
 
 
-def send_admin_review_email(job, token=None):
+def send_admin_review_email(job, sender=None):
     """Sends a notification to the admin to review the new/updated job listing.
 
     :param job: A `Job` instance.
-    :param token: A string (of length 10) to attach to the reviewer email.
+    :param sender: The A string (of length 10) to attach to the email sender.
 
     """
-    if token:
-        token = token[:10]
-
-    recipient = insert_token(settings.MAIL_ADMIN_RECIPIENT, token=token)
+    recipient = settings.MAIL_ADMIN_RECIPIENT
 
     probable_update = job.created + timedelta(minutes=5) < now()
     new_or_update = 'newly updated' if probable_update else 'brand new'
@@ -73,8 +56,11 @@ def send_admin_review_email(job, token=None):
         'script_path': script_path
     }
 
+    if sender is None:
+        sender = DEFAULT_SENDER
+
     app.logger.info(u"Sending admin review email for job listing ({}).".format(job.id))
-    send_email_template('review', context, [recipient])
+    send_email_template('review', context, [recipient], sender=sender)
 
 
 def send_confirmation_email(job):

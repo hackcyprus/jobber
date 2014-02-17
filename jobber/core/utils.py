@@ -6,6 +6,7 @@ Utility methods.
 
 """
 import re
+import uuid
 from functools import reduce
 from unicodedata import normalize
 
@@ -168,7 +169,21 @@ class ArrowDateTime(types.TypeDecorator):
     impl = types.DateTime
 
     def process_bind_param(self, value, dialect):
-        return value.datetime
+        if value:
+            return value.datetime
 
     def process_result_value(self, value, dialect):
         return arrow.get(value)
+
+
+def insert_email_token(email, token=None):
+    """Inserts a token into the local part of `email`.
+
+    :param token: A string to attach to the local part of the email. If not
+    defined, one will be created randomly.
+
+    """
+    localpart, domain = email.split('@')
+    if not token:
+        token = uuid.uuid4().hex[:10]
+    return '@'.join(['{}+{}'.format(localpart, token), domain])
