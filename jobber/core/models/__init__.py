@@ -387,3 +387,8 @@ class EmailReviewToken(BaseModel):
 
     #: Job id as a foreign key relationship.
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
+
+    def __init__(self, *args, **kwargs):
+        if self.token is None:
+            self.token = uuid.uuid4().hex[:10]
+        super(EmailReviewToken, self).__init__(*args, **kwargs)

@@ -13,11 +13,8 @@ from sqlalchemy.exc import IntegrityError
 from arrow.arrow import Arrow
 
 from jobber.core.utils import now
-from jobber.core.models import (Job,
-                           Company,
-                           Category,
-                           Location,
-                           Tag)
+from jobber.core.models import Job, Company, Category
+from jobber.core.models import Location, Tag, EmailReviewToken
 
 
 @pytest.fixture(scope='function')
@@ -313,3 +310,26 @@ def test_replacing_tag(session, company, location):
     assert len(job.tags) == 1
     assert one not in job.tags
     assert two not in job.tags
+
+
+def test_email_review_token(session, company, location):
+    job = Job(title=u'foo',
+              description=u'foo',
+              contact_method=1,
+              remote_work=False,
+              company=company,
+              location=location,
+              job_type=1,
+              recruiter_name=u'foo bar',
+              recruiter_email=u'foo@fooland.com')
+
+    instance = EmailReviewToken(job=job)
+
+    assert instance.token is not None
+    assert not instance.used
+
+    session.add(instance)
+    session.commit()
+
+    assert instance.id > 0
+    assert instance.token is not None
