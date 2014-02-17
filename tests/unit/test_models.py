@@ -27,6 +27,21 @@ def company():
     return Company(name=u'remedica')
 
 
+@pytest.fixture(scope='function')
+def job(company, location):
+    return Job(
+        title=u'foo',
+        description=u'foo',
+        contact_method=1,
+        remote_work=False,
+        company=company,
+        location=location,
+        job_type=1,
+        recruiter_name=u'foo bar',
+        recruiter_email=u'foo@fooland.com'
+    )
+
+
 def test_company_model(company, session):
     # Commit session for `company` fixture to be persisted.
     session.add(company)
@@ -263,7 +278,7 @@ def test_duplicate_tag(session):
 def test_adding_tag(session, company, location):
     one = Tag(tag=u'one')
 
-    # Test adding tags via the constructor.
+    # Test adding tags via the constructor, hence not using the fixture.
     job = Job(title=u'foo',
               description=u'foo',
               contact_method=1,
@@ -286,21 +301,11 @@ def test_adding_tag(session, company, location):
         assert tag in job.tags
 
 
-def test_replacing_tag(session, company, location):
+def test_replacing_tag(session, job):
     one = Tag(tag=u'one')
     two = Tag(tag=u'two')
 
-    # Test adding tags via the constructor.
-    job = Job(title=u'foo',
-              description=u'foo',
-              contact_method=1,
-              remote_work=False,
-              company=company,
-              location=location,
-              job_type=1,
-              recruiter_name=u'foo bar',
-              recruiter_email=u'foo@fooland.com',
-              tags=[one, two])
+    job.tags =[one, two]
 
     job.replace_tags([u'three'])
 
@@ -312,17 +317,7 @@ def test_replacing_tag(session, company, location):
     assert two not in job.tags
 
 
-def test_email_review_token(session, company, location):
-    job = Job(title=u'foo',
-              description=u'foo',
-              contact_method=1,
-              remote_work=False,
-              company=company,
-              location=location,
-              job_type=1,
-              recruiter_name=u'foo bar',
-              recruiter_email=u'foo@fooland.com')
-
+def test_email_review_token(session, job):
     instance = EmailReviewToken(job=job)
 
     assert instance.token is not None
