@@ -168,6 +168,9 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     #: Many-to-many relationship to `Tag`.
     tags = db.relationship('Tag', secondary=job_tags_relation, backref='jobs')
 
+    #: One-to-many relationship to `EmailReviewToken`.
+    jobs = db.relationship('EmailReviewToken', backref='job')
+
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         SlugModelMixin.__init__(self, **kwargs)
@@ -365,3 +368,22 @@ class Tag(BaseModel, PrimaryKeySlugModelMixin):
         if instance is None:
             instance = Tag(tag=tag, slug=slug)
         return instance
+
+
+class EmailReviewToken(BaseModel):
+    __tablename__ = 'email_review_tokens'
+
+    #: Token id.
+    id = db.Column(db.Integer, primary_key=True)
+
+    #: Token value.
+    token = db.Column(db.Unicode(10), nullable=False, unique=False, index=True)
+
+    #: Flag showing whether the token was used.
+    used = db.Column(db.Boolean, nullable=False, default=False)
+
+    #: A timestamp for when this token was used.
+    used_at = db.Column(ArrowDateTime(timezone=True))
+
+    #: Job id as a foreign key relationship.
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
