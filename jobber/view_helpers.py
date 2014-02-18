@@ -7,6 +7,12 @@ Utility functions for views.
 """
 from jobber.core.models import Job, Company, Location, Tag
 from jobber.core.forms import JobForm
+from jobber.core.utils import insert_email_token
+from jobber.functions import send_admin_review_email
+from jobber.conf import settings
+
+
+REVIEWER_ROBOT = settings.MAIL_REVIEWER_ROBOT
 
 
 def get_location_context():
@@ -126,3 +132,13 @@ def populate_job(form, job=None):
     populate_location(job, form_data)
 
     return job
+
+
+def send_review_email(job, token):
+    """Sends an admin review email using the given `token`.
+
+    :param token: A string of length 10 to use as the review token.
+
+    """
+    sender = insert_email_token(REVIEWER_ROBOT, token=token)
+    send_admin_review_email(job, sender=sender)

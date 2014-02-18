@@ -11,19 +11,20 @@ from flask import render_template, abort, redirect, url_for, session, Response
 from flask import current_app as app
 
 from jobber import rss
-from jobber.core.models import Job
+from jobber.core.models import Job, EmailReviewToken
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
+from jobber.core.utils import now
 from jobber.extensions import db
-from jobber.functions import send_instructory_email, send_admin_review_email
+from jobber.functions import send_instructory_email
 from jobber.view_helpers import (get_location_context,
                                  get_tag_context,
                                  populate_job,
-                                 populate_form)
+                                 populate_form,
+                                 send_review_email)
 
 
 CREATE_OR_UPDATE_PROMPT = u'Great jobs, great people.'
-
 
 PROMPTS = [
     u"What's your cup of tech?",
@@ -79,11 +80,15 @@ def create():
     if form.validate_on_submit():
         job = populate_job(form)
 
+        # Create a token to enable email reviewing.
+        review_token = EmailReviewToken(job=job)
+
+        db.session.add(review_token)
         db.session.add(job)
         db.session.commit()
 
         send_instructory_email(job)
-        send_admin_review_email(job)
+        send_review_email(job, review_token.token)
 
         app.logger.info("Job ({}) was successfully created.".format(job.id))
 
@@ -123,9 +128,13 @@ def edit(job_id, token):
         # An edited job is pending review so it needs to be unpublished.
         job.published = False
 
+        # Create a token to enable email reviewing.
+        review_token = EmailReviewToken(job=job)
+        db.session.add(review_token)
+
         db.session.commit()
 
-        send_admin_review_email(job)
+        send_review_email(job, review_token.token)
 
         app.logger.info("Job ({}) was successfully edited.".format(job.id))
 
@@ -180,3 +189,24 @@ def how():
 @app.route('/feed')
 def feed():
     return Response(rss.render_feed(), mimetype='text/xml')
+
+
+@app.route('/review/email/<token>')
+def reviewed_via_email(token):
+    token = EmailReviewToken.query.filter_by(token=token).first()
+
+    if not token or token.used:
+        abort(404)
+
+    token.used = True
+    token.used_at = now()
+
+    job = token.job
+    job.published = True
+
+    db.session.commit()
+
+    app.logger.info(('Reviewed job ({}) via email with token ({}).'
+                     .format(job.id, token.token)))
+
+    return 'okay', 200

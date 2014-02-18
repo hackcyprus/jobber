@@ -60,7 +60,7 @@ def update_jobs_index(job):
         app.logger.info(u"Job ({}) added to index.".format(job.id))
 
 
-@models_committed.connect_via(app._get_current_object())
+@models_committed.connect_via(app)
 def on_models_committed(sender, changes):
     """Received when a list of models is committed to the database.
 
