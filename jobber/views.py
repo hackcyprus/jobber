@@ -7,7 +7,8 @@ View declarations.
 """
 from random import choice
 
-from flask import render_template, abort, redirect, url_for, session, Response
+from flask import render_template, abort, redirect,  Response
+from flask import url_for, session, request
 from flask import current_app as app
 
 from jobber import rss
@@ -16,6 +17,7 @@ from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.core.utils import now
 from jobber.extensions import db
+from jobber.conf import settings
 from jobber.functions import send_instructory_email
 from jobber.view_helpers import (get_location_context,
                                  get_tag_context,
@@ -191,22 +193,31 @@ def feed():
     return Response(rss.render_feed(), mimetype='text/xml')
 
 
-@app.route('/review/email/<token>')
+@app.route('/review/email/<token>', methods=['POST'])
 def reviewed_via_email(token):
-    token = EmailReviewToken.query.filter_by(token=token).first()
+    sender = request.form['sender']
+    reply = request.form['stripped-text'].strip()
 
-    if not token or token.used:
+    app.logger.info("Received email review request with token {} and reply '{}'"
+                    .format(token, reply))
+
+    if sender not in settings.EMAIL_REVIEWERS:
+        app.logger.info("Unauthorized email reviewer with email '{}' and token {}!"
+                        .format(sender, token))
+        abort(404)
+
+    token = EmailReviewToken.query.filter_by(token=token).first()
+    if reply != 'ok' or not token or token.used:
         abort(404)
 
     token.used = True
     token.used_at = now()
-
     job = token.job
     job.published = True
 
     db.session.commit()
 
-    app.logger.info(('Reviewed job ({}) via email with token ({}).'
-                     .format(job.id, token.token)))
+    app.logger.info("Reviewed job ({}) via email with token {}."
+                    .format(job.id, token.token))
 
     return 'okay', 200
