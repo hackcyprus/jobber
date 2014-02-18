@@ -13,6 +13,7 @@ from flask import current_app as app
 from jobber.conf import settings
 from jobber.core.email import send_email_template
 from jobber.core.utils import now
+from jobber.vendor.html2text import html2text
 
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
@@ -52,6 +53,7 @@ def send_admin_review_email(job, sender=None):
 
     context = {
         'job': job,
+        'html2text': html2text,
         'new_or_update': new_or_update,
         'script_path': script_path
     }

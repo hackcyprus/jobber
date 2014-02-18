@@ -3,12 +3,39 @@ Heyo,
 There's been a newly created/updated job listing that needs your attention! The listing
 was created {{ job.created.humanize() }} so it's probably {{ new_or_update }}.
 
+
+The details:
+=========
+
+Title: {{ job.title }}
+
+Type: {{ job.human_job_type }}
+Remote Work: {{ job.human_remote_work }}
+
+Recruiter: {{ job.recruiter_name }}
+Recruiter email: {{ job.recruiter_email }}
+
+Company: {{ job.company.name }}
+Company Website: {{ job.company.website_with_protocol }}
+
+City: {{ job.location.city }}
+Country: {{job.location.country_name}}
+
+Tags: {{ job.tag_slugs|join(', ') }}
+
+Published: {{ job.published }}
+
+Description: {{ html2text(job.description) }}
+
+
 To review:
+========
 
 $ cd {{ script_path }}; python review.py {{ job.id }}
 
 Alternatively, you can view this listing in your browser by going to:
 {{ job.edit_url(external=True) }}
+
 
 Happy reviewing,
 The Reviewer Robot
