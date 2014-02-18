@@ -28,7 +28,7 @@
     - libxslt1-dev
 
 - name: add bi-daily backup cron job
-  cron: "name='backup database' user={{ owner }} hour='3,15' job='{{ root }}/env/bin/python {{ root }}/jobber/scripts/cron/backup.py'"
+  cron: "name='backup database' user={{ owner }} minute='0' hour='3,15' job='{{ root }}/env/bin/python {{ root }}/jobber/scripts/cron/backup.py'"
   when: not local
 
 - name: copy postfix credentials
