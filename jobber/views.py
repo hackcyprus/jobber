@@ -198,7 +198,7 @@ def reviewed_via_email(token):
     sender = request.form['sender']
     reply = request.form['stripped-text'].strip()
 
-    app.logger.info("Received email review request with token {} and reply '{}'"
+    app.logger.info("Received email review request with token {} and reply '{}'."
                     .format(token, reply))
 
     if sender not in settings.EMAIL_REVIEWERS:
@@ -207,7 +207,16 @@ def reviewed_via_email(token):
         abort(404)
 
     token = EmailReviewToken.query.filter_by(token=token).first()
-    if reply != 'ok' or not token or token.used:
+    if reply != 'ok':
+        app.logger.info("Bad reply, aborting review.")
+        abort(404)
+
+    if not token:
+        app.logger.info("Unknown token {}, aborting review.".format(token))
+        abort(404)
+
+    if token.used:
+        app.logger.info("Token {} is already used, aborting review.".format(token))
         abort(404)
 
     token.used = True

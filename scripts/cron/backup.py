@@ -30,16 +30,16 @@ def main(session):
     env = 'production' if not settings.DEBUG else 'dev'
     filename = 'backup.{}.{}.db'.format(now().format('YYYYMMDDHHmm'), env)
 
-    app.logger.info('Backup started for {} with filename {}'.format(dbpath, filename))
+    app.logger.info('Backup started for {} with filename {}.'.format(dbpath, filename))
     with open(dbpath) as db:
         try:
             response = dropbox.put_file(filename, db)
             rev = response['rev']
-            app.logger.info("Backup complete with revision id {}".format(rev))
+            app.logger.info("Backup complete with revision id {}.".format(rev))
         except ErrorResponse as err:
             code = err.status
             msg = err.error_msg
-            app.logger.error("Backup failed with code {} message '{}'".format(code, msg))
+            app.logger.error("Backup failed with code {} message '{}'.".format(code, msg))
 
 
 if __name__ == '__main__':
