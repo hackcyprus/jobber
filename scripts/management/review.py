@@ -17,6 +17,7 @@ path_setup()
 from jobber.script import run, green, die, prompt, blue
 from jobber.core.models import Job
 from jobber.functions import send_confirmation_email
+from jobber.vendor.html2text import html2text
 
 
 def make_summary(job):
@@ -49,7 +50,7 @@ def make_summary(job):
         'title': job.title,
         'job_type': job.human_job_type,
         'remote_work': job.human_remote_work,
-        'description': job.description,
+        'description': html2text(job.description),
         'recruiter_name': job.recruiter_name,
         'recruiter_email': job.recruiter_email,
         'company_name': job.company.name,
