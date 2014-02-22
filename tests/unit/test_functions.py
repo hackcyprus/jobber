@@ -11,6 +11,7 @@ import os
 import pytest
 from mock import MagicMock
 
+from jobber.vendor.html2text import html2text
 from jobber.conf import settings
 from jobber.core.models import Location, Company, Job
 from jobber.functions import (send_instructory_email,
@@ -65,7 +66,8 @@ def test_send_admin_review_email(app, monkeypatch, job):
     context = {
         'job': job,
         'new_or_update': 'brand new',
-        'script_path': os.path.join(settings.ROOT, 'scripts', 'management')
+        'script_path': os.path.join(settings.ROOT, 'scripts', 'management'),
+        'html2text': html2text
     }
 
     sender= 'tech+reviewer+foo@projectcel.com'
