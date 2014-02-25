@@ -7,13 +7,13 @@ clean-pyc:
 clean: clean-pyc
 
 test: clean
-	coverage run --source jobber --omit *.jinja,*.html -m py.test -s
+	coverage run --source jobber --omit *.jinja,*.html,jobber/vendor/* -m py.test -s
 	coverage report -m
 
 test-unit: clean
-	coverage run --source jobber --omit *.jinja,*.html -m py.test unit/ -s
+	coverage run --source jobber --omit *.jinja,*.html,jobber/vendor/* -m py.test unit/ -s
 	coverage report -m
 
 test-integration: clean
-	coverage run --source jobber --omit *.jinja,*.html -m py.test integration/ -s
+	coverage run --source jobber --omit *.jinja,*.html,jobber/vendor/ -m py.test integration/ -s
 	coverage report -m
