@@ -7,6 +7,7 @@ View declarations.
 """
 from random import choice
 
+from flask import Blueprint
 from flask import render_template, abort, redirect,  Response
 from flask import url_for, session, request
 from flask import current_app as app
@@ -45,21 +46,24 @@ EXAMPLE_POSITIONS = [
 ]
 
 
-@app.context_processor
+blueprint = Blueprint('views', __name__)
+
+
+@blueprint.context_processor
 def inject_swag():
     prompt = choice(PROMPTS)
     position = choice(EXAMPLE_POSITIONS)
     return dict(prompt=prompt, position=position)
 
 
-@app.route('/search/')
-@app.route('/')
+@blueprint.route('/search/')
+@blueprint.route('/')
 def index():
     query = Job.query.filter_by(published=True).order_by(Job.created.desc())
     return render_template('index.html', jobs=query.all())
 
 
-@app.route('/search/<query>')
+@blueprint.route('/search/<query>')
 def search(query):
     index = Index()
     jobs = []
@@ -74,7 +78,7 @@ def search(query):
     return render_template('index.html', jobs=jobs, query=query)
 
 
-@app.route('/create', methods=['GET', 'POST'])
+@blueprint.route('/create', methods=['GET', 'POST'])
 def create():
     form = JobForm()
 
@@ -94,7 +98,7 @@ def create():
         app.logger.info("Job ({}) was successfully created.".format(job.id))
 
         session['created_email'] = job.recruiter_email
-        return redirect(url_for('created'))
+        return redirect(url_for('views.created'))
 
     locations = get_location_context()
     tags = get_tag_context()
@@ -106,7 +110,7 @@ def create():
                            prompt=CREATE_OR_UPDATE_PROMPT)
 
 
-@app.route('/created')
+@blueprint.route('/created')
 def created():
     email = session.pop('created_email', None)
     if not email:
@@ -114,7 +118,7 @@ def created():
     return render_template('jobs/created.html', email=email)
 
 
-@app.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
+@blueprint.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
 def edit(job_id, token):
     job = Job.query.filter_by(admin_token=token).first()
 
@@ -140,7 +144,7 @@ def edit(job_id, token):
         app.logger.info("Job ({}) was successfully edited.".format(job.id))
 
         session['edited_email'] = job.recruiter_email
-        return redirect(url_for('edited'))
+        return redirect(url_for('views.edited'))
 
     locations = get_location_context()
     tags = get_tag_context()
@@ -153,7 +157,7 @@ def edit(job_id, token):
                            prompt=CREATE_OR_UPDATE_PROMPT)
 
 
-@app.route('/edited')
+@blueprint.route('/edited')
 def edited():
     email = session.pop('edited_email', None)
     if not email:
@@ -161,7 +165,7 @@ def edited():
     return render_template('jobs/edited.html')
 
 
-@app.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
+@blueprint.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
 def show(job_id, company_slug, job_slug):
     job = Job.query.get_or_404(job_id)
     if job.slug == job_slug and job.company.slug == company_slug:
@@ -169,7 +173,7 @@ def show(job_id, company_slug, job_slug):
     abort(404)
 
 
-@app.route('/preview', methods=['POST'])
+@blueprint.route('/preview', methods=['POST'])
 def preview():
     form = JobForm()
 
@@ -182,17 +186,17 @@ def preview():
     return render_template('jobs/preview_failed.html')
 
 
-@app.route('/faq')
+@blueprint.route('/faq')
 def how():
     return render_template('faq.html', prompt='Frequently asked questions.')
 
 
-@app.route('/feed')
+@blueprint.route('/feed')
 def feed():
     return Response(rss.render_feed(), mimetype='text/xml')
 
 
-@app.route('/review/email/<token>', methods=['POST'])
+@blueprint.route('/review/email/<token>', methods=['POST'])
 def reviewed_via_email(token):
     sender = request.form['sender']
     reply = request.form['stripped-text'].strip()

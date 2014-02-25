@@ -206,7 +206,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'job_slug': self.slug,
             '_external': external
         }
-        return url_for('show', **kwargs)
+        return url_for('views.show', **kwargs)
 
     @property
     def tag_slugs(self):
@@ -221,7 +221,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'job_slug': self.slug,
             '_external': external
         }
-        return url_for('show', **kwargs)
+        return url_for('views.show', **kwargs)
 
     def edit_url(self, external=False):
         if not self.id:
@@ -231,7 +231,7 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
             'token': self.admin_token,
             '_external': external
         }
-        return url_for('edit', **kwargs)
+        return url_for('views.edit', **kwargs)
 
     @db.validates('job_type')
     def validate_job_type(self, key, job_type):

@@ -5,10 +5,7 @@ jobber.signals
 Contains signal registration.
 
 """
-from flask import current_app as app
-
 from jobber.core.models import Job
-from jobber.extensions import models_committed
 from jobber.core.search import Index
 
 
@@ -41,7 +38,7 @@ def find_model_actions(klass, op, actionmap=None):
     return [g.get(a) for a in actions if g.get(a)]
 
 
-def update_jobs_index(job):
+def update_jobs_index(app, job):
     """Updates the job index according to the published status of the job.
 
     :param job: A `Job` instance.
@@ -60,8 +57,7 @@ def update_jobs_index(job):
         app.logger.info(u"Job ({}) added to index.".format(job.id))
 
 
-@models_committed.connect
-def on_models_committed(sender, changes):
+def on_models_committed(app, changes):
     """Received when a list of models is committed to the database.
 
     :param sender: A `Flask` applications.
@@ -78,4 +74,10 @@ def on_models_committed(sender, changes):
             continue
 
         for action in actions:
-            action(model)
+            action(app, model)
+
+
+def register_signals(app):
+    """Helper for registering all signals during runtime."""
+    from jobber.extensions import models_committed
+    models_committed.connect(on_models_committed, app)

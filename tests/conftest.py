@@ -43,9 +43,6 @@ def app(request):
     ctx = app.app_context()
     ctx.push()
 
-    # Make sure views and signals are registered.
-    import jobber.views
-
     def teardown():
         ctx.pop()
 
