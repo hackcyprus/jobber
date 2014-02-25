@@ -15,7 +15,6 @@ from jobber import rss
 from jobber.core.models import Job, EmailReviewToken
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
-from jobber.core.utils import now
 from jobber.extensions import db
 from jobber.conf import settings
 from jobber.functions import send_instructory_email
@@ -206,27 +205,28 @@ def reviewed_via_email(token):
                         .format(sender, token))
         abort(404)
 
-    token = EmailReviewToken.query.filter_by(token=token).first()
     if reply != 'ok':
         app.logger.info("Bad reply, aborting review.")
         abort(404)
 
-    if not token:
-        app.logger.info("Unknown token {}, aborting review.".format(token))
+    token_model = EmailReviewToken.query.filter_by(token=token).first()
+    if not token_model:
+        app.logger.info("Unknown token {}, aborting review."
+                        .format(token))
         abort(404)
 
-    if token.used:
-        app.logger.info("Token {} is already used, aborting review.".format(token))
+    if token_model.used:
+        app.logger.info("Token {} is already used, aborting review."
+                        .format(token))
         abort(404)
 
-    token.used = True
-    token.used_at = now()
-    job = token.job
+    token_model.use()
+    job = token_model.job
     job.published = True
 
     db.session.commit()
 
     app.logger.info("Reviewed job ({}) via email with token {}."
-                    .format(job.id, token.token))
+                    .format(job.id, token))
 
     return 'okay', 200

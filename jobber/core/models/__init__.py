@@ -392,3 +392,7 @@ class EmailReviewToken(BaseModel):
         if self.token is None:
             self.token = uuid.uuid4().hex[:10]
         super(EmailReviewToken, self).__init__(*args, **kwargs)
+
+    def use(self):
+        self.used = True
+        self.used_at = now()
