@@ -41,10 +41,8 @@ def app(request):
         'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI,
         'SEARCH_INDEX_NAME': TEST_SEARCH_INDEX_NAME
     }
-    app = create_app(__name__, settings_override)
 
-    # Create test index.
-    Index.create(Schema)
+    app = create_app(__name__, settings_override)
 
     # By default, all tests are run without signals for performance. If a
     # test requires signalling support then it has to require the `signals`
@@ -115,6 +113,12 @@ def session(db, monkeypatch, request):
 @pytest.fixture(scope='function')
 def signals(session, request):
     register_signals()
+
+    # Since searching can only be done via signals in the app, we create the
+    # search index here. It's a quick and easy hack. Note that this will recreate
+    # the index everytime so we get a blank index for each test.
+    Index.create(Schema)
+
     def teardown():
         deregister_signals()
     request.addfinalizer(teardown)

@@ -7,9 +7,12 @@ Integration tests for the view layer.
 
 """
 from random import choice
+
 import pytest
+
 from jobber.core.models import Location, Company, Job, EmailReviewToken
 from jobber.conf import settings
+from jobber.core.search import Index
 
 
 @pytest.fixture(scope='function')
@@ -24,8 +27,8 @@ def company():
 
 @pytest.fixture(scope='function')
 def job(company, location):
-    return Job(title='testfoo',
-               description='testfoo',
+    return Job(title=u'testfoo',
+               description=u'testfoo',
                contact_method=1,
                remote_work=False,
                company=company,
@@ -42,8 +45,14 @@ def token(job):
 
 class TestEmailReview(object):
 
-    def test_successful_review(self, client, session, job, token):
-        session.add(job)
+    def search(self, query):
+        index = Index()
+        return index.search(query)
+
+    def test_successful_review(self, client, session, signals, job, token):
+        # Make sure the index is empty before running the test.
+        assert len(self.search(job.title)) == 0
+
         session.add(token)
         session.commit()
 
@@ -57,9 +66,9 @@ class TestEmailReview(object):
         assert response.status_code == 200
         assert session.query(Job).get(job.id).published
         assert session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 1
 
-    def test_unknown_token(self, client, session, job, token):
-        session.add(job)
+    def test_unknown_token(self, client, session, signals, job, token):
         session.add(token)
         session.commit()
 
@@ -72,13 +81,11 @@ class TestEmailReview(object):
         assert response.status_code == 404
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 0
 
-    def test_already_used_token(self, client, session, job, token):
-        session.add(job)
+    def test_already_used_token(self, client, session, signals, job, token):
         session.add(token)
-
         token.use()
-
         session.commit()
 
         url = "/review/email/{}".format(token.token)
@@ -90,9 +97,9 @@ class TestEmailReview(object):
         assert response.status_code == 404
         assert not session.query(Job).get(job.id).published
         assert session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 0
 
-    def test_unauthorized_email_reviewer(self, client, session, job, token):
-        session.add(job)
+    def test_unauthorized_email_reviewer(self, client, session, signals, job, token):
         session.add(token)
         session.commit()
 
@@ -105,9 +112,9 @@ class TestEmailReview(object):
         assert response.status_code == 404
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 0
 
-    def test_bad_email_content(self, client, session, job, token):
-        session.add(job)
+    def test_bad_email_content(self, client, session, signals, job, token):
         session.add(token)
         session.commit()
 
@@ -120,3 +127,4 @@ class TestEmailReview(object):
         assert response.status_code == 404
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 0
