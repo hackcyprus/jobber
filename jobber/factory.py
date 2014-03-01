@@ -13,8 +13,8 @@ from logging.handlers import SysLogHandler
 from flask import Flask
 
 from jobber.conf import settings
-from jobber.extensions import db
 from jobber.core.email import mail
+from jobber.database import db
 from jobber.views import blueprint
 from jobber.signals import register_signals
 
@@ -28,6 +28,7 @@ def create_app(package_name, settings_override=None):
                 template_folder=settings.TEMPLATES_FOLDER)
 
     configure_settings(app, override=settings_override)
+    configure_database(app)
     configure_blueprints(app, DEFAULT_BLUEPRINTS)
     configure_signals(app)
     configure_logging(app)
@@ -39,7 +40,7 @@ def create_app(package_name, settings_override=None):
 def configure_settings(app, override=None):
     """Configures settings and settings overrides.
 
-    :param app: A `Flask` applications.
+    :param app: A `Flask` application.
     :param override: Optional settings overrides.
 
     """
@@ -49,10 +50,19 @@ def configure_settings(app, override=None):
     return app
 
 
+def configure_database(app):
+    """Configures the database.
+
+    :param app: A `Flask` application.
+
+    """
+    db.init_app(app)
+
+
 def configure_blueprints(app, blueprints):
     """Install all blueprints on the given `app`.
 
-    :param app: A `Flask` applications.
+    :param app: A `Flask` application.
     :param override: A list of `Blueprint` instances.
 
     """
@@ -63,7 +73,7 @@ def configure_blueprints(app, blueprints):
 def configure_signals(app):
     """Install all signals on the given `app`.
 
-    :param app: A `Flask` applications.
+    :param app: A `Flask` application.
 
     """
     register_signals(app)
@@ -103,5 +113,4 @@ def configure_extensions(app):
     :param app: A `Flask` application.
 
     """
-    db.init_app(app)
     mail.init_app(app)

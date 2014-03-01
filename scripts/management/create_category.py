@@ -13,11 +13,11 @@ from docopt import docopt
 from env import path_setup
 path_setup()
 
-from jobber.script import run, green
+from jobber.script import run
 from jobber.core.models import Category
 
 
-def main(name, session):
+def main(name, session, app):
     category = Category(name=name)
     session.add(category)
 

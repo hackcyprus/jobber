@@ -18,7 +18,7 @@ path_setup()
 
 from jobber.conf import settings
 from jobber.factory import create_app
-from jobber.extensions import db as _db
+from jobber.database import db as _db
 from jobber.script import blue
 
 
@@ -66,8 +66,6 @@ def db(app, request):
         os.unlink(TESTDB_PATH)
 
     def teardown():
-        print blue('\nDropping all tables from test database.')
-        _db.drop_all()
         print blue('Deleting test database.')
         os.unlink(TESTDB_PATH)
 
@@ -79,17 +77,18 @@ def db(app, request):
 
 
 @pytest.fixture(scope='function')
-def session(db, request):
+def session(db, monkeypatch, request):
     """Starts a new database session within a transaction for a test."""
+    from sqlalchemy.orm import sessionmaker, scoped_session
+
     connection = db.engine.connect()
     transaction = connection.begin()
 
-    options = dict(bind=connection, binds={})
-    session = db.create_scoped_session(options=options)
+    Session = sessionmaker(bind=connection)
+    session = scoped_session(Session)
 
-    # Replace the session used by `Flask-SQLAlchemy` with the one we created
-    # so it can be used by the models.
-    db.session = session
+    # We need to replace the session used by our database wrapper with...
+    monkeypatch.setattr(db, 'session', session)
 
     def teardown():
         # We make sure to rollback and close the session after a test is

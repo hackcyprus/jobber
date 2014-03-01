@@ -14,11 +14,11 @@ from docopt import docopt
 from env import path_setup
 path_setup()
 
-from jobber.script import run, green
+from jobber.script import run
 from jobber.core.models import Location
 
 
-def main(city, country_code, session):
+def main(city, country_code, session, app):
     location = Location(city=city, country_code=country_code)
     session.add(location)
 

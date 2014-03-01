@@ -16,7 +16,7 @@ from jobber import rss
 from jobber.core.models import Job, EmailReviewToken
 from jobber.core.search import Index
 from jobber.core.forms import JobForm
-from jobber.extensions import db
+from jobber.database import db
 from jobber.conf import settings
 from jobber.functions import send_instructory_email
 from jobber.view_helpers import (get_location_context,
@@ -59,7 +59,9 @@ def inject_swag():
 @blueprint.route('/search/')
 @blueprint.route('/')
 def index():
-    query = Job.query.filter_by(published=True).order_by(Job.created.desc())
+    query = db.session.query(Job)\
+              .filter_by(published=True)\
+              .order_by(Job.created.desc())
     return render_template('index.html', jobs=query.all())
 
 
@@ -69,7 +71,7 @@ def search(query):
     jobs = []
 
     for hit in index.search(query, sort=('created', 'desc')):
-        job = Job.query.get(hit['id'])
+        job = db.session.query(Job).get(hit['id'])
         # Make sure that we don't accidentally show an unpublished job that
         # happened to be in the search index.
         if job and job.published:
@@ -120,7 +122,7 @@ def created():
 
 @blueprint.route('/edit/<int:job_id>/<token>', methods=['GET', 'POST'])
 def edit(job_id, token):
-    job = Job.query.filter_by(admin_token=token).first()
+    job = db.session.query(Job).filter_by(admin_token=token).first()
 
     if not (job and job_id == job.id):
         abort(404)
@@ -167,7 +169,9 @@ def edited():
 
 @blueprint.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
 def show(job_id, company_slug, job_slug):
-    job = Job.query.get_or_404(job_id)
+    job = db.session.query(Job).get(job_id)
+    if not job:
+        abort(404)
     if job.slug == job_slug and job.company.slug == company_slug:
         return render_template('jobs/show.html', job=job)
     abort(404)
@@ -213,7 +217,7 @@ def reviewed_via_email(token):
         app.logger.info("Bad reply, aborting review.")
         abort(404)
 
-    token_model = EmailReviewToken.query.filter_by(token=token).first()
+    token_model = db.session.query(EmailReviewToken).filter_by(token=token).first()
     if not token_model:
         app.logger.info("Unknown token {}, aborting review."
                         .format(token))

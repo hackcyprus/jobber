@@ -2,11 +2,18 @@
 jobber.signals
 ~~~~~~~~~~~~~~
 
-Contains signal registration.
+Signal registrations.
 
 """
+from sqlalchemy import event
+from blinker import signal
+
 from jobber.core.models import Job
 from jobber.core.search import Index
+from jobber.database import db
+
+
+sqlalchemy_flush = signal('sqlalchemy-flush')
 
 
 # A mapping that specifies what actions need to take place for which models and
@@ -15,69 +22,97 @@ from jobber.core.search import Index
 DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
-            'update_jobs_index',
+            'index',
         ],
         'update': [
-            'update_jobs_index',
+            'update_index',
+        ],
+        'delete': [
+            'deindex'
         ]
     }
 }
 
 
-def find_model_actions(klass, op, actionmap=None):
-    """Finds a list of actions to be performed for the given `klass` and `op`.
+def index(app, job):
+    index = Index()
+    document = job.to_document()
+    rv = index.add_document(document)
+    app.logger.info(u"Job ({}) added to index.".format(job.id))
+    return rv
 
-    :param klass: A model class.
-    :param op: A string describing the operation (insert, update, delete).
 
-    """
+def deindex(app, job):
+    index = Index()
+    document = job.to_document()
+    rv = index.delete_document(document['id'])
+    app.logger.info(u"Job ({}) deleted from index.".format(job.id))
+    return rv
+
+
+def update_index(app, job):
+    return index(app, job) if job.published else deindex(app, job)
+
+
+def eligible_actions(klass, operation, actionmap=None):
     g = globals()
     if actionmap is None:
         actionmap = DEFAULT_MODEL_ACTIONMAP
-    actions = actionmap.get(klass, {}).get(op, [])
+    actions = actionmap.get(klass, {}).get(operation, [])
     return [g.get(a) for a in actions if g.get(a)]
 
 
-def update_jobs_index(app, job):
-    """Updates the job index according to the published status of the job.
+def trigger_actions(instance, operation, app):
+    klass = instance.__class__
+    name = klass.__name__
+    actions = eligible_actions(klass, operation)
+    if not actions:
+        app.logger.debug(
+            u"No actions found for ({}, {})."
+            .format(name, operation)
+        )
+        return
 
-    :param job: A `Job` instance.
-
-    """
-    index = Index()
-    document = job.to_document()
-
-    if not job.published:
-        app.logger.info(u"Job ({}) is unpublished, deleting from index.".format(job.id))
-        index.delete_document(document['id'])
-        app.logger.info(u"Job ({}) deleted from index.".format(job.id))
-    else:
-        app.logger.info(u"Job ({}) is published, adding to index.".format(job.id))
-        index.add_document(document)
-        app.logger.info(u"Job ({}) added to index.".format(job.id))
-
-
-def on_models_committed(app, changes):
-    """Received when a list of models is committed to the database.
-
-    :param sender: A `Flask` applications.
-    :param changes: A list of `(model, operation)` tuples.
-
-    """
-    app.logger.debug('Model commit signal called.')
-    for model, op in changes:
-        klass = model.__class__
-        actions = find_model_actions(klass, op)
-
-        if not actions:
-            app.logger.debug(u'No actions found for ({}, {}).'.format(klass, op))
-            continue
-
+    def prettyprint(actions):
+        rv = []
         for action in actions:
-            action(app, model)
+            printed = str(action)
+            if hasattr(action, '__name__'):
+                printed = action.__name__ + '()'
+            rv.append(printed)
+        return ','.join(rv)
+
+    app.logger.debug(
+        "Found eligibe actions for ({}, {}): [{}]."
+        .format(name, operation, prettyprint(actions))
+    )
+
+    for action in actions:
+        action(app, instance)
+
+
+def on_flush(app, operations):
+    for instance, operation in operations:
+        trigger_actions(instance, operation, app)
 
 
 def register_signals(app):
-    """Helper for registering all signals during runtime."""
-    from jobber.extensions import models_committed
-    models_committed.connect(on_models_committed, app)
+    """Helper for registering all signals during runtime. Since `Flask` uses
+    `blinker` for signal support we adapt ORM events and emit `blinker` events.
+
+    """
+    # Connect `blinker` signals to handler methods.
+    sqlalchemy_flush.connect(on_flush, sender=app)
+
+    # Connect `SQLAlchemy` ORM events to adapter methods.
+    def on_flush_adapter(session, context):
+        operations = []
+        for i in session.new:
+            operations.append((i, 'insert'))
+        for i in session.dirty:
+            operations.append((i, 'update'))
+        for i in session.deleted:
+            operations.append((i, 'delete'))
+        sqlalchemy_flush.send(app, operations=operations)
+
+    event.listen(db.session, 'after_flush', on_flush_adapter)
