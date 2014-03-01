@@ -69,7 +69,7 @@ class SQLAlchemy(object):
         if not engine:
             engine = self._create_engine()
 
-        factory = sessionmaker(autocommit=False, autoflush=True, bind=engine)
+        factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
         # Returning a `scoped_session` takes care of threading issues as each
         # thread will get a local session.
