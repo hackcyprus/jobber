@@ -5,6 +5,8 @@ Usage:
     backup.py
 
 """
+import logging
+
 from docopt import docopt
 from dropbox.client import DropboxClient
 from dropbox.rest import ErrorResponse
@@ -17,8 +19,9 @@ from jobber.core.utils import now
 from jobber.conf import settings
 from jobber.factory import create_app
 
-# ugh, I hate having to create an app just to log things.
+
 app = create_app(__name__)
+logger = logging.getLogger('jobber')
 
 
 def main(session):
@@ -30,16 +33,16 @@ def main(session):
     env = 'production' if not settings.DEBUG else 'dev'
     filename = 'backup.{}.{}.db'.format(now().format('YYYYMMDDHHmm'), env)
 
-    app.logger.info('Backup started for {} with filename {}.'.format(dbpath, filename))
+    logger.info('Backup started for {} with filename {}.'.format(dbpath, filename))
     with open(dbpath) as db:
         try:
             response = dropbox.put_file(filename, db)
             rev = response['rev']
-            app.logger.info("Backup complete with revision id {}.".format(rev))
+            logger.info("Backup complete with revision id {}.".format(rev))
         except ErrorResponse as err:
             code = err.status
             msg = err.error_msg
-            app.logger.error("Backup failed with code {} message '{}'.".format(code, msg))
+            logger.error("Backup failed with code {} message '{}'.".format(code, msg))
 
 
 if __name__ == '__main__':

@@ -29,8 +29,8 @@ def create_app(package_name, settings_override=None):
 
     configure_settings(app, override=settings_override)
     configure_database(app)
-    configure_blueprints(app, DEFAULT_BLUEPRINTS)
     configure_signals(app)
+    configure_blueprints(app, DEFAULT_BLUEPRINTS)
     configure_logging(app)
     configure_extensions(app)
 
@@ -76,7 +76,7 @@ def configure_signals(app):
     :param app: A `Flask` application.
 
     """
-    register_signals(app)
+    register_signals()
 
 
 def configure_logging(app):

@@ -6,9 +6,8 @@ Shared functions.
 
 """
 import os
+import logging
 from datetime import timedelta
-
-from flask import current_app as app
 
 from jobber.conf import settings
 from jobber.core.email import send_email_template
@@ -18,6 +17,9 @@ from jobber.vendor.html2text import html2text
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
+
+
+logger = logging.getLogger('jobber')
 
 
 def send_instructory_email(job):
@@ -31,7 +33,7 @@ def send_instructory_email(job):
         'job': job,
         'default_sender': DEFAULT_SENDER
     }
-    app.logger.info(u"Sending instructory email to '{}' "
+    logger.info(u"Sending instructory email to '{}' "
                     "for job listing ({}).".format(recipient, job.id))
     send_email_template('instructory', context, [recipient])
 
@@ -61,7 +63,7 @@ def send_admin_review_email(job, sender=None):
     if sender is None:
         sender = DEFAULT_SENDER
 
-    app.logger.info(u"Sending admin review email for job listing ({}).".format(job.id))
+    logger.info(u"Sending admin review email for job listing ({}).".format(job.id))
     send_email_template('review', context, [recipient], sender=sender)
 
 
@@ -77,7 +79,7 @@ def send_confirmation_email(job):
         'job': job,
         'default_sender': DEFAULT_SENDER
     }
-    app.logger.info(u"Sending confirmation email to '{}' "
+    logger.info(u"Sending confirmation email to '{}' "
                     "for job listing ({}).".format(recipient, job.id))
     send_email_template('confirmation', context, [recipient])
 

@@ -5,12 +5,12 @@ jobber.views
 View declarations.
 
 """
+import logging
 from random import choice
 
 from flask import Blueprint
 from flask import render_template, abort, redirect,  Response
 from flask import url_for, session, request
-from flask import current_app as app
 
 from jobber import rss
 from jobber.core.models import Job, EmailReviewToken
@@ -44,6 +44,9 @@ EXAMPLE_POSITIONS = [
     u'c#',
     u'.NET developer'
 ]
+
+
+logger = logging.getLogger('jobber')
 
 
 blueprint = Blueprint('views', __name__)
@@ -97,7 +100,7 @@ def create():
         send_instructory_email(job)
         send_review_email(job, review_token.token)
 
-        app.logger.info("Job ({}) was successfully created.".format(job.id))
+        logger.info("Job ({}) was successfully created.".format(job.id))
 
         session['created_email'] = job.recruiter_email
         return redirect(url_for('views.created'))
@@ -143,7 +146,7 @@ def edit(job_id, token):
 
         send_review_email(job, review_token.token)
 
-        app.logger.info("Job ({}) was successfully edited.".format(job.id))
+        logger.info("Job ({}) was successfully edited.".format(job.id))
 
         session['edited_email'] = job.recruiter_email
         return redirect(url_for('views.edited'))
@@ -205,26 +208,26 @@ def reviewed_via_email(token):
     sender = request.form['sender']
     reply = request.form['stripped-text'].strip()
 
-    app.logger.info("Received email review request with token {} and reply '{}'."
+    logger.info("Received email review request with token {} and reply '{}'."
                     .format(token, reply))
 
     if sender not in settings.EMAIL_REVIEWERS:
-        app.logger.info("Unauthorized email reviewer with email '{}' and token {}!"
+        logger.info("Unauthorized email reviewer with email '{}' and token {}!"
                         .format(sender, token))
         abort(404)
 
     if reply != 'ok':
-        app.logger.info("Bad reply, aborting review.")
+        logger.info("Bad reply, aborting review.")
         abort(404)
 
     token_model = db.session.query(EmailReviewToken).filter_by(token=token).first()
     if not token_model:
-        app.logger.info("Unknown token {}, aborting review."
+        logger.info("Unknown token {}, aborting review."
                         .format(token))
         abort(404)
 
     if token_model.used:
-        app.logger.info("Token {} is already used, aborting review."
+        logger.info("Token {} is already used, aborting review."
                         .format(token))
         abort(404)
 
@@ -234,7 +237,7 @@ def reviewed_via_email(token):
 
     db.session.commit()
 
-    app.logger.info("Reviewed job ({}) via email with token {}."
+    logger.info("Reviewed job ({}) via email with token {}."
                     .format(job.id, token))
 
     return 'okay', 200

@@ -5,12 +5,17 @@ jobber.signals
 Signal registrations.
 
 """
+import logging
+
 from sqlalchemy import event
 from blinker import signal
 
 from jobber.core.models import Job
 from jobber.core.search import Index
 from jobber.database import db
+
+
+logger = logging.getLogger('jobber')
 
 
 sqlalchemy_flush = signal('sqlalchemy-flush')
@@ -34,24 +39,24 @@ DEFAULT_MODEL_ACTIONMAP = {
 }
 
 
-def index(app, job):
+def index(job):
     index = Index()
     document = job.to_document()
     rv = index.add_document(document)
-    app.logger.info(u"Job ({}) added to index.".format(job.id))
+    logger.info(u"Job ({}) added to index.".format(job.id))
     return rv
 
 
-def deindex(app, job):
+def deindex(job):
     index = Index()
     document = job.to_document()
     rv = index.delete_document(document['id'])
-    app.logger.info(u"Job ({}) deleted from index.".format(job.id))
+    logger.info(u"Job ({}) deleted from index.".format(job.id))
     return rv
 
 
-def update_index(app, job):
-    return index(app, job) if job.published else deindex(app, job)
+def update_index(job):
+    return index(job) if job.published else deindex(job)
 
 
 def eligible_actions(klass, operation, actionmap=None):
@@ -62,12 +67,12 @@ def eligible_actions(klass, operation, actionmap=None):
     return [g.get(a) for a in actions if g.get(a)]
 
 
-def trigger_actions(instance, operation, app):
+def trigger_actions(instance, operation):
     klass = instance.__class__
     name = klass.__name__
     actions = eligible_actions(klass, operation)
     if not actions:
-        app.logger.debug(
+        logger.debug(
             u"No actions found for ({}, {})."
             .format(name, operation)
         )
@@ -82,37 +87,44 @@ def trigger_actions(instance, operation, app):
             rv.append(printed)
         return ','.join(rv)
 
-    app.logger.debug(
+    logger.debug(
         "Found eligibe actions for ({}, {}): [{}]."
         .format(name, operation, prettyprint(actions))
     )
 
     for action in actions:
-        action(app, instance)
+        action(instance)
 
 
-def on_flush(app, operations):
+def on_flush(operations):
     for instance, operation in operations:
-        trigger_actions(instance, operation, app)
+        trigger_actions(instance, operation)
 
 
-def register_signals(app):
+def on_flush_adapter(session, context):
+    operations = []
+    for i in session.new:
+        operations.append((i, 'insert'))
+    for i in session.dirty:
+        operations.append((i, 'update'))
+    for i in session.deleted:
+        operations.append((i, 'delete'))
+    sqlalchemy_flush.send(session, operations=operations)
+
+
+def register_signals():
     """Helper for registering all signals during runtime. Since `Flask` uses
     `blinker` for signal support we adapt ORM events and emit `blinker` events.
 
     """
     # Connect `blinker` signals to handler methods.
-    sqlalchemy_flush.connect(on_flush, sender=app)
+    sqlalchemy_flush.connect(on_flush, sender=db.session)
 
     # Connect `SQLAlchemy` ORM events to adapter methods.
-    def on_flush_adapter(session, context):
-        operations = []
-        for i in session.new:
-            operations.append((i, 'insert'))
-        for i in session.dirty:
-            operations.append((i, 'update'))
-        for i in session.deleted:
-            operations.append((i, 'delete'))
-        sqlalchemy_flush.send(app, operations=operations)
-
     event.listen(db.session, 'after_flush', on_flush_adapter)
+
+
+def deregister_signals():
+    """Helper for deregistering all signals at runtime. Helpful during tests."""
+    event.listen(db.session, 'after_flush', on_flush_adapter)
+    sqlalchemy_flush.disconnect(on_flush, sender=db.session)
