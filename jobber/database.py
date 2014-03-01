@@ -1,5 +1,37 @@
+import functools
+from threading import Lock
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+
+def threadsafe(fn):
+    """Makes the execution of `fn` thread-safe."""
+    lock = Lock()
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        lock.acquire()
+        try:
+            return fn(self, *args, **kwargs)
+        finally:
+            lock.release()
+    return wrapper
+
+
+def memoize(fn):
+    """Remembers the return value of `fn` for the given `args` and `kwargs`. If
+    `fn` is called again with the same combination of `args` and `kwargs` no
+    computation takes place.
+
+    """
+    memo = {}
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        key = fn.__name__ + str(args) + str(kwargs)
+        if key not in memo:
+            memo[key] = fn(self, *args, **kwargs)
+        return memo[key]
+    return wrapper
 
 
 class SQLAlchemy(object):
@@ -15,25 +47,25 @@ class SQLAlchemy(object):
     )
 
     @property
+    @memoize
+    @threadsafe
     def engine(self):
-        if not hasattr(self, '_engine'):
-            self._engine = self.create_engine()
-        return self._engine
+        return self.create_engine()
 
     @property
+    @memoize
     def session(self):
         engine = self.engine
         factory = sessionmaker(autocommit=False, autoflush=True, bind=engine)
+        # Returning a `scoped_session` takes care of threading issues as each
+        # thread will get a local session.
         return scoped_session(factory)
 
     def init_app(self, app):
         self.configure_defaults(app)
 
         # Assumming Flask 0.9 and later
-        if hasattr(app, 'teardown_appcontext'):
-            teardown = app.teardown_appcontext
-
-        @teardown
+        @app.teardown_appcontext
         def remove_session(resp_or_exc):
             should_commit = app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN']
             if should_commit and resp_or_exc is None:
