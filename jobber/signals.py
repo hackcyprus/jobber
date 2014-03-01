@@ -96,7 +96,7 @@ def trigger_actions(instance, operation):
         action(instance)
 
 
-def on_flush(operations):
+def on_flush(sender, operations):
     for instance, operation in operations:
         trigger_actions(instance, operation)
 
@@ -118,7 +118,7 @@ def register_signals():
 
     """
     # Connect `blinker` signals to handler methods.
-    sqlalchemy_flush.connect(on_flush, sender=db.session)
+    sqlalchemy_flush.connect(on_flush)
 
     # Connect `SQLAlchemy` ORM events to adapter methods.
     event.listen(db.session, 'after_flush', on_flush_adapter)
@@ -126,5 +126,5 @@ def register_signals():
 
 def deregister_signals():
     """Helper for deregistering all signals at runtime. Helpful during tests."""
-    event.listen(db.session, 'after_flush', on_flush_adapter)
-    sqlalchemy_flush.disconnect(on_flush, sender=db.session)
+    event.remove(db.session, 'after_flush', on_flush_adapter)
+    sqlalchemy_flush.disconnect(on_flush)
