@@ -18,7 +18,7 @@ from jobber.core.models import Job
 from jobber.core.search import Index
 
 
-def main(query, session):
+def main(query, session, app):
     if not Index.exists():
         die('Search index does not exist!')
 
@@ -27,7 +27,7 @@ def main(query, session):
 
     index = Index()
     for result in index.search(query):
-        job = Job.query.get(result['id'])
+        job = session.query(Job).get(result['id'])
         print job
 
 

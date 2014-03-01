@@ -12,37 +12,37 @@ from docopt import docopt
 from env import path_setup
 path_setup()
 
-from jobber.script import run, green, die, prompt
+from jobber.script import run, die, prompt
 from jobber.core.models import Company, Job, Location
 
 
-def handle_location(id):
-    location = Location.query.get(id)
+def handle_location(id, session):
+    location = session.query(Location).get(id)
     if location is None:
         die("Location {} does not exist! Bye.".format(id))
     return location
 
 
-def handle_company(id):
-    company = Company.query.get(id)
+def handle_company(id, session):
+    company = session.query(Company).get(id)
     if company is None:
         die("Company {} does not exist! Bye.".format(id))
     return company
 
 
-def handle_job_type(value):
+def handle_job_type(value, session):
     return Job.JOB_TYPES.inverse(value)
 
 
-def handle_contact_method(value):
+def handle_contact_method(value, session):
     return Job.CONTACT_METHODS.inverse(value)
 
 
-def handle_remote_work(value):
+def handle_remote_work(value, session):
     return Job.REMOTE_WORK_OPTIONS.inverse(value)
 
 
-def pick_contact_field(value):
+def pick_contact_field(value, session):
     if value == 1:
         return 'contact_url'
     elif value == 2:
@@ -89,7 +89,7 @@ field_schema = {
     }
 }
 
-def main(session):
+def main(session, app):
     kwargs = dict()
     next = 'title'
 
@@ -99,7 +99,7 @@ def main(session):
         handler = field.get('handler')
         value = prompt(message)
         if handler:
-            value = handler(value)
+            value = handler(value, session)
         kwargs[next] = value
         next = field.get('next')
         if hasattr(next, '__call__'):

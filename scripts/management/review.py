@@ -63,8 +63,8 @@ def make_summary(job):
     })
 
 
-def main(job_id, session):
-    job = Job.query.get(job_id)
+def main(job_id, session, app):
+    job = session.query(Job).get(job_id)
 
     if not job:
         die("Job ({}) does not exist.".format(job_id))

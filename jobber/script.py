@@ -7,7 +7,7 @@ Script utilities.
 """
 import sys
 from jobber.factory import create_app
-from jobber.extensions import db
+from jobber.database import db
 
 
 def run(main, *args):
@@ -19,14 +19,10 @@ def run(main, *args):
     """
     app = create_app(__name__)
     with app.app_context():
-        # Register all signals and views before running the script. Hackish.
-        import jobber.signals
-        import jobber.views
-
         # Create a new session for this script and commit/rollback accordingly.
         session = db.session
         try:
-            args += (session,)
+            args += (session, app)
             main(*args)
             session.commit()
         except:
