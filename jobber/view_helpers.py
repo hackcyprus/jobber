@@ -10,6 +10,7 @@ from jobber.core.forms import JobForm
 from jobber.core.utils import insert_email_token
 from jobber.functions import send_admin_review_email
 from jobber.conf import settings
+from jobber.database import db
 
 
 REVIEWER_ROBOT = settings.MAIL_REVIEWER_ROBOT
@@ -19,14 +20,14 @@ def get_location_context():
     """Returns location data for the create/edit form."""
     return [
         dict(id=location.id, city=location.city, country_code=location.country_code)
-        for location in Location.query.all()
+        for location in db.session.query(Location).all()
     ]
 
 
 def get_tag_context():
     """Returns tags data for the create/edit form."""
     return [
-        dict(slug=tag.slug, tag=tag.tag) for tag in Tag.query.all()
+        dict(slug=tag.slug, tag=tag.tag) for tag in db.session.query(Tag).all()
     ]
 
 
@@ -65,7 +66,7 @@ def populate_company(job, form_data):
         return
 
     if company_id:
-        company = Company.query.get(company_id)
+        company = db.session.query(Company).get(company_id)
 
     if not company:
         name = form_data['company__name']
@@ -89,7 +90,7 @@ def populate_location(job, form_data):
         return
 
     if location_id:
-        location = Location.query.get(location_id)
+        location = db.session.query(Location).get(location_id)
 
     if not location:
         city = form_data['location__city']
