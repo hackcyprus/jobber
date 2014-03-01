@@ -64,27 +64,27 @@ def actionmap(monkeypatch):
     return test_actionmap
 
 
-def test_find_model_actions(app, actionmap):
+def test_eligible_actions(app, actionmap):
     from jobber import signals
 
-    actions = signals.find_model_actions(TestObject, 'insert')
+    actions = signals.eligible_actions(TestObject, 'insert')
     assert actions == [signals.on_insert_foo, signals.on_insert_bar]
 
-    actions = signals.find_model_actions(TestObject, 'update')
+    actions = signals.eligible_actions(TestObject, 'update')
     assert actions == [signals.on_update_baz]
 
-    actions = signals.find_model_actions(TestObject, 'delete')
+    actions = signals.eligible_actions(TestObject, 'delete')
     assert actions == []
 
-    actions = signals.find_model_actions(AnotherTestObject, 'insert')
+    actions = signals.eligible_actions(AnotherTestObject, 'insert')
     assert actions == []
 
 
-def test_on_models_committed(app, actionmap):
+def test_on_flush(app, actionmap):
     from jobber import signals
 
     changes = [(TestObject(), 'insert')]
-    signals.on_models_committed(app, changes)
+    signals.on_flush(app, changes)
 
     assert signals.on_insert_foo.called
     assert signals.on_insert_bar.called
