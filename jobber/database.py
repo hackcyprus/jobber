@@ -50,24 +50,44 @@ class SQLAlchemy(object):
         ('SQLALCHEMY_COMMIT_ON_TEARDOWN', False)
     )
 
-    @property
-    def initialized(self):
-        return hasattr(self, 'app')
+    def __init__(self):
+        self.engine = None
+        self.session = None
 
-    @property
-    @memoize
-    @threadsafe
-    def engine(self):
-        return self.create_engine()
+    def _ensure_initialized(self):
+        if not hasattr(self, 'app'):
+            raise NotInitialized(
+                'The `SQLAlchemy` wrapper is not initialized. Make sure you '
+                'call init_app() before any operations take place.'
+            )
 
-    @property
     @memoize
-    def session(self):
+    def _create_session(self):
+        self._ensure_initialized()
+
         engine = self.engine
+        if not engine:
+            engine = self._create_engine()
+
         factory = sessionmaker(autocommit=False, autoflush=True, bind=engine)
+
         # Returning a `scoped_session` takes care of threading issues as each
         # thread will get a local session.
         return scoped_session(factory)
+
+    @memoize
+    @threadsafe
+    def _create_engine(self):
+        self._ensure_initialized()
+
+        dburi = self.app.config['SQLALCHEMY_DATABASE_URI']
+        echo = self.app.config['SQLALCHEMY_ECHO']
+        options = {
+            'convert_unicode': True,
+            'echo': echo
+        }
+
+        return create_engine(dburi, **options)
 
     def init_app(self, app):
         self.configure_defaults(app)
@@ -82,26 +102,12 @@ class SQLAlchemy(object):
             return resp_or_exc
 
         self.app = app
+        self.engine = self._create_engine()
+        self.session = self._create_session()
 
     def configure_defaults(self, app):
         for key, value in self.DEFAULTS:
             app.config.setdefault(key, value)
-
-    def create_engine(self):
-        if not self.initialized:
-            raise NotInitialized(
-                'The `SQLAlchemy` wrapper is not initialized. Make sure you '
-                'call init_app() before any operations take place.'
-            )
-
-        dburi = self.app.config['SQLALCHEMY_DATABASE_URI']
-        echo = self.app.config['SQLALCHEMY_ECHO']
-        options = {
-            'convert_unicode': True,
-            'echo': echo
-        }
-
-        return create_engine(dburi, **options)
 
 
 db = SQLAlchemy()
