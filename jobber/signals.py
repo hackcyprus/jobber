@@ -72,10 +72,21 @@ def trigger_actions(instance, operation, app):
             .format(name, operation)
         )
         return
+
+    def prettyprint(actions):
+        rv = []
+        for action in actions:
+            printed = str(action)
+            if hasattr(action, '__name__'):
+                printed = action.__name__ + '()'
+            rv.append(printed)
+        return ','.join(rv)
+
     app.logger.debug(
         "Found eligibe actions for ({}, {}): [{}]."
-        .format(name, operation, ','.join(a.__name__+'()' for a in actions))
+        .format(name, operation, prettyprint(actions))
     )
+
     for action in actions:
         action(app, instance)
 
