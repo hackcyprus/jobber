@@ -80,13 +80,9 @@ def trigger_actions(instance, operation, app):
         action(app, instance)
 
 
-def on_flush(app, session):
-    for i in session.new:
-        trigger_actions(i, 'insert', app)
-    for i in session.dirty:
-        trigger_actions(i, 'update', app)
-    for i in session.deleted:
-        trigger_actions(i, 'delete', app)
+def on_flush(app, operations):
+    for instance, operation in operations:
+        trigger_actions(instance, operation, app)
 
 
 def register_signals(app):
@@ -99,5 +95,13 @@ def register_signals(app):
 
     # Connect `SQLAlchemy` ORM events to adapter methods.
     def on_flush_adapter(session, context):
-        sqlalchemy_flush.send(app, session=session)
+        operations = []
+        for i in session.new:
+            operations.append((i, 'insert'))
+        for i in session.dirty:
+            operations.append((i, 'update'))
+        for i in session.deleted:
+            operations.append((i, 'delete'))
+        sqlalchemy_flush.send(app, operations=operations)
+
     event.listen(db.session, 'after_flush', on_flush_adapter)
