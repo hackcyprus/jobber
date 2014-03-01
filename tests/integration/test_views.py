@@ -24,8 +24,7 @@ def company():
 
 @pytest.fixture(scope='function')
 def job(company, location):
-    return Job(id=1,
-               title='testfoo',
+    return Job(title='testfoo',
                description='testfoo',
                contact_method=1,
                remote_work=False,
@@ -56,8 +55,8 @@ class TestEmailReview(object):
         response = client.post(url, data=data)
 
         assert response.status_code == 200
-        assert Job.query.get(job.id).published
-        assert EmailReviewToken.query.get(token.id).used
+        assert session.query(Job).get(job.id).published
+        assert session.query(EmailReviewToken).get(token.id).used
 
     def test_unknown_token(self, client, session, job, token):
         session.add(job)
@@ -71,8 +70,8 @@ class TestEmailReview(object):
         }
         response = client.post(url, data=data)
         assert response.status_code == 404
-        assert not Job.query.get(job.id).published
-        assert not EmailReviewToken.query.get(token.id).used
+        assert not session.query(Job).get(job.id).published
+        assert not session.query(EmailReviewToken).get(token.id).used
 
     def test_already_used_token(self, client, session, job, token):
         session.add(job)
@@ -89,8 +88,8 @@ class TestEmailReview(object):
         }
         response = client.post(url, data=data)
         assert response.status_code == 404
-        assert not Job.query.get(job.id).published
-        assert EmailReviewToken.query.get(token.id).used
+        assert not session.query(Job).get(job.id).published
+        assert session.query(EmailReviewToken).get(token.id).used
 
     def test_unauthorized_email_reviewer(self, client, session, job, token):
         session.add(job)
@@ -104,8 +103,8 @@ class TestEmailReview(object):
         }
         response = client.post(url, data=data)
         assert response.status_code == 404
-        assert not Job.query.get(job.id).published
-        assert not EmailReviewToken.query.get(token.id).used
+        assert not session.query(Job).get(job.id).published
+        assert not session.query(EmailReviewToken).get(token.id).used
 
     def test_bad_email_content(self, client, session, job, token):
         session.add(job)
@@ -119,5 +118,5 @@ class TestEmailReview(object):
         }
         response = client.post(url, data=data)
         assert response.status_code == 404
-        assert not Job.query.get(job.id).published
-        assert not EmailReviewToken.query.get(token.id).used
+        assert not session.query(Job).get(job.id).published
+        assert not session.query(EmailReviewToken).get(token.id).used
