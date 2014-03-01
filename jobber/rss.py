@@ -7,6 +7,7 @@ Utilities for creating RSS2.0 feeds.
 """
 from feedgen.feed import FeedGenerator
 from jobber.core.models import Job
+from jobber.database import db
 
 
 # Feed properties.
@@ -31,7 +32,10 @@ def build_feed_generator():
 def render_feed(limit=DEFAULT_LIMIT):
     gen = build_feed_generator()
 
-    listings = Job.query.filter_by(published=True).order_by(Job.created).limit(limit).all()
+    listings = db.session.query(Job)\
+                 .filter_by(published=True)\
+                 .order_by(Job.created)\
+                 .limit(limit).all()
 
     for job in listings:
         url = job.url(external=True)

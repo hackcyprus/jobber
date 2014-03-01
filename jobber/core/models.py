@@ -17,6 +17,7 @@ from flask import url_for
 from jobber.core.search import SearchableMixin
 from jobber.core.utils import Mapping, slugify, now
 from jobber.core.utils import ensure_protocol, ArrowDateTime, strip_html
+from jobber.database import db
 
 
 Base = declarative_base()
@@ -375,7 +376,7 @@ class Tag(BaseModel, PrimaryKeySlugModelMixin):
     @classmethod
     def get_or_create(cls, tag):
         slug = slugify(tag)
-        instance = Tag.query.get(slug)
+        instance = db.session.query(Tag).get(slug)
         if instance is None:
             instance = Tag(tag=tag, slug=slug)
         return instance

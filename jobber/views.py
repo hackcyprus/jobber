@@ -169,10 +169,8 @@ def edited():
 
 @blueprint.route('/jobs/<int:job_id>/<company_slug>/<job_slug>')
 def show(job_id, company_slug, job_slug):
-    try:
-        job = db.session.query(Job).get(job_id)
-    except:
-        # TODO: proper exception catching
+    job = db.session.query(Job).get(job_id)
+    if not job:
         abort(404)
     if job.slug == job_slug and job.company.slug == company_slug:
         return render_template('jobs/show.html', job=job)
