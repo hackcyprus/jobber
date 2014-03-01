@@ -33,7 +33,7 @@ frontend world
     bind 0.0.0.0:80
     acl is_omega hdr(host) -i omega.jobs.hackcyprus.com
     redirect prefix http://jobs.hackcyprus.com if is_omega
-    use_backend web
+    default_backend web
 
 backend web
     balance roundrobin
