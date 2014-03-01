@@ -34,6 +34,10 @@ def memoize(fn):
     return wrapper
 
 
+class NotInitialized(Exception):
+    pass
+
+
 class SQLAlchemy(object):
 
     DEFAULTS = (
@@ -45,6 +49,10 @@ class SQLAlchemy(object):
         ('SQLALCHEMY_MAX_OVERFLOW', None),
         ('SQLALCHEMY_COMMIT_ON_TEARDOWN', False)
     )
+
+    @property
+    def initialized(self):
+        return hasattr(self, 'app')
 
     @property
     @memoize
@@ -80,14 +88,19 @@ class SQLAlchemy(object):
             app.config.setdefault(key, value)
 
     def create_engine(self):
-        if not hasattr(self, 'app'):
-            raise Exception('not initialized')
+        if not self.initialized:
+            raise NotInitialized(
+                'The `SQLAlchemy` wrapper is not initialized. Make sure you '
+                'call init_app() before any operations take place.'
+            )
+
         dburi = self.app.config['SQLALCHEMY_DATABASE_URI']
         echo = self.app.config['SQLALCHEMY_ECHO']
         options = {
             'convert_unicode': True,
             'echo': echo
         }
+
         return create_engine(dburi, **options)
 
 
