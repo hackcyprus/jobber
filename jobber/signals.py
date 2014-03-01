@@ -51,7 +51,7 @@ def deindex(app, job):
 
 
 def update_index(app, job):
-    return index(job) if job.published else deindex(job)
+    return index(app, job) if job.published else deindex(app, job)
 
 
 def eligible_actions(klass, operation, actionmap=None):
