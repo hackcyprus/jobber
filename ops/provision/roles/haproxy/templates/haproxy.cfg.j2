@@ -29,7 +29,13 @@ defaults
     timeout check           10s
     maxconn                 3000
 
-listen backend 0.0.0.0:80
+frontend world
+    bind 0.0.0.0:80
+    acl is_omega hdr(host) -i omega.jobs.hackcyprus.com
+    redirect prefix http://jobs.hackcyprus.com if is_omega
+    use_backend web
+
+backend web
     balance roundrobin
     server one localhost:8000
     server two localhost:8001
