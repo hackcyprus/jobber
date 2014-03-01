@@ -20,12 +20,15 @@ from jobber.conf import settings
 from jobber.factory import create_app
 from jobber.database import db as _db
 from jobber.script import blue
+from jobber.core.search import Index, Schema
+from jobber.signals import register_signals, deregister_signals
 
 
-TESTDB = 'test_jobber.db'
-TESTDB_PATH = "{}/data/{}".format(settings.ROOT, TESTDB)
-TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
+DATA_PATH = "{}/data".format(settings.ROOT)
 
+TEST_DATABASE_PATH = "{}/jobber_test.db".format(DATA_PATH)
+TEST_DATABASE_URI = 'sqlite:///' + TEST_DATABASE_PATH
+TEST_SEARCH_INDEX_NAME = "jobs_test"
 
 ALEMBIC_CONFIG = "{}/alembic.ini".format(settings.ROOT)
 
@@ -35,9 +38,18 @@ def app(request):
     """Session-wide test `Flask` application."""
     settings_override = {
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI
+        'SQLALCHEMY_DATABASE_URI': TEST_DATABASE_URI,
+        'SEARCH_INDEX_NAME': TEST_SEARCH_INDEX_NAME
     }
     app = create_app(__name__, settings_override)
+
+    # Create test index.
+    Index.create(Schema)
+
+    # By default, all tests are run without signals for performance. If a
+    # test requires signalling support then it has to require the `signals`
+    # fixture.
+    deregister_signals()
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -62,12 +74,12 @@ def db(app, request):
     print blue('\nInitializing test database.')
 
     # Make sure we delete any existing test database.
-    if os.path.exists(TESTDB_PATH):
-        os.unlink(TESTDB_PATH)
+    if os.path.exists(TEST_DATABASE_PATH):
+        os.unlink(TEST_DATABASE_PATH)
 
     def teardown():
         print blue('Deleting test database.')
-        os.unlink(TESTDB_PATH)
+        os.unlink(TEST_DATABASE_PATH)
 
     print blue('Applying migrations.')
     apply_migrations()
@@ -87,7 +99,6 @@ def session(db, monkeypatch, request):
     Session = sessionmaker(bind=connection)
     session = scoped_session(Session)
 
-    # We need to replace the session used by our database wrapper with...
     monkeypatch.setattr(db, 'session', session)
 
     def teardown():
@@ -99,6 +110,14 @@ def session(db, monkeypatch, request):
 
     request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture(scope='function')
+def signals(session, request):
+    register_signals()
+    def teardown():
+        deregister_signals()
+    request.addfinalizer(teardown)
 
 
 @pytest.fixture(scope='function')

@@ -89,17 +89,16 @@ class SearchableMixin(object):
 
 
 class Index(object):
-    name = 'jobs'
+    directory = settings.SEARCH_INDEX_DIRECTORY
+    name = settings.SEARCH_INDEX_NAME
 
     def __init__(self, *args, **kwargs):
-        directory = settings.SEARCH_INDEX_DIRECTORY
-        self.index = index.open_dir(directory, indexname=self.name)
+        self.index = index.open_dir(self.directory, indexname=self.name)
 
     @classmethod
     def exists(cls):
         """Checks if this index exists."""
-        directory = settings.SEARCH_INDEX_DIRECTORY
-        return index.exists_in(directory, indexname=cls.name)
+        return index.exists_in(cls.directory, indexname=cls.name)
 
     @classmethod
     def create(cls, schema):
@@ -108,8 +107,7 @@ class Index(object):
         :param schema: A `Schema` object.
 
         """
-        directory = settings.SEARCH_INDEX_DIRECTORY
-        index.create_in(directory, schema, indexname=cls.name)
+        index.create_in(cls.directory, schema, indexname=cls.name)
 
     def search(self, query, limit=None, sort=None):
         """Searches the index by parsing `query` and creating a `Query` object.
