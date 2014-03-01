@@ -27,7 +27,7 @@ sqlalchemy_flush = signal('sqlalchemy-flush')
 DEFAULT_MODEL_ACTIONMAP = {
     Job: {
         'insert': [
-            'index',
+            'update_index',
         ],
         'update': [
             'update_index',
