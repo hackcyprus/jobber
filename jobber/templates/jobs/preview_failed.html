@@ -1,6 +1,2 @@
-<div id="preview-failed" class='notice error'>
-    <h4>
-        <img src="/static/imgs/caution.png" />
-        An error occured when rendering the preview.
-    </h4>
-</div>
+{% from 'macros.html' import form_errors %}
+{{ form_errors(form) }}

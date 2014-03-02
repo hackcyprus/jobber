@@ -1,34 +1,26 @@
 {% extends "layout.html" %}
+{% from 'macros.html' import form_errors %}
 
 {% set hide_scream = True %}
 
 {% block content %}
   <div id="create-job" class="container clearfix">
     {% if token %}
-    <div class='notice'>
-      <h4>
-        <img src="/static/imgs/caution.png" />
-        You are in edit mode – any submitted edits will need a review.
-      </h4>
-    </div>
-    <h2>Edit job listing</h2>
-    <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}" novalidate parsley-validate>
-    {% else %}
-    <h2>Post a job listing</h2>
-    <form method="post" action="/create" novalidate parsley-validate>
-    {% endif %}
-      {% if form.errors %}
-      <div class="parsley-error-container">
-        <ul class="parsley-error-list">
-          {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-              {% for error in field_errors %}
-                  <li>{{ form[field_name].label }}: {{ error }}</li>
-              {% endfor %}
-          {% endfor %}
-        </ul>
+      <div class='notice'>
+        <h4>
+          <img src="/static/imgs/caution.png" />
+          You are in edit mode – any submitted edits will need a review.
+        </h4>
       </div>
-      {% endif %}
+      <h2>Edit job listing</h2>
+      <form method="post" action="/edit/{{ form.id._value() }}/{{ token }}"
+       novalidate parsley-validate>
+    {% else %}
+      <h2>Post a job listing</h2>
+      <form method="post" action="/create" novalidate parsley-validate>
+    {% endif %}
       {{ form.hidden_tag() }}
+      {{ form_errors(form) }}
       <fieldset>
         <h4>The basics</h4>
         <div class="field">

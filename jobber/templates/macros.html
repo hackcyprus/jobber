@@ -1,9 +1,23 @@
 {% macro tags(job) %}
-    {% if job.tags %}
-      <div class="tags">
-        {% for tag in job.tags %}
-          <a class="tag" href="/search/{{ tag.slug }}">{{ tag.tag }}</a>
+  {% if job.tags %}
+    <div class="tags">
+      {% for tag in job.tags %}
+        <a class="tag" href="/search/{{ tag.slug }}">{{ tag.tag }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro form_errors(form) %}
+  {% if form.errors %}
+    <div class="parsley-error-container">
+      <ul class="parsley-error-list">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
         {% endfor %}
-      </div>
-    {% endif %}
+      </ul>
+    </div>
+  {% endif %}
 {% endmacro %}

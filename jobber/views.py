@@ -190,7 +190,7 @@ def preview():
                                chromeless=True,
                                job=job)
 
-    return render_template('jobs/preview_failed.html')
+    return render_template('jobs/preview_failed.html', form=form)
 
 
 @blueprint.route('/faq')
