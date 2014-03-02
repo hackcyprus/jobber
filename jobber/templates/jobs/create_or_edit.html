@@ -37,6 +37,10 @@
       </fieldset>
       <fieldset>
         <h4>Where is the job based?</h4>
+        <p class="help-text">
+          We only support Cyprus, Greece and United Kingdom for now. If you can't find your city
+          then you can always add it by typing it in the selection box.
+        </p>
         <div class="field inline">
           {{ form.location__country_code(class_="large",
              **{"parsley-required": "required", "parsley-maxlength": "3", "parsley-trigger": "change"}) }}
