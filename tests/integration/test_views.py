@@ -9,6 +9,7 @@ Integration tests for the view layer.
 from random import choice
 
 import pytest
+from flask import url_for
 
 from jobber.core.models import Location, Company, Job, EmailReviewToken
 from jobber.conf import settings
@@ -41,6 +42,62 @@ def job(company, location):
 @pytest.fixture(scope='function')
 def token(job):
     return EmailReviewToken(job=job)
+
+
+class TestShowJob(object):
+
+    def test_show_okay(self, client, session, job):
+        job.published = True
+        session.add(job)
+        session.commit()
+
+        params = {
+            'job_id': job.id,
+            'company_slug': job.company.slug,
+            'job_slug': job.slug
+        }
+        url = url_for('views.show', **params)
+        response = client.get(url)
+        assert response.status_code == 200
+
+    def test_show_unpublished(self, client, session, job):
+        session.add(job)
+        session.commit()
+
+        params = {
+            'job_id': job.id,
+            'company_slug': job.company.slug,
+            'job_slug': job.slug
+        }
+        url = url_for('views.show', **params)
+        response = client.get(url)
+        assert response.status_code == 404
+
+    def test_show_not_matching_company(self, client, session, job):
+        session.add(job)
+        session.commit()
+
+        params = {
+            'job_id': job.id,
+            'company_slug': 'bogus',
+            'job_slug': job.slug
+        }
+        url = url_for('views.show', **params)
+        response = client.get(url)
+        assert response.status_code == 404
+
+    def test_show_not_matching_slug(self, client, session, job):
+        session.add(job)
+        session.commit()
+
+        params = {
+            'job_id': job.id,
+            'company_slug': job.company.slug,
+            'job_slug': 'bogus'
+        }
+        url = url_for('views.show', **params)
+        response = client.get(url)
+        assert response.status_code == 404
 
 
 class TestEmailReview(object):
