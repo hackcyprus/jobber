@@ -10,6 +10,7 @@ from random import choice
 
 import pytest
 from flask import url_for
+from mock import MagicMock
 
 from jobber.core.models import Location, Company, Job, EmailReviewToken
 from jobber.conf import settings
@@ -106,12 +107,15 @@ class TestEmailReview(object):
         index = Index()
         return index.search(query)
 
-    def test_successful_review(self, client, session, signals, job, token):
+    def test_successful_review(self, monkeypatch, client, session, signals, job, token):
         # Make sure the index is empty before running the test.
         assert len(self.search(job.title)) == 0
 
         session.add(token)
         session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
 
         url = "/review/email/{}".format(token.token)
         data = {
@@ -124,10 +128,14 @@ class TestEmailReview(object):
         assert session.query(Job).get(job.id).published
         assert session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 1
+        assert mock.called
 
-    def test_unknown_token(self, client, session, signals, job, token):
+    def test_unknown_token(self, monkeypatch, client, session, signals, job, token):
         session.add(token)
         session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
 
         url = "/review/email/{}1241".format(token.token)
         data = {
@@ -139,11 +147,15 @@ class TestEmailReview(object):
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
+        assert not mock.called
 
-    def test_already_used_token(self, client, session, signals, job, token):
+    def test_already_used_token(self, monkeypatch, client, session, signals, job, token):
         session.add(token)
         token.use()
         session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
 
         url = "/review/email/{}".format(token.token)
         data = {
@@ -155,10 +167,15 @@ class TestEmailReview(object):
         assert not session.query(Job).get(job.id).published
         assert session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
+        assert not mock.called
 
-    def test_unauthorized_email_reviewer(self, client, session, signals, job, token):
+    def test_unauthorized_email_reviewer(self, monkeypatch, client, session,
+                                         signals, job, token):
         session.add(token)
         session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
 
         url = "/review/email/{}".format(token.token)
         data = {
@@ -170,10 +187,15 @@ class TestEmailReview(object):
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
+        assert not mock.called
 
-    def test_bad_email_content(self, client, session, signals, job, token):
+    def test_bad_email_content(self, monkeypatch, client, session,
+                               signals, job, token):
         session.add(token)
         session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
 
         url = "/review/email/{}".format(token.token)
         data = {
@@ -185,3 +207,4 @@ class TestEmailReview(object):
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
+        assert not mock.called

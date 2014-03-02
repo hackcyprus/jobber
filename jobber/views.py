@@ -18,7 +18,7 @@ from jobber.core.search import Index
 from jobber.core.forms import JobForm
 from jobber.database import db
 from jobber.conf import settings
-from jobber.functions import send_instructory_email
+from jobber.functions import send_instructory_email, send_confirmation_email
 from jobber.view_helpers import (get_location_context,
                                  get_tag_context,
                                  populate_job,
@@ -215,11 +215,11 @@ def reviewed_via_email(token):
     reply = request.form['stripped-text'].strip()
 
     logger.info("Received email review request with token {} and reply '{}'."
-                    .format(token, reply))
+                .format(token, reply))
 
     if sender not in settings.EMAIL_REVIEWERS:
         logger.info("Unauthorized email reviewer with email '{}' and token {}!"
-                        .format(sender, token))
+                    .format(sender, token))
         abort(406)
 
     if reply != 'ok':
@@ -229,12 +229,12 @@ def reviewed_via_email(token):
     token_model = db.session.query(EmailReviewToken).filter_by(token=token).first()
     if not token_model:
         logger.info("Unknown token {}, aborting review."
-                        .format(token))
+                    .format(token))
         abort(406)
 
     if token_model.used:
         logger.info("Token {} is already used, aborting review."
-                        .format(token))
+                    .format(token))
         abort(406)
 
     token_model.use()
@@ -242,6 +242,8 @@ def reviewed_via_email(token):
     job.published = True
 
     db.session.commit()
+
+    send_confirmation_email(job)
 
     logger.info("Reviewed job ({}) via email with token {}."
                     .format(job.id, token))
