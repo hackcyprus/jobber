@@ -135,7 +135,7 @@ class TestEmailReview(object):
             'stripped-text': 'ok'
         }
         response = client.post(url, data=data)
-        assert response.status_code == 404
+        assert response.status_code == 406
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
@@ -151,7 +151,7 @@ class TestEmailReview(object):
             'stripped-text': 'ok'
         }
         response = client.post(url, data=data)
-        assert response.status_code == 404
+        assert response.status_code == 406
         assert not session.query(Job).get(job.id).published
         assert session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
@@ -166,7 +166,7 @@ class TestEmailReview(object):
             'stripped-text': 'ok'
         }
         response = client.post(url, data=data)
-        assert response.status_code == 404
+        assert response.status_code == 406
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
@@ -181,7 +181,7 @@ class TestEmailReview(object):
             'stripped-text': 'alalala'
         }
         response = client.post(url, data=data)
-        assert response.status_code == 404
+        assert response.status_code == 406
         assert not session.query(Job).get(job.id).published
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0

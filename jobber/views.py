@@ -205,6 +205,12 @@ def feed():
 
 @blueprint.route('/review/email/<token>', methods=['POST'])
 def reviewed_via_email(token):
+    """Returns a 200 if the review was successful, otherwise returns a 406 as
+    per Mailgun's documentation:
+
+    http://documentation.mailgun.com/user_manual.html#routes
+
+    """
     sender = request.form['sender']
     reply = request.form['stripped-text'].strip()
 
@@ -214,22 +220,22 @@ def reviewed_via_email(token):
     if sender not in settings.EMAIL_REVIEWERS:
         logger.info("Unauthorized email reviewer with email '{}' and token {}!"
                         .format(sender, token))
-        abort(404)
+        abort(406)
 
     if reply != 'ok':
         logger.info("Bad reply, aborting review.")
-        abort(404)
+        abort(406)
 
     token_model = db.session.query(EmailReviewToken).filter_by(token=token).first()
     if not token_model:
         logger.info("Unknown token {}, aborting review."
                         .format(token))
-        abort(404)
+        abort(406)
 
     if token_model.used:
         logger.info("Token {} is already used, aborting review."
                         .format(token))
-        abort(404)
+        abort(406)
 
     token_model.use()
     job = token_model.job
