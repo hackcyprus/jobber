@@ -63,7 +63,7 @@ def make_summary(job):
     })
 
 
-def main(job_id, session, app):
+def main(job_id, session):
     job = session.query(Job).get(job_id)
 
     if not job:

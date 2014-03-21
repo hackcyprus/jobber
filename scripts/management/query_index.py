@@ -18,7 +18,7 @@ from jobber.core.models import Job
 from jobber.core.search import Index
 
 
-def main(query, session, app):
+def main(query, session):
     if not Index.exists():
         die('Search index does not exist!')
 

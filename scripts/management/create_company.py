@@ -17,7 +17,7 @@ from jobber.script import run
 from jobber.core.models import Company
 
 
-def main(name, session, app):
+def main(name, session):
     company = Company(name=name)
     session.add(company)
 

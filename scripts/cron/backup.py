@@ -17,10 +17,8 @@ path_setup()
 from jobber.script import run
 from jobber.core.utils import now
 from jobber.conf import settings
-from jobber.factory import create_app
 
 
-app = create_app(__name__)
 logger = logging.getLogger('jobber')
 
 
