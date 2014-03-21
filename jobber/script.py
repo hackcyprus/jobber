@@ -22,7 +22,7 @@ def run(main, *args):
         # Create a new session for this script and commit/rollback accordingly.
         session = db.session
         try:
-            args += (session, app)
+            args += (session,)
             main(*args)
             session.commit()
         except:
