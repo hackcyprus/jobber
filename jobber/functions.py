@@ -21,6 +21,7 @@ from jobber.vendor.html2text import html2text
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
 ZAPIER_WEBHOOK_URL = settings.ZAPIER_WEBHOOK_URL
+DEFAULT_SOCIAL_SERVICES = settings.DEFAULT_SOCIAL_SERVICES
 
 
 logger = logging.getLogger('jobber')
@@ -88,8 +89,11 @@ def send_confirmation_email(job):
     send_email_template('confirmation', context, [recipient])
 
 
-def social_broadcast(job):
-    for service in ('twitter', ):
+def social_broadcast(job, services=None):
+    if services is None:
+        services = DEFAULT_SOCIAL_SERVICES
+
+    for service in services:
         sb = SocialBroadcast.make(service)
         try:
             sb.broadcast(job)
@@ -110,7 +114,9 @@ class SocialBroadcast(object):
     @classmethod
     def make(cls, service):
         # We only support Twitter for now so this method ignores `service`.
-        return _Twitter()
+        if service == 'twitter':
+            return _Twitter()
+        raise ValueError("Unknown social service '{}'".format(service))
 
     def broadcast(self, job):
         raise NotImplemented('Not implemented in factory class')
