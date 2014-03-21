@@ -18,7 +18,7 @@ from jobber.script import run
 from jobber.core.models import Location
 
 
-def main(city, country_code, session, app):
+def main(city, country_code, session):
     location = Location(city=city, country_code=country_code)
     session.add(location)
 

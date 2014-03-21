@@ -21,7 +21,7 @@ from jobber.core.models import Job
 from jobber.core.search import Index, Schema
 
 
-def main(should_create, only_published, session, app):
+def main(should_create, only_published, session):
     if should_create:
         print blue("You've asked to (re)create index '{}'.".format(Index.name))
         schema = Schema()

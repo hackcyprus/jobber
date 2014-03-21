@@ -17,7 +17,7 @@ from jobber.script import run
 from jobber.core.models import Category
 
 
-def main(name, session, app):
+def main(name, session):
     category = Category(name=name)
     session.add(category)
 
