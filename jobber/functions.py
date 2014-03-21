@@ -97,12 +97,17 @@ def social_broadcast(job, services=None):
         sb = SocialBroadcast.make(service)
         try:
             sb.broadcast(job)
-            logger.debug('Broadcast to {} for job ({}).'.format(service, job.id))
+            msg = 'Successful broadcast to {} for job ({}).'.format(service, job.id)
+            logger.debug(msg)
         except Exception as exc:
             # Let's not bail here. Catch all exceptions and log to make sure
             # we try the next service in line.
             msg = 'Failed broadcast to {} for job ({})!'.format(service, job.id)
             logger.exception(msg, exc)
+
+
+class InvalidService(Exception):
+    pass
 
 
 class SocialBroadcast(object):
@@ -116,7 +121,7 @@ class SocialBroadcast(object):
         # We only support Twitter for now so this method ignores `service`.
         if service == 'twitter':
             return _Twitter()
-        raise ValueError("Unknown social service '{}'".format(service))
+        raise InvalidService("'{}' is an invalid service.".format(service))
 
     def broadcast(self, job):
         raise NotImplemented('Not implemented in factory class')
