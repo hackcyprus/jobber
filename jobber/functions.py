@@ -7,7 +7,10 @@ Shared functions.
 """
 import os
 import logging
+import json
 from datetime import timedelta
+
+import requests
 
 from jobber.conf import settings
 from jobber.core.email import send_email_template
@@ -17,6 +20,7 @@ from jobber.vendor.html2text import html2text
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
+ZAPIER_WEBHOOK_URL = settings.ZAPIER_WEBHOOK_URL
 
 
 logger = logging.getLogger('jobber')
@@ -80,6 +84,56 @@ def send_confirmation_email(job):
         'default_sender': DEFAULT_SENDER
     }
     logger.info(u"Sending confirmation email to '{}' "
-                    "for job listing ({}).".format(recipient, job.id))
+                "for job listing ({}).".format(recipient, job.id))
     send_email_template('confirmation', context, [recipient])
 
+
+def social_broadcast(job):
+    for service in ('twitter', ):
+        sb = SocialBroadcast.make(service)
+        try:
+            sb.broadcast(job)
+            logger.debug('Broadcast to {} for job ({}).'.format(service, job.id))
+        except Exception as exc:
+            # Let's not bail here. Catch all exceptions and log to make sure
+            # we try the next service in line.
+            msg = 'Failed broadcast to {} for job ({})!'.format(service, job.id)
+            logger.exception(msg, exc)
+
+
+class SocialBroadcast(object):
+    """Factory class for creating `SocialBroadcast` objects based on the
+    requested service.
+
+    """
+
+    @classmethod
+    def make(cls, service):
+        # We only support Twitter for now so this method ignores `service`.
+        return _Twitter()
+
+    def broadcast(self, job):
+        raise NotImplemented('Not implemented in factory class')
+
+
+class _Twitter(SocialBroadcast):
+
+    def broadcast(self, job):
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        company = job.company
+        location = job.location
+
+        data = {
+            'company': company.name,
+            'title': job.title,
+            'city': location.city,
+            'country': location.country_name,
+            'url': job.url(external=True)
+        }
+
+        data = json.dumps(data)
+        r = requests.post(ZAPIER_WEBHOOK_URL, data=data, headers=headers)
+        r.raise_for_status()
