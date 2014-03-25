@@ -15,13 +15,13 @@ import requests
 from jobber.conf import settings
 from jobber.core.email import send_email_template
 from jobber.core.utils import now
+from jobber.core.models import SocialBroadcast
 from jobber.vendor.html2text import html2text
 
 
 DEFAULT_SENDER = settings.MAIL_DEFAULT_SENDER
 ADMIN_RECIPIENT = settings.MAIL_ADMIN_RECIPIENT
-ZAPIER_WEBHOOK_URL = settings.ZAPIER_WEBHOOK_URL
-DEFAULT_SOCIAL_SERVICES = settings.DEFAULT_SOCIAL_SERVICES
+ZAPIER_WEBHOOKS = settings.ZAPIER_WEBHOOKS
 
 
 logger = logging.getLogger('jobber')
@@ -89,47 +89,51 @@ def send_confirmation_email(job):
     send_email_template('confirmation', context, [recipient])
 
 
-def social_broadcast(job, services=None):
-    if services is None:
-        services = DEFAULT_SOCIAL_SERVICES
+def social_broadcast(job, service):
+    """Broadcasts a `job` to the `service`. This is implemented using a webook
+    to Zapier for now. Returns a `SocialBroadcast` instance.
 
-    for service in services:
-        sb = SocialBroadcast.make(service)
-        try:
-            sb.broadcast(job)
-            msg = 'Successful broadcast to {} for job ({}).'.format(service, job.id)
-            logger.debug(msg)
-        except Exception as exc:
-            # Let's not bail here. Catch all exceptions and log to make sure
-            # we try the next service in line.
-            msg = 'Failed broadcast to {} for job ({})!'.format(service, job.id)
-            logger.exception(msg, exc)
+    :param job: A Job instance.
+    :param service: A string identifier to the service.
+
+    """
+    zapier = Zapier(service)
+
+    try:
+        data = zapier.broadcast(job)
+        msg = 'Successful broadcast to {} for job ({}).'.format(service, job.id)
+        logger.debug(msg)
+    except requests.HTTPError as err:
+        data = {}
+        msg = 'Failed broadcast to {} for job ({})!'.format(service, job.id)
+        logger.exception(msg, err)
+
+    success = data.get('status') == 'success'
+
+    return SocialBroadcast(
+        service=service,
+        success=success,
+        data=json.dumps(data),
+        job_id=job.id
+    )
 
 
 class InvalidService(Exception):
     pass
 
 
-class SocialBroadcast(object):
-    """Factory class for creating `SocialBroadcast` objects based on the
-    requested service.
+class Zapier(object):
+    """Simple wrapper for Zapier."""
+    WEBHOOKS = ZAPIER_WEBHOOKS
 
-    """
-
-    @classmethod
-    def make(cls, service):
-        # We only support Twitter for now so this method ignores `service`.
-        if service == 'twitter':
-            return _Twitter()
-        raise InvalidService("'{}' is an invalid service.".format(service))
+    def __init__(self, service):
+        if service not in self.WEBHOOKS:
+            raise InvalidService("'{}' is an unknown service!".format(service))
+        self.service = service
 
     def broadcast(self, job):
-        raise NotImplemented('Not implemented in factory class')
+        webhook = self.WEBHOOKS[self.service]
 
-
-class _Twitter(SocialBroadcast):
-
-    def broadcast(self, job):
         headers = {
             'Content-Type': 'application/json'
         }
@@ -146,5 +150,6 @@ class _Twitter(SocialBroadcast):
         }
 
         data = json.dumps(data)
-        r = requests.post(ZAPIER_WEBHOOK_URL, data=data, headers=headers)
-        r.raise_for_status()
+        resp = requests.post(webhook, data=data, headers=headers)
+        resp.raise_for_status()
+        return resp.json()

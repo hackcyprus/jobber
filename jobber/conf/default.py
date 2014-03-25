@@ -46,6 +46,6 @@ GA_TRACKING_ID = '<tracking>'
 
 DROPBOX_OAUTH_TOKEN = '<dropbox-token>'
 
-ZAPIER_WEBHOOK_URL = '<zapier-webhook>'
-
-DEFAULT_SOCIAL_SERVICES = ('twitter', )
+ZAPIER_WEBHOOKS = {
+    'twitter': '<twitter-webhook-url>'
+}

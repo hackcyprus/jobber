@@ -2,11 +2,11 @@
 Broadcasts a job to the selected social services.
 
 Usage:
-    broadcast.py <jobid> [<services> ...]
+    broadcast.py <jobid> <service>
 
 Options:
-    <jobid>  The job to broadcast.
-    <services> Optional space-separated list of services to broadcast to.
+    <jobid>    The job to broadcast.
+    <service>  Service identifier.
 
 """
 from docopt import docopt
@@ -16,22 +16,24 @@ path_setup()
 
 from jobber.script import run, die, green
 from jobber.core.models import Job
-from jobber.functions import social_broadcast, InvalidService
+from jobber.functions import social_broadcast
 
 
-def main(jobid, services, session):
+def main(jobid, service, session):
     job = session.query(Job).get(jobid)
     if not job:
         die("Job ({}) was not found.".format(jobid))
     try:
-        social_broadcast(job, services=services)
-        print green("Great, broadcasting to all services was successful.".format(', '.join(services)))
-    except InvalidService as ise:
-        die(ise)
+        sb = social_broadcast(job, service)
+        session.add(sb)
+        session.commit()
+        print green("Great, broadcasting was successful.")
+    except Exception as exc:
+        die(exc)
 
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     jobid = arguments['<jobid>']
-    services = arguments['<services>']
-    run(main, jobid, services)
+    service = arguments['<service>']
+    run(main, jobid, service)
