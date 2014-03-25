@@ -30,3 +30,4 @@ feedgen==0.2.8
 lxml==3.3.0
 urllib3==1.7.1
 dropbox==2.0.0
+requests==2.2.1
