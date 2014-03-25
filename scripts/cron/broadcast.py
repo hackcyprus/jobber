@@ -49,7 +49,7 @@ def main(session):
             selection.append(job)
             continue
 
-        diff = (now() - broadcasts[0].created).seconds
+        diff = (now() - broadcasts[0].created).days
         if diff >= threshold:
             logger.debug(
                 "Selecting job ({}) because it has not been "
