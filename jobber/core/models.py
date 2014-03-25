@@ -181,7 +181,10 @@ class Job(BaseModel, SlugModelMixin, SearchableMixin):
     tags = relationship('Tag', secondary=job_tags_association, backref='jobs')
 
     #: One-to-many relationship to `EmailReviewToken`.
-    jobs = relationship('EmailReviewToken', backref='job')
+    email_tokens = relationship('EmailReviewToken', backref='job')
+
+    #: One-to-many relationship to `SocialBroadcast`.
+    broadcasts = relationship('SocialBroadcast', backref='job')
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -408,3 +411,22 @@ class EmailReviewToken(BaseModel):
     def use(self):
         self.used = True
         self.used_at = now()
+
+
+class SocialBroadcast(BaseModel):
+    __tablename__ = 'social_broadcasts'
+
+    #: Broadcast id.
+    id = sa.Column(sa.Integer, primary_key=True)
+
+    #: String identifier of the service used (e.g Twitter).
+    service = sa.Column(sa.Unicode(25), nullable=False)
+
+    #: Flag showing whether this broadcast was successful.
+    success = sa.Column(sa.Boolean, nullable=False, default=True)
+
+    #: Metadata about the broadcast (JSON-encoded string).
+    data = sa.Column(sa.UnicodeText, nullable=True)
+
+    #: Job id as a foreign key relationship.
+    job_id = sa.Column(sa.Integer, sa.ForeignKey('jobs.id'), index=True)

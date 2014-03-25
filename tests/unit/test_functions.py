@@ -7,8 +7,10 @@ Tests shared functions.
 
 """
 import os
+import json
 
 import pytest
+import requests
 from mock import MagicMock
 
 from jobber.vendor.html2text import html2text
@@ -17,6 +19,8 @@ from jobber.core.models import Location, Company, Job
 from jobber.functions import (send_instructory_email,
                               send_admin_review_email,
                               send_confirmation_email,
+                              social_broadcast,
+                              Zapier,
                               DEFAULT_SENDER,
                               ADMIN_RECIPIENT)
 
@@ -89,3 +93,40 @@ def test_send_confirmation_email(app, monkeypatch, job):
 
     send_confirmation_email(job)
     mock.assert_called_with('confirmation', context, recipient)
+
+
+def test_social_broadcast(session, monkeypatch, job):
+    data = {
+        'status': 'success',
+        'foo': 'bar'
+    }
+
+    session.add(job)
+    session.commit()
+
+    mock = MagicMock()
+    mock.return_value = data
+    monkeypatch.setattr('jobber.functions.Zapier.broadcast', mock)
+
+    sb = social_broadcast(job, 'twitter')
+
+    assert sb.success
+    assert sb.service == 'twitter'
+    assert sb.data == json.dumps(data)
+    assert sb.job_id == job.id
+
+
+def test_social_broadcast_fail(session, monkeypatch, job):
+    session.add(job)
+    session.commit()
+
+    mock = MagicMock()
+    mock.side_effect = requests.HTTPError()
+    monkeypatch.setattr('jobber.functions.Zapier.broadcast', mock)
+
+    sb = social_broadcast(job, 'twitter')
+
+    assert not sb.success
+    assert sb.service == 'twitter'
+    assert sb.data == json.dumps({})
+    assert sb.job_id == job.id
