@@ -49,3 +49,6 @@ DROPBOX_OAUTH_TOKEN = '<dropbox-token>'
 ZAPIER_WEBHOOKS = {
     'twitter': '<twitter-webhook-url>'
 }
+
+BROADCAST_EXPIRY_THRESHOLD_DAYS = 16
+
