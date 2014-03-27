@@ -15,11 +15,15 @@ path_setup()
 
 from jobber.script import run, die
 from jobber.core.models import Job
-from jobber.core.search import Index
+from jobber.core.search import IndexManager, Index
+from jobber.conf import settings
 
 
 def main(query, session):
-    if not Index.exists():
+    name = settings.SEARCH_INDEX_NAME
+    directory = settings.SEARCH_INDEX_DIRECTORY
+
+    if not IndexManager.exists(name, directory):
         die('Search index does not exist!')
 
     if isinstance(query, str):
