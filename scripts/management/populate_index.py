@@ -18,16 +18,18 @@ path_setup()
 
 from jobber.script import run, green, die, blue
 from jobber.core.models import Job
-from jobber.core.search import Index, Schema
+from jobber.core.search import IndexManager, Schema, Index
+from jobber.conf import settings
 
 
 def main(should_create, only_published, session):
     if should_create:
-        print blue("You've asked to (re)create index '{}'.".format(Index.name))
-        schema = Schema()
-        Index.create(schema)
+        name = settings.SEARCH_INDEX_NAME
+        directory = settings.SEARCH_INDEX_DIRECTORY
+        print blue("You've asked to (re)create index '{}'.".format(name))
+        IndexManager.create(Schema, name, directory)
 
-    if not Index.exists():
+    if not IndexManager.exists(name, directory):
         die('Search index does not exist!')
 
     index = Index()

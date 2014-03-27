@@ -88,26 +88,46 @@ class SearchableMixin(object):
         return self.__dict__
 
 
-class Index(object):
-    directory = settings.SEARCH_INDEX_DIRECTORY
-    name = settings.SEARCH_INDEX_NAME
+class IndexManager(object):
+    """Wrapper responsible for creating, deleting and opening `Whoosh` indexes
+    on the filesystem.
 
-    def __init__(self, *args, **kwargs):
-        self.index = index.open_dir(self.directory, indexname=self.name)
+    """
+    @classmethod
+    def create(cls, schema, name, directory):
+        """Creates the index, wiping any existing index."""
+        index.create_in(directory, schema, indexname=name)
 
     @classmethod
-    def exists(cls):
+    def open(cls, name, directory):
+        """Opens the index."""
+        return index.open_dir(directory, indexname=name)
+
+    @classmethod
+    def exists(cls, name, directory):
         """Checks if this index exists."""
-        return index.exists_in(cls.directory, indexname=cls.name)
+        return index.exists_in(directory, indexname=name)
 
-    @classmethod
-    def create(cls, schema):
-        """Creates the index, wiping any existing index.
 
-        :param schema: A `Schema` object.
+class Index(object):
+    """Wrapper on top of a `Whoosh` index, provides addition, deletion and
+    search capabilities.
 
-        """
-        index.create_in(cls.directory, schema, indexname=cls.name)
+    """
+    def __init__(self, name=None, directory=None, schema=None):
+        if not name:
+            name = settings.SEARCH_INDEX_NAME
+        if not directory:
+            directory = settings.SEARCH_INDEX_DIRECTORY
+        if not schema:
+            schema = Schema
+
+        self.directory = directory
+        self.name = name
+        self.schema = Schema
+
+        # The constructor assumes the index already exists.
+        self.index = IndexManager.open(self.name, self.directory)
 
     def search(self, query, limit=None, sort=None):
         """Searches the index by parsing `query` and creating a `Query` object.
@@ -122,17 +142,12 @@ class Index(object):
         parser = MultifieldParser(SEARCHABLE_FIELDS, schema=self.index.schema)
         query = parser.parse(query)
         with self.index.searcher() as searcher:
-            kwargs = {}
-
-            if limit:
-                kwargs['limit'] = limit
+            kwargs = dict(limit=limit)
             if sort:
                 field, direction = sort
                 kwargs['sortedby'] = field
                 kwargs['reverse'] = direction == 'desc'
-
             hits = searcher.search(query, **kwargs)
-
             return [hit.fields() for hit in hits]
 
     def add_document(self, doc, commit=True, writer=None):

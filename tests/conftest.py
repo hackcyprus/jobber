@@ -20,7 +20,7 @@ from jobber.conf import settings
 from jobber.factory import create_app
 from jobber.database import db as _db
 from jobber.script import blue
-from jobber.core.search import Index, Schema
+from jobber.core.search import Index, Schema, IndexManager
 from jobber.signals import register_signals, deregister_signals
 
 
@@ -111,14 +111,18 @@ def session(db, monkeypatch, request):
 
 
 @pytest.fixture(scope='function')
-def signals(session, request):
+def index(app):
+    # By creating the index we are actually clearing it, so any tests that
+    # require a clean index, should require this feature.
+    name = app.config['SEARCH_INDEX_NAME']
+    directory = app.config['SEARCH_INDEX_DIRECTORY']
+    IndexManager.create(Schema, name, directory)
+    return Index(name, directory)
+
+
+@pytest.fixture(scope='function')
+def signals(session, index, request):
     register_signals()
-
-    # Since searching can only be done via signals in the app, we create the
-    # search index here. It's a quick and easy hack. Note that this will recreate
-    # the index everytime so we get a blank index for each test.
-    Index.create(Schema)
-
     def teardown():
         deregister_signals()
     request.addfinalizer(teardown)
