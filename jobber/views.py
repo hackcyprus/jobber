@@ -14,8 +14,8 @@ from flask import url_for, session, request
 
 from jobber import rss
 from jobber.core.models import Job, EmailReviewToken
-from jobber.core.search import Index
 from jobber.core.forms import JobForm
+from jobber.services import SearchService
 from jobber.database import db
 from jobber.conf import settings
 from jobber.functions import send_instructory_email, send_confirmation_email
@@ -70,17 +70,9 @@ def index():
 
 @blueprint.route('/search/<query>')
 def search(query):
-    index = Index()
-    jobs = []
-
-    for hit in index.search(query, sort=('created', 'desc')):
-        job = db.session.query(Job).get(hit['id'])
-        # Make sure that we don't accidentally show an unpublished job that
-        # happened to be in the search index.
-        if job and job.published:
-            jobs.append(job)
-
-    return render_template('index.html', jobs=jobs, query=query)
+    service = SearchService()
+    hits = service.search_jobs(query, sort=('created', 'desc'))
+    return render_template('index.html', jobs=hits, query=query)
 
 
 @blueprint.route('/create', methods=['GET', 'POST'])
