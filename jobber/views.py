@@ -190,9 +190,10 @@ def how():
     return render_template('faq.html', prompt='Frequently asked questions.')
 
 
+@blueprint.route('/feed/<query>')
 @blueprint.route('/feed')
-def feed():
-    return Response(rss.render_feed(), mimetype='text/xml')
+def feed(query=None):
+    return Response(rss.render_feed(query=query), mimetype='text/xml')
 
 
 @blueprint.route('/review/email/<token>', methods=['POST'])

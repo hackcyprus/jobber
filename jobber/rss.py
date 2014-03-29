@@ -8,6 +8,7 @@ Utilities for creating RSS2.0 feeds.
 from feedgen.feed import FeedGenerator
 from jobber.core.models import Job
 from jobber.database import db
+from jobber.services import SearchService
 
 
 # Feed properties.
@@ -29,13 +30,23 @@ def build_feed_generator():
     return gen
 
 
-def render_feed(limit=DEFAULT_LIMIT):
+def get_all(limit):
+    # TODO: These queries should likely be abstracted into a `JobsService`.
+    return db.session.query(Job)\
+           .filter_by(published=True)\
+           .order_by(Job.created)\
+           .limit(limit).all()
+
+
+def search(query, limit):
+    service = SearchService()
+    return service.search_jobs(query, limit=limit)
+
+
+def render_feed(query=None, limit=DEFAULT_LIMIT):
     gen = build_feed_generator()
 
-    listings = db.session.query(Job)\
-                 .filter_by(published=True)\
-                 .order_by(Job.created)\
-                 .limit(limit).all()
+    listings = get_all(limit) if not query else search(query, limit=limit)
 
     for job in listings:
         url = job.url(external=True)

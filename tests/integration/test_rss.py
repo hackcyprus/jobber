@@ -23,8 +23,8 @@ def company():
 
 @pytest.fixture(scope='function')
 def job(company, location):
-    return Job(title='testfoo',
-               description='testfoo',
+    return Job(title=u'testfoo',
+               description=u'testfoo',
                contact_method=1,
                remote_work=False,
                company=company,
@@ -35,13 +35,14 @@ def job(company, location):
                recruiter_email=u'jon@doe.com')
 
 
-def test_rss_generation(job, session):
+@pytest.mark.parametrize("query", [None, u'testfoo'])
+def test_rss_generation(session, signals, job, query):
     session.add(job)
     session.commit()
 
     assert job.id > 0
 
-    feed = rss.render_feed()
+    feed = rss.render_feed(query=query)
 
     # Assert on some generic information that needs to be present in the feed.
     url = job.url(external=True)
