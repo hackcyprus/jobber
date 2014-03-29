@@ -3,11 +3,11 @@ Populates the `jobs` index. So far we've got only one index so this script
 knows how to do one thing well.
 
 Usage:
-    populate_index.py [--create] [--published]
+    populate_index.py [--create] [--all]
 
 Options:
     --create     Whether the index should be re-created.
-    --published  Index only published jobs.
+    --all        Index all jobs. By default, only published jobs will be indexed.
 
 """
 import time
@@ -22,7 +22,7 @@ from jobber.core.search import IndexManager, Schema, Index
 from jobber.conf import settings
 
 
-def main(should_create, only_published, session):
+def main(should_create, index_all, session):
     if should_create:
         name = settings.SEARCH_INDEX_NAME
         directory = settings.SEARCH_INDEX_DIRECTORY
@@ -35,12 +35,11 @@ def main(should_create, only_published, session):
     index = Index()
 
     start = time.time()
-    jobs = [
-        job.to_document() for job in session.query(Job).all()
-        if (not only_published) or (only_published and job.published)
-    ]
 
-    index.add_document_bulk(jobs)
+    kwargs = {} if index_all else {'published': True}
+    jobs = session.query(Job).filter_by(**kwargs).all()
+
+    index.add_document_bulk([job.to_document() for job in jobs])
     duration = time.time() - start
 
     print green("{0} documents added okay in {1:.2f} ms.".format(len(jobs), duration))
@@ -49,5 +48,5 @@ def main(should_create, only_published, session):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     should_create = arguments['--create']
-    only_published = arguments['--published']
-    run(main, should_create, only_published)
+    index_all = arguments['--all']
+    run(main, should_create, index_all)
