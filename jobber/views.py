@@ -231,14 +231,22 @@ def reviewed_via_email(token):
         abort(406)
 
     token_model.use()
+
     job = token_model.job
-    job.published = True
+
+    was_published = False
+    if not job.published:
+        job.published = True
+        was_published = True
 
     db.session.commit()
 
-    send_confirmation_email(job)
+    # To avoid any race conditions between manually reviewing and reviewing via
+    # email, we make a last check before sending the email.
+    if was_published:
+        send_confirmation_email(job)
 
     logger.info("Reviewed job ({}) via email with token {}."
-                    .format(job.id, token))
+                .format(job.id, token))
 
     return 'okay', 200

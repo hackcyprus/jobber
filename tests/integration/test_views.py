@@ -208,3 +208,24 @@ class TestEmailReview(object):
         assert not session.query(EmailReviewToken).get(token.id).used
         assert len(self.search(job.title)) == 0
         assert not mock.called
+
+    def test_job_already_published(self, monkeypatch, client, session,
+                                   signals, job, token):
+        job.published = True
+        session.add(token)
+        session.commit()
+
+        mock = MagicMock()
+        monkeypatch.setattr('jobber.views.send_confirmation_email', mock)
+
+        url = "/review/email/{}".format(token.token)
+        data = {
+            'sender': choice(settings.EMAIL_REVIEWERS),
+            'stripped-text': 'ok'
+        }
+        response = client.post(url, data=data)
+        assert response.status_code == 200
+        assert session.query(Job).get(job.id).published
+        assert session.query(EmailReviewToken).get(token.id).used
+        assert len(self.search(job.title)) == 1
+        assert not mock.called
