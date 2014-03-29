@@ -26,8 +26,8 @@ destination d_hackcyprus_warn {
 
 # HAProxy log.
 #
-destination time_reopen(10); {
-  file("/var/log/hackcyprus/haproxy");
+destination d_hackcyprus_haproxy {
+  file("/var/log/hackcyprus/haproxy/$R_YEAR-$R_MONTH-$R_DAY.log");
 };
 
 # =======
