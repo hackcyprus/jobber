@@ -6,13 +6,14 @@ Utilities for creating RSS2.0 feeds.
 
 """
 from feedgen.feed import FeedGenerator
+from flask import url_for
+
 from jobber.core.models import Job
 from jobber.database import db
 from jobber.services import SearchService
 
 
 # Feed properties.
-FEED_LINK = u'http://jobs.hackcyprus.com/feed'
 FEED_TITLE = u'Hack Cyprus Jobs Feed'
 FEED_SUBTITLE = u'Find a great tech job in Cyprus, Greece or the United Kingdom.'
 FEED_LANG = u'en'
@@ -21,12 +22,15 @@ FEED_LANG = u'en'
 DEFAULT_LIMIT = 20
 
 
-def build_feed_generator():
+def build_feed_generator(query=None):
     gen = FeedGenerator()
     gen.title(FEED_TITLE)
-    gen.link(href=FEED_LINK, rel='self', type='application/rss+xml')
     gen.subtitle(FEED_SUBTITLE)
     gen.language(FEED_LANG)
+
+    feed_link = url_for('views.feed', query=query, _external=True)
+    gen.link(href=feed_link, rel='self', type='application/rss+xml')
+
     return gen
 
 
@@ -44,7 +48,7 @@ def search(query, limit):
 
 
 def render_feed(query=None, limit=DEFAULT_LIMIT):
-    gen = build_feed_generator()
+    gen = build_feed_generator(query=query)
 
     listings = get_all(limit) if not query else search(query, limit=limit)
 
