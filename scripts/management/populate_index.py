@@ -23,9 +23,10 @@ from jobber.conf import settings
 
 
 def main(should_create, index_all, session):
+    name = settings.SEARCH_INDEX_NAME
+    directory = settings.SEARCH_INDEX_DIRECTORY
+
     if should_create:
-        name = settings.SEARCH_INDEX_NAME
-        directory = settings.SEARCH_INDEX_DIRECTORY
         print blue("You've asked to (re)create index '{}'.".format(name))
         IndexManager.create(Schema, name, directory)
 
